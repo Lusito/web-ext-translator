@@ -1,0 +1,47 @@
+{
+  "bin": {
+    "wet": "jdeploy-bundle/jdeploy.js"
+  },
+  "author": "Santo Pfingsten",
+  "description": "An easy to use translation tool for web-extensions",
+  "main": "index.js",
+  "preferGlobal": true,
+  "repository": "",
+  "version": "1.0.0",
+  "jdeploy": {
+    "jar": "target/web-ext-translator-1.0-SNAPSHOT-jar-with-dependencies.jar"
+  },
+  "dependencies": {
+    "chosen-js": "^1.8.2",
+    "dragula": "^3.7.2",
+    "jdeploy": "^1.0.21",
+    "jquery": "^3.2.1",
+    "markdown-it": "^8.4.0",
+    "shelljs": "^0.7.5",
+    "toastr": "^2.1.2",
+    "ts-keycode-enum": "^1.0.4"
+  },
+  "license": "Zlib",
+  "name": "web-ext-translator",
+  "files": [
+    "jdeploy-bundle"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/chosen-js": "^1.6.2",
+    "@types/dragula": "^2.1.32",
+    "@types/jquery": "^3.2.16",
+    "@types/markdown-it": "0.0.4",
+    "@types/node": "^8.0.53",
+    "@types/toastr": "^2.1.35",
+    "css-loader": "^0.28.7",
+    "style-loader": "^0.19.0",
+    "svg-url-loader": "^2.3.0",
+    "ts-loader": "^3.2.0",
+    "typescript": "^2.6.2",
+    "url-loader": "^0.6.2",
+    "webpack": "^3.9.1"
+  }
+}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Web-Ext-Translator</title>
+</head>
+
+<body class="show_preview">
+    <header>
+        <button id="load" data-tooltip="Load" class="tooltip_offset_20"></button>
+        <button id="saveAll" data-tooltip="Save All"></button>
+        <button id="undo" data-tooltip="Undo"></button>
+        <button id="redo" data-tooltip="Redo"></button>
+        <div class="separator"></div>
+        <button id="newLanguage" data-tooltip="Add Language"></button>
+        <button id="newTranslation" data-tooltip="Add Message"></button>
+        <div class="separator"></div>
+        <button id="togglePreview" data-tooltip="Toggle Preview"></button>
+    </header>
+    <main>
+        <table id="languageTable">
+            <thead>
+                <tr>
+                    <th class="minimize_column"></th>
+                    <th class="minimize_column">Key</th>
+                    <th class="minimize_column"></th>
+                    <th>
+                        <select id="language1"></select>
+                    </th>
+                    <th>
+                        <select id="language2"></select>
+                    </th>
+                    <th class="minimize_column"></th>
+                </tr>
+            </thead>
+            <tbody id="entries">
+            </tbody>
+        </table>
+    </main>
+    <aside>
+        <h2>Markdown Preview</h2>
+        <div id="preview"></div>
+    </aside>
+    <script src="content.js"></script>
+</body>
+
+</html>
