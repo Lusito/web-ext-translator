@@ -398,7 +398,7 @@ class Translator {
         const label = createElement(tr, 'td', { textContent: key });
 
         const cell1b = createElement(tr, 'td');
-        const button1b = createButton(cell1b, '', () => { });
+        const button1b = createButton(cell1b, '', () => showError('Not implemented yet', 'Placeholders can not be configured yet'));
         button1b.className = 'placeholders';
         attachTooltip(button1b, 'Configure placeholders', 'right');
 
