@@ -18,6 +18,8 @@ nbdist/
 .nb-gradle/
 nbactions.xml
 .project
+.settings/
+.classpath
 
 ### Node ###
 # Logs
