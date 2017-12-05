@@ -14,7 +14,7 @@ const allowedEscapeChars: { [s: string]: string } = {
     'n': '\n',
     't': '\t',
     '"': '\\"',
-    '\\': '\\\\'
+    '\\': '\\'
 };
 
 export function saveMessages(messages: Messages, orderedNames: string[]) {
