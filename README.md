@@ -3,7 +3,7 @@
 An easy to use translation tool for web-extensions with markdown preview.
 It's mostly written in TypeScript, HTML & CSS. It runs inside of a JavaFX WebKit container, which adds the interfaces for reading and writing files.
 
-[![Screenshot](https://raw.githubusercontent.com/Lusito/web-ext-translator/master/screenshot.png)](https://raw.githubusercontent.com/Lusito/web-ext-translator/master/todo.md)
+[![Screenshot](https://raw.githubusercontent.com/Lusito/web-ext-translator/master/screenshot.png)](https://raw.githubusercontent.com/Lusito/web-ext-translator/master/screenshot.png)
 
 ### Why?
 

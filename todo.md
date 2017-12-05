@@ -1,6 +1,4 @@
 - tasks:
-  - put on github
-  - publish tool on npm, and add jar download for use without npm
   - rename classes and interfaces to be more meaningful
 - bonus (later)
   - placeholders
