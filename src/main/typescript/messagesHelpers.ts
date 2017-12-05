@@ -148,11 +148,12 @@ class MessagesParser {
             const c = this.lineContent[this.column];
             // Check for escape characters
             if (c === '\\') {
-                const escaped = allowedEscapeChars[c];
+                const c2 = this.lineContent[++this.column];
+                const escaped = allowedEscapeChars[c2];
                 if (!escaped)
-                    throw new Error(`Unknown escape: '${c}' at ${this.getPosition()}`);
+                    throw new Error(`Unknown escape: '${c2}' at ${this.getPosition()}`);
                 token += escaped;
-                this.column += 2;
+                this.column++;
                 continue;
             }
             // done?
