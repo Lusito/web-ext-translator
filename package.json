@@ -1,16 +1,34 @@
 {
+  "name": "web-ext-translator",
+  "version": "1.0.0",
+  "description": "An easy to use translation tool for web-extensions",
+  "keywords": [
+    "TypeScript",
+    "Undo",
+    "UndoManager"
+  ],
+  "author": "Santo Pfingsten",
+  "license": "Zlib",
+  "homepage": "https://github.com/Lusito/web-ext-translator",
+  "bugs": {
+    "url": "https://github.com/Lusito/web-ext-translator/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lusito/web-ext-translator.git"
+  },
+  "main": "index.js",
+  "scripts": {},
+  "preferGlobal": true,
   "bin": {
     "wet": "jdeploy-bundle/jdeploy.js"
   },
-  "author": "Santo Pfingsten",
-  "description": "An easy to use translation tool for web-extensions",
-  "main": "index.js",
-  "preferGlobal": true,
-  "repository": "",
-  "version": "1.0.0",
   "jdeploy": {
-    "jar": "target/web-ext-translator-1.0-SNAPSHOT-jar-with-dependencies.jar"
+    "jar": "target/web-ext-translator-1.0-jar-with-dependencies.jar"
   },
+  "files": [
+    "jdeploy-bundle"
+  ],
   "dependencies": {
     "chosen-js": "^1.8.2",
     "country-list": "^1.1.0",
@@ -23,14 +41,6 @@
     "toastr": "^2.1.2",
     "ts-keycode-enum": "^1.0.4",
     "typed-undo": "^1.0.0"
-  },
-  "license": "Zlib",
-  "name": "web-ext-translator",
-  "files": [
-    "jdeploy-bundle"
-  ],
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
     "@types/chosen-js": "^1.6.2",
