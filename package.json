@@ -13,7 +13,9 @@
   },
   "dependencies": {
     "chosen-js": "^1.8.2",
+    "country-list": "^1.1.0",
     "dragula": "^3.7.2",
+    "iso-639-1": "^1.3.2",
     "jdeploy": "^1.0.21",
     "jquery": "^3.2.1",
     "markdown-it": "^8.4.0",
