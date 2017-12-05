@@ -1,6 +1,6 @@
 import { createElement, createButton, on, byId, removeAllChildren } from './htmlUtils';
 import { Messages } from '../Messages';
-import { UndoManager } from './UndoManager';
+import { UndoManager } from 'typed-undo';
 import * as dialogs from './dialogs';
 import { UndoableMessageChange, UndoableMessageDrag, UndoableMessageAddRemove, RowEntry, UndoableLanguageChange, UndoableLanguageAddRemove, UndoableMessageRename } from './undoables';
 import { Key } from 'ts-keycode-enum';

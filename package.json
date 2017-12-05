@@ -19,7 +19,8 @@
     "markdown-it": "^8.4.0",
     "shelljs": "^0.7.5",
     "toastr": "^2.1.2",
-    "ts-keycode-enum": "^1.0.4"
+    "ts-keycode-enum": "^1.0.4",
+    "typed-undo": "^1.0.0"
   },
   "license": "Zlib",
   "name": "web-ext-translator",

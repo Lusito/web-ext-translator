@@ -1,4 +1,4 @@
-import { UndoableEdit } from "./UndoManager";
+import { UndoableEdit } from 'typed-undo';
 import { Messages } from "../Messages";
 
 export interface RowEntry {
@@ -17,7 +17,7 @@ export class UndoableMessageChange extends UndoableEdit {
     private readonly name: string;
     private readonly oldValue: string;
     private newValue: string;
-    private listener: UndoableMessageChangeListener;
+    private readonly listener: UndoableMessageChangeListener;
 
     public constructor(locale: string, name: string, oldValue: string, newValue: string, listener: UndoableMessageChangeListener) {
         super();
