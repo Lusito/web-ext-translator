@@ -5,7 +5,7 @@
     <groupId>info.lusito.web-ext-translator</groupId>
     <artifactId>web-ext-translator</artifactId>
     <packaging>jar</packaging>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <name>Web-Ext-Translator</name>
     <build>
         <plugins>
