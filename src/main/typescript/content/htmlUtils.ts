@@ -1,7 +1,7 @@
 /**
  * License: zlib/libpng
  * @author Santo Pfingsten
- * @see https://github.com/Lusito/forget-me-not
+ * @see https://github.com/Lusito/web-ext-translator
  */
 
 export function byId(id: string) {

@@ -1,3 +1,9 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/web-ext-translator
+ */
+
 import { createElement, createButton, on, byId, removeAllChildren } from './htmlUtils';
 import { Messages } from '../Messages';
 import { UndoManager } from 'typed-undo';

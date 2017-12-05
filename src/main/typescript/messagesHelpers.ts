@@ -1,3 +1,9 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/web-ext-translator
+ */
+
 import { Messages, TranslationMessage, TranslationPlaceholder } from './Messages';
 
 const whiteSpace = /\s/;

@@ -1,3 +1,9 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/web-ext-translator
+ */
+
 import * as ISO639_1 from 'iso-639-1';
 import * as countryList from 'country-list';
 const ISO3166_1 = countryList();

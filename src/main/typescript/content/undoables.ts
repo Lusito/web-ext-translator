@@ -1,3 +1,9 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/web-ext-translator
+ */
+
 import { UndoableEdit } from 'typed-undo';
 import { Messages } from "../Messages";
 
