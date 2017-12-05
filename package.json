@@ -24,7 +24,7 @@
     "wet": "jdeploy-bundle/jdeploy.js"
   },
   "jdeploy": {
-    "jar": "target/web-ext-translator-1.0.1-jar-with-dependencies.jar"
+    "jar": "target/web-ext-translator-1.0.2-jar-with-dependencies.jar"
   },
   "files": [
     "jdeploy-bundle"
