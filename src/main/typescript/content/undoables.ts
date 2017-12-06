@@ -23,6 +23,8 @@ export class UndoableMessageChange extends UndoableEdit {
     private readonly name: string;
     private readonly oldValue: string;
     private newValue: string;
+    private mergeCount = 0;
+    private lastMerge = Date.now();
     private readonly listener: UndoableMessageChangeListener;
 
     public constructor(locale: string, name: string, oldValue: string, newValue: string, listener: UndoableMessageChangeListener) {
@@ -48,8 +50,12 @@ export class UndoableMessageChange extends UndoableEdit {
 
     public merge(edit: UndoableEdit): boolean {
         if (edit instanceof UndoableMessageChange && edit.locale === this.locale && edit.name === this.name) {
-            this.newValue = edit.newValue;
-            return true;
+            if(this.mergeCount < 3 || (Date.now() - this.lastMerge) < 250) {
+                this.lastMerge = Date.now();
+                this.mergeCount++;
+                this.newValue = edit.newValue;
+                return true;
+            }
         }
         return false;
     }
