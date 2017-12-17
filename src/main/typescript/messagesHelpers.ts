@@ -13,7 +13,7 @@ const allowedEscapeChars: { [s: string]: string } = {
     'r': '\r',
     'n': '\n',
     't': '\t',
-    '"': '\\"',
+    '"': '"',
     '\\': '\\'
 };
 
