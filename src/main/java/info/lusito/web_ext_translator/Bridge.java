@@ -79,7 +79,7 @@ public class Bridge {
         DirectoryChooser chooser = new DirectoryChooser();
         chooser.setTitle("Select your Web Extension root directory");
         if (Files.exists(localesDir)) {
-            chooser.setInitialDirectory(localesDir.toFile());
+            chooser.setInitialDirectory(localesDir.getParent().toFile());
         } else {
             chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         }
