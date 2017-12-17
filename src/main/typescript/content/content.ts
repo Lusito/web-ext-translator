@@ -131,6 +131,13 @@ class Translator {
     }
 
     public init(bridge: JavaBridge) {
+        this.rowMap = {};
+        this.messagesMap = {};
+        this.focusKey = null;
+        this.focusTextArea = null;
+        this.rebuildingDropdowns = false;
+        removeAllChildren(entriesTBody);
+    
         this.bridge = bridge;
         let list = bridge.loadMessagesList();
         if (!list.files || list.error) {
