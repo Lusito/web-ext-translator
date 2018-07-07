@@ -17,15 +17,23 @@ public class Bridge {
     private static final Charset UTF8 = Charset.forName("utf-8");
     private final Stage primaryStage;
     private boolean dirty = false;
-    private Path localesDir = Paths.get(System.getProperty("user.dir"), "_locales");
+    private Path extDir = Paths.get(System.getProperty("user.dir"));
 
     public Bridge(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
     public MessagesListResult loadMessagesList() {
+        Path localesDir = extDir.resolve("_locales");
         ArrayList<MessagesFile> list = new ArrayList();
-        if (Files.exists(localesDir)) {
+        String manifest;
+        Path manifestFile = extDir.resolve("manifest.json");
+        if (Files.exists(manifestFile) && Files.exists(localesDir)) {
+            try {
+                manifest = new String(Files.readAllBytes(manifestFile), UTF8);
+            } catch (IOException ex) {
+                return new MessagesListResult(ex.getMessage());
+            }
             DirectoryStream.Filter<Path> filter = (file) -> Files.isDirectory(file);
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(localesDir, filter)) {
                 for (Path path : directoryStream) {
@@ -37,11 +45,13 @@ public class Bridge {
             } catch (IOException ex) {
                 return new MessagesListResult(ex.getMessage());
             }
+            return new MessagesListResult(list.toArray(new MessagesFile[list.size()]), manifest);
         }
-        return new MessagesListResult(list.toArray(new MessagesFile[list.size()]));
+        return new MessagesListResult("manifest.json or _locales directory missing");
     }
 
     public String saveMessagesList(JSObject list) {
+        Path localesDir = extDir.resolve("_locales");
         try {
             if (!Files.exists(localesDir)) {
                 Files.createDirectory(localesDir);
@@ -78,14 +88,14 @@ public class Bridge {
     public boolean openDirectory() {
         DirectoryChooser chooser = new DirectoryChooser();
         chooser.setTitle("Select your Web Extension root directory");
-        if (Files.exists(localesDir)) {
-            chooser.setInitialDirectory(localesDir.getParent().toFile());
+        if (Files.exists(extDir)) {
+            chooser.setInitialDirectory(extDir.toFile());
         } else {
             chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         }
         File selectedDirectory = chooser.showDialog(primaryStage);
         if (selectedDirectory != null) {
-            localesDir = Paths.get(selectedDirectory.getAbsolutePath()).resolve("_locales");
+            extDir = Paths.get(selectedDirectory.getAbsolutePath());
             return true;
         }
         return false;

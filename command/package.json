@@ -3,9 +3,9 @@
   "version": "1.0.5",
   "description": "An easy to use translation tool for web-extensions",
   "keywords": [
-    "TypeScript",
-    "Undo",
-    "UndoManager"
+    "Web-Extensions",
+    "Translation",
+    "Translator"
   ],
   "author": "Santo Pfingsten",
   "license": "Zlib",

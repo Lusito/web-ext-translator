@@ -23,8 +23,8 @@ public class Main extends Application {
     private Bridge bridge;
 
     private void onLoad() {
-        JSObject jsobj = (JSObject) webEngine.executeScript("window.translator");
-        jsobj.call("init", bridge);
+        JSObject jsobj = (JSObject) webEngine.executeScript("window.wet");
+        jsobj.call("setBridge", bridge);
     }
 
     @Override
@@ -44,15 +44,14 @@ public class Main extends Application {
         browser = new WebView();
         browser.setContextMenuEnabled(false);
         webEngine = browser.getEngine();
-        URL url = this.getClass().getResource("/main.html");
+        URL url = this.getClass().getResource("/index.html");
         webEngine.load(url.toString());
 
-        webEngine.getLoadWorker().stateProperty().addListener(
-                (observable, oldValue, newValue) -> {
-                    if (newValue == Worker.State.SUCCEEDED) {
-                        onLoad();
-                    }
-                });
+        webEngine.getLoadWorker().stateProperty().addListener((o, ov, newValue) -> {
+            if (newValue == Worker.State.SUCCEEDED) {
+                onLoad();
+            }
+        });
         primaryStage.setOnCloseRequest(event -> {
             if (bridge.isDirty()) {
                 Alert alert = new Alert(AlertType.CONFIRMATION);
