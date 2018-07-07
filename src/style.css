@@ -1,0 +1,111 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    color: #ececec;
+    font-family: sans-serif;
+    font-size: 15px;
+    background: #252526;
+}
+
+#root {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    color: white;
+}
+
+[data-tooltip]:hover {
+    position: relative;
+    z-index: 9999;
+}
+
+[data-tooltip]:before,
+[data-tooltip]:after {
+    opacity: 0;
+    pointer-events: none;
+}
+
+[data-tooltip]:before {
+    position: absolute;
+    box-sizing: border-box;
+    top: 150%;
+    left: 50%;
+    margin-bottom: 5px;
+    margin-left: -60px;
+    padding: 7px;
+    width: 120px;
+    border-radius: 3px;
+    background-color: rgba(51, 51, 51, 0.98);
+    color: #fff;
+    content: attr(data-tooltip);
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.2;
+    border: 1px solid white;
+}
+
+.tooltip_right[data-tooltip]:before {
+    width: 200px;
+    top: 50%;
+    left: 150%;
+    margin-left: 0;
+    margin-top: -16px;
+}
+.tooltip_right[data-tooltip]:after {
+    top: 50%;
+    left: 150%;
+    border-right: 5px solid white;
+    border-bottom: 5px solid transparent;
+    border-top: 5px solid transparent;
+    margin-left: -10px;
+}
+.tooltip_left[data-tooltip]:before {
+    width: 200px;
+    top: 50%;
+    left: -50%;
+    margin-left: -200px;
+    margin-top: -16px;
+}
+.tooltip_left[data-tooltip]:after {
+    top: 50%;
+    left: -50%;
+    border-left: 5px solid white;
+    border-bottom: 5px solid transparent;
+    border-top: 5px solid transparent;
+    margin-left: 0;
+}
+
+[data-tooltip]:after {
+    position: absolute;
+    top: 150%;
+    left: 50%;
+    margin-left: -5px;
+    margin-top: -5px;
+    width: 0;
+    border-bottom: 5px solid white;
+    border-right: 5px solid transparent;
+    border-left: 5px solid transparent;
+    content: "";
+}
+
+[data-tooltip]:hover:before,
+[data-tooltip]:hover:after {
+    opacity: 1;
+}

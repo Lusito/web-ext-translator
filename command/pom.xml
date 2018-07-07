@@ -55,7 +55,7 @@
                             <outputDirectory>${basedir}/target/classes</outputDirectory>
                             <resources>          
                                 <resource>
-                                    <directory>build</directory>
+                                    <directory>../docs</directory>
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>              

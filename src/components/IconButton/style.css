@@ -1,0 +1,18 @@
+.icon-button {
+    font-size: 14px;
+    padding: 0;
+    border: none;
+    display: inline-block;
+}
+
+.icon-button:not(:disabled) {
+    cursor: pointer;
+}
+
+.icon-button:focus {
+    outline: none;
+}
+
+.icon-button:disabled {
+    opacity: 0.5;
+}

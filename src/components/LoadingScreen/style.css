@@ -1,0 +1,19 @@
+.LoadingScreen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.LoadingScreen__center {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.LoadingScreen__label {
+    margin: 15px;
+    font-size: 20px;
+}

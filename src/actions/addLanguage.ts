@@ -1,0 +1,20 @@
+import { State } from "../shared";
+import { localeCodeToEnglish } from "../lib/localeCodeToEnglish";
+import { WetLanguage } from "../wetInterfaces";
+
+export interface WetActionAddLanguage {
+    type: "ADD_LANGUAGE";
+    payload: string;
+}
+
+export function handleAddLanguage(state: State, payload: string): State {
+    if (!state.extension)
+        return state;
+    const extension = { ...state.extension };
+    const result = localeCodeToEnglish(payload);
+    if (!result.found || extension.languages[payload])
+        return state;
+    const language: WetLanguage = { locale: payload, label: result.name, messages: [], messagesByKey: {} };
+    extension.languages = { ...extension.languages, [payload]: language };
+    return { ...state, extension };
+}

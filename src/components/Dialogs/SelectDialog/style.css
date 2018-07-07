@@ -1,0 +1,13 @@
+.select-dialog__select {
+    width: 100%;
+    background: #3C3C3C;
+    color: #CCCCCC;
+    border: none;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+}
+
+.select-dialog__select:focus {
+    outline: none;
+    border: 1px solid #0075ad;
+}

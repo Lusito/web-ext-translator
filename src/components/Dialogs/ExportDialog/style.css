@@ -1,0 +1,8 @@
+.export-dialog__content {
+    max-height: 300px;
+    overflow: auto;
+}
+
+.export-dialog__checkbox-label {
+    display: block;
+}

@@ -1,0 +1,30 @@
+.translation-table-head {
+    flex-grow: 0;
+    flex-shrink: 0;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    padding-right: 24px;
+}
+
+.translation-table-head__table {
+    width: 100%;
+}
+
+.translation-table-head__th:nth-child(2),
+.translation-table-head__th:nth-child(3) {
+    width: 50%;
+}
+
+.translation-table-head__th:first-child {
+    text-align: left;
+    border-bottom: 1px solid #313131;
+}
+
+.translation-table-head__td {
+    font-family: monospace;
+    opacity: 0;
+    line-height: 0;
+    overflow: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
+}

@@ -1,0 +1,27 @@
+.translation-editor {
+    width: 100%;
+    box-sizing: border-box;
+    resize: none;
+    display: block;
+    border: none;
+    background: #333333;
+    color: #ec7a30;
+    font: 14px monospace;
+    padding: 5px;
+    overflow: hidden;
+    margin-bottom: -19px;
+}
+
+.translation-editor:focus {
+    outline: none;
+}
+
+.translation-editor:focus + .translation-editor-outline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid #0075ad;
+    pointer-events: none;
+}

@@ -1,0 +1,37 @@
+.dialog {
+    min-width: 600px;
+    z-index: 10;
+    overflow: hidden;
+    line-height: 19px;
+    transition: top .2s linear;
+    box-shadow: 0 -2px 8px #000000;
+    border: none;
+    background: #2D2D30;
+    color: white;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.dialog__title,
+.dialog__buttons {
+    text-align: center;
+}
+
+.dialog__title {
+    margin: 0 0 10px 0;
+}
+
+.dialog__buttons {
+    margin-top: 10px;
+}
+
+.dialog__button {
+    border: 1px solid rgb(41, 41, 41);
+    margin: 0 2px;
+    padding: 2px 20px;
+}
+
+.dialog__button:focus {
+    border: 1px solid #0075ad;
+    outline: none;
+}

@@ -1,0 +1,14 @@
+.file-dialog__input {
+    width: 100%;
+    background: #3C3C3C;
+    color: #CCCCCC;
+    border: none;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+}
+
+.file-dialog__input:focus {
+    outline: none;
+    border: 1px solid #0075ad;
+}
