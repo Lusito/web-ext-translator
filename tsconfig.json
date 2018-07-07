@@ -20,7 +20,7 @@
   "exclude": [
     "node_modules",
     "docs",
-    "command",
+    "wet-cli",
     "scripts",
     "acceptance-tests",
     "webpack",
