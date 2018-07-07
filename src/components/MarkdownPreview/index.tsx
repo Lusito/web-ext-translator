@@ -21,9 +21,7 @@ export function renderMarkdown(markdown: string) {
     const div = document.createElement("div");
     div.innerHTML = md.render(markdown);
     const links = div.querySelectorAll("a");
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < links.length; i++)
-        links[i].target = "_blank";
+    links.forEach((link) => link.target = "_blank");
     return div.innerHTML;
 }
 

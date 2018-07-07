@@ -31,9 +31,7 @@ function ExportDialog({ closeDialog, extension, index }: ExportDialogProps & Exp
         if (ref) {
             const exportedLanguages: WetLanguage[] = [];
             const inputs = ref.querySelectorAll("input");
-            // tslint:disable-next-line:prefer-for-of
-            for (let i = 0; i < inputs.length; i++) {
-                const input = inputs[i];
+            for (const input of inputs) {
                 const language = input.checked && extension.languages[input.value];
                 if (language)
                     exportedLanguages.push(language);
