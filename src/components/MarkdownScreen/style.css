@@ -1,4 +1,4 @@
-.WelcomeScreen {
+.MarkdownScreen {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -6,7 +6,7 @@
     flex-grow: 1;
 }
 
-.WelcomeScreen__center {
+.MarkdownScreen__center {
     display: flex;
     flex-direction: column;
     justify-content: center;

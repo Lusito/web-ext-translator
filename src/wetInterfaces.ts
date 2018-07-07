@@ -53,6 +53,7 @@ export interface WetAppBridge {
     saveMessagesList(list: MessagesFile[]): string | null;
     setDirty(dirty: boolean): void;
     openDirectory(): boolean;
+    openBrowser(url: string): void;
 }
 
 declare global {

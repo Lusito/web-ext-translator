@@ -8,27 +8,17 @@ import * as React from "react";
 import "./style.css";
 import { connect } from "react-redux";
 import { State } from "../../shared";
-import * as MarkdownIt from "markdown-it";
+import Markdown from "../Markdown";
 
-const md = new MarkdownIt();
-
-interface MarkdownPreviewProps {
+interface MarkdownPreviewStateProps {
     previewVisible: boolean;
     markdown: string;
 }
 
-export function renderMarkdown(markdown: string) {
-    const div = document.createElement("div");
-    div.innerHTML = md.render(markdown);
-    const links = div.querySelectorAll("a");
-    links.forEach((link) => link.target = "_blank");
-    return div.innerHTML;
-}
-
-function MarkdownPreview({ previewVisible, markdown }: MarkdownPreviewProps) {
+function MarkdownPreview({ previewVisible, markdown }: MarkdownPreviewStateProps) {
     return <div className={previewVisible ? "markdown-preview is-visible" : "markdown-preview"}>
         <h2 className="markdown-preview__title">Markdown Preview</h2>
-        <div className="markdown-preview__content" dangerouslySetInnerHTML={{ __html: (previewVisible ? renderMarkdown(markdown) : "") }}></div>
+        <Markdown className="markdown-preview__content" markdown={previewVisible ? markdown : "" } />
     </div>;
 }
 
@@ -39,4 +29,4 @@ function mapStateToProps({ previewVisible, markdown }: State) {
     };
 }
 
-export default connect<MarkdownPreviewProps>(mapStateToProps)(MarkdownPreview);
+export default connect<MarkdownPreviewStateProps>(mapStateToProps)(MarkdownPreview);

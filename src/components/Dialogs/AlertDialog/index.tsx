@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { WetAction } from "../../../actions";
 import { getNewDialogIndex } from "../../Dialogs";
-import { renderMarkdown } from "../../MarkdownPreview";
+import Markdown from "../../Markdown";
 
 interface AlertDialogDispatchProps {
     closeDialog?: (key: string) => void;
@@ -33,7 +33,7 @@ function AlertDialog({ title, message, onClose, closeDialog, index }: AlertDialo
     }
     const buttons = [{ label: "OK", focus: true, onClick: close }];
     return <Dialog className="alert-dialog" title={title || ""} buttons={buttons}>
-        <div dangerouslySetInnerHTML={{ __html: (message ? renderMarkdown(message) : "") }}></div>
+        <Markdown markdown={message || ""} />
     </Dialog>;
 }
 

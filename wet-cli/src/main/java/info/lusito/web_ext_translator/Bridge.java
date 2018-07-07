@@ -3,7 +3,6 @@
  * @author Santo Pfingsten
  * @see https://github.com/Lusito/web-ext-translator
  */
-
 package info.lusito.web_ext_translator;
 
 import java.io.File;
@@ -14,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import javafx.application.HostServices;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import netscape.javascript.JSObject;
@@ -22,11 +22,13 @@ public class Bridge {
 
     private static final Charset UTF8 = Charset.forName("utf-8");
     private final Stage primaryStage;
+    private final HostServices hostServices;
     private boolean dirty = false;
     private Path extDir = Paths.get(System.getProperty("user.dir"));
 
-    public Bridge(Stage primaryStage) {
+    public Bridge(Stage primaryStage, HostServices hostServices) {
         this.primaryStage = primaryStage;
+        this.hostServices = hostServices;
     }
 
     public MessagesListResult loadMessagesList() {
@@ -105,5 +107,9 @@ public class Bridge {
             return true;
         }
         return false;
+    }
+
+    public void openBrowser(String url) {
+        hostServices.showDocument(url);
     }
 }

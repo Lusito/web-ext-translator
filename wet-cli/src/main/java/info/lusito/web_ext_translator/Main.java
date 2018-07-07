@@ -35,7 +35,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        bridge = new Bridge(primaryStage);
+        bridge = new Bridge(primaryStage, getHostServices());
         primaryStage.getIcons().addAll(
                 new Image(this.getClass().getResource("/app_icons/icon16.png").toString()),
                 new Image(this.getClass().getResource("/app_icons/icon24.png").toString()),

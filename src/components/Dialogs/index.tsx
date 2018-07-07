@@ -9,11 +9,11 @@ import "./style.css";
 import { connect } from "react-redux";
 import { State } from "../../shared";
 
-interface DialogsProps {
+interface DialogsStateProps {
     dialogs: JSX.Element[];
 }
 
-function Dialogs({ dialogs }: DialogsProps) {
+function Dialogs({ dialogs }: DialogsStateProps) {
     if (dialogs.length === 0)
         return null;
     return <div className="dialog-overlay">
@@ -22,12 +22,10 @@ function Dialogs({ dialogs }: DialogsProps) {
 }
 
 function mapStateToProps({ dialogs }: State) {
-    return {
-        dialogs
-    };
+    return { dialogs };
 }
 
-export default connect<DialogsProps>(mapStateToProps)(Dialogs);
+export default connect<DialogsStateProps>(mapStateToProps)(Dialogs);
 
 let nextDialogIndex = 1;
 export function getNewDialogIndex() {

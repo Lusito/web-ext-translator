@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { WetAction } from "../../../actions";
 import { getNewDialogIndex } from "../../Dialogs";
-import { renderMarkdown } from "../../MarkdownPreview";
+import Markdown from "../../Markdown";
 
 interface PromptDialogDispatchProps {
     closeDialog?: (key: string) => void;
@@ -91,7 +91,7 @@ function PromptDialog({ title, text, initialValue, placeholder, validate, onAcce
 
     const buttons = [{ label: "OK", focus: false, onClick: accept }, { label: "Cancel", focus: false, onClick: cancel }];
     return <Dialog className="prompt-dialog" title={title || ""} buttons={buttons}>
-        { text ? <div className="prompt-dialog__text" dangerouslySetInnerHTML={{ __html: renderMarkdown(text) }}></div> : "" }
+        { text ? <Markdown className="prompt-dialog__text" markdown={text} /> : "" }
         <input ref={onInputRef} onChange={onChange} onKeyDown={onKeyDown} className="prompt-dialog__input" placeholder={placeholder} />
         <div ref={onHintRef} className="prompt-dialog__hint"></div>
     </Dialog>;
