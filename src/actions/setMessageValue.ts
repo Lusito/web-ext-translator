@@ -1,3 +1,9 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/web-ext-translator
+ */
+
 import { State } from "../shared";
 import { WetMessage } from "../wetInterfaces";
 import { x64 as murmurhash3jsx64 } from "murmurhash3js";

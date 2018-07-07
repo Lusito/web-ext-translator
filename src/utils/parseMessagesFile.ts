@@ -3,6 +3,7 @@
  * @author Santo Pfingsten
  * @see https://github.com/Lusito/web-ext-translator
  */
+
 import { WetMessage, WetPlaceholder, WetLanguage } from "../wetInterfaces";
 
 const whiteSpace = /\s/;

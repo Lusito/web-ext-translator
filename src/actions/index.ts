@@ -1,3 +1,9 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/web-ext-translator
+ */
+
 import { WetActionAddLanguage, handleAddLanguage } from "./addLanguage";
 import { WetActionSelectLanguage, handleSelectLanguage } from "./selectLanguage";
 import { WetActionRemoveLanguage, handleRemoveLanguage } from "./removeLanguage";

@@ -1,3 +1,9 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/web-ext-translator
+ */
+
 import { WetLanguage, WetAppBridge } from "./wetInterfaces";
 
 export interface LoadedExtension {

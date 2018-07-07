@@ -1,3 +1,9 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/web-ext-translator
+ */
+
 import { normalizeLanguages } from "./normalizeLanguages";
 import store from "../store";
 import { parseMessagesFile } from "./parseMessagesFile";

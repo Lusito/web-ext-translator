@@ -1,3 +1,9 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/web-ext-translator
+ */
+
 import * as React from "react";
 import { WetMessage, WetLanguage } from "../../../wetInterfaces";
 import TranslationEditor from "../TranslationEditor/index";

@@ -1,3 +1,9 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/web-ext-translator
+ */
+
 import { WetLanguage } from "../wetInterfaces";
 import { localeCodeToEnglish } from "../lib/localeCodeToEnglish";
 import { x64 as murmurhash3jsx64 } from "murmurhash3js";

@@ -1,3 +1,9 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/web-ext-translator
+ */
+
 export class CodeWriter {
     private readonly lines: string[] = [];
     private lastIsEmpty = true;

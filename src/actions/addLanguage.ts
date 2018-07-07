@@ -1,3 +1,9 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/web-ext-translator
+ */
+
 import { State } from "../shared";
 import { localeCodeToEnglish } from "../lib/localeCodeToEnglish";
 import { WetLanguage } from "../wetInterfaces";

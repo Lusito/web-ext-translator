@@ -1,3 +1,8 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/web-ext-translator
+ */
 
 export interface WetMessage {
     group: boolean;

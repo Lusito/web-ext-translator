@@ -1,3 +1,9 @@
+/**
+ * License: zlib/libpng
+ * @author Santo Pfingsten
+ * @see https://github.com/Lusito/web-ext-translator
+ */
+
 package info.lusito.web_ext_translator;
 
 import com.sun.javafx.webkit.WebConsoleListener;
