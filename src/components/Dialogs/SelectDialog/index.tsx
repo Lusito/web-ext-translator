@@ -7,12 +7,12 @@
 import * as React from "react";
 import "./style.css";
 import Dialog from "../Dialog";
-import { State } from "../../../shared";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import { WetAction } from "../../../actions";
 import { getNewDialogIndex } from "../../Dialogs";
 
-interface SelectDialogStateProps {
+interface SelectDialogDispatchProps {
     closeDialog?: (key: string) => void;
 }
 
@@ -30,7 +30,9 @@ interface SelectDialogProps {
     onCancel?: () => void;
 }
 
-function SelectDialog({ title, options, initialValue, onAccept, onCancel, closeDialog, index }: SelectDialogProps & SelectDialogStateProps) {
+type SelectDialogMergedProps = SelectDialogProps & SelectDialogDispatchProps;
+
+function SelectDialog({ title, options, initialValue, onAccept, onCancel, closeDialog, index }: SelectDialogMergedProps) {
     let selectRef: HTMLSelectElement | null = null;
 
     function accept() {
@@ -60,17 +62,13 @@ function SelectDialog({ title, options, initialValue, onAccept, onCancel, closeD
     </Dialog>;
 }
 
-function mapStateToProps({ }: State) {
-    return {};
-}
-
 function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
     return {
         closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key })
     };
 }
 
-const ConnectedSelectDialog = connect<SelectDialogStateProps>(mapStateToProps, mapDispatchToProps)(SelectDialog);
+const ConnectedSelectDialog = connect<{}, SelectDialogDispatchProps, SelectDialogProps>(null, mapDispatchToProps)(SelectDialog);
 export default ConnectedSelectDialog;
 
 export function createSelectDialog(title: string, options: SelectOption[], initialValue: string, onAccept: (value: string) => void, onCancel?: () => void) {

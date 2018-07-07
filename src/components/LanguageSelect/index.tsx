@@ -7,7 +7,8 @@
 import * as React from "react";
 import "./style.css";
 import { WetAction } from "../../actions";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import { State, LoadedExtension } from "../../shared";
 import { localeCodeToEnglish } from "../../lib/localeCodeToEnglish";
 import { createPromptDialog } from "../Dialogs/PromptDialog";
@@ -90,10 +91,6 @@ class LanguageSelect extends React.Component<LanguageSelectMergedProps> {
     }
 }
 
-function mapStateToProps({}: State) {
-    return {};
-}
-
 function mapDispatchToProps(dispatch: Dispatch<WetAction>): LanguageSelectDispatchProps {
     return {
         addLanguage: (extension: LoadedExtension, first: boolean) => {
@@ -133,4 +130,4 @@ function mergeProps(stateProps: {}, dispatchProps: LanguageSelectDispatchProps, 
         selectLanguage: dispatchProps.selectLanguage
     };
 }
-export default connect<{}, LanguageSelectDispatchProps, LanguageSelectProps, LanguageSelectMergedProps, State>(mapStateToProps, mapDispatchToProps, mergeProps)(LanguageSelect);
+export default connect<{}, LanguageSelectDispatchProps, LanguageSelectProps, LanguageSelectMergedProps, State>(null, mapDispatchToProps, mergeProps)(LanguageSelect);

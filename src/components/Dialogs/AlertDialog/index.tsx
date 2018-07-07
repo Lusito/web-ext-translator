@@ -7,13 +7,13 @@
 import * as React from "react";
 import "./style.css";
 import Dialog from "../Dialog";
-import { State } from "../../../shared";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import { WetAction } from "../../../actions";
 import { getNewDialogIndex } from "../../Dialogs";
 import { renderMarkdown } from "../../MarkdownPreview";
 
-interface AlertDialogStateProps {
+interface AlertDialogDispatchProps {
     closeDialog?: (key: string) => void;
 }
 
@@ -24,7 +24,9 @@ interface AlertDialogProps {
     onClose?: () => void;
 }
 
-function AlertDialog({ title, message, onClose, closeDialog, index }: AlertDialogProps & AlertDialogStateProps) {
+type AlertDialogMergedProps =  AlertDialogProps & AlertDialogDispatchProps;
+
+function AlertDialog({ title, message, onClose, closeDialog, index }: AlertDialogMergedProps) {
     function close() {
         closeDialog && closeDialog(index);
         onClose && onClose();
@@ -35,17 +37,13 @@ function AlertDialog({ title, message, onClose, closeDialog, index }: AlertDialo
     </Dialog>;
 }
 
-function mapStateToProps({ }: State) {
-    return {};
-}
-
 function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
     return {
         closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key })
     };
 }
 
-const ConnectedAlertDialog = connect<AlertDialogStateProps>(mapStateToProps, mapDispatchToProps)(AlertDialog);
+const ConnectedAlertDialog = connect<{}, AlertDialogDispatchProps, AlertDialogProps>(null, mapDispatchToProps)(AlertDialog);
 export default ConnectedAlertDialog;
 
 export function createAlertDialog(title: string, message: string, onClose?: () => void) {

@@ -6,8 +6,7 @@
 
 import * as React from "react";
 import "./style.css";
-import { WetAction } from "../../actions";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import { State } from "../../shared";
 
 interface DialogsProps {
@@ -28,10 +27,7 @@ function mapStateToProps({ dialogs }: State) {
     };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
-    return {};
-}
-export default connect<DialogsProps>(mapStateToProps, mapDispatchToProps)(Dialogs);
+export default connect<DialogsProps>(mapStateToProps)(Dialogs);
 
 let nextDialogIndex = 1;
 export function getNewDialogIndex() {

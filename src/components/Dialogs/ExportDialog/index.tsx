@@ -7,14 +7,15 @@
 import * as React from "react";
 import "./style.css";
 import Dialog from "../Dialog";
-import { State, LoadedExtension } from "../../../shared";
-import { Dispatch, connect } from "react-redux";
+import { LoadedExtension } from "../../../shared";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import { WetAction } from "../../../actions";
 import { getNewDialogIndex } from "../../Dialogs";
 import { WetLanguage } from "../../../wetInterfaces";
 import { exportToZip } from "../../../utils/exportToZip";
 
-interface ExportDialogStateProps {
+interface ExportDialogDispatchProps {
     closeDialog?: (key: string) => void;
 }
 
@@ -23,7 +24,9 @@ interface ExportDialogProps {
     extension: LoadedExtension;
 }
 
-function ExportDialog({ closeDialog, extension, index }: ExportDialogProps & ExportDialogStateProps) {
+type ExportDialogMergedProps = ExportDialogProps & ExportDialogDispatchProps;
+
+function ExportDialog({ closeDialog, extension, index }: ExportDialogMergedProps) {
     let ref: HTMLDivElement | null = null;
 
     function accept() {
@@ -62,17 +65,13 @@ function ExportDialog({ closeDialog, extension, index }: ExportDialogProps & Exp
     </Dialog>;
 }
 
-function mapStateToProps({ }: State) {
-    return {};
-}
-
 function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
     return {
         closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key })
     };
 }
 
-const ConnectedExportDialog = connect<ExportDialogStateProps>(mapStateToProps, mapDispatchToProps)(ExportDialog);
+const ConnectedExportDialog = connect<{}, ExportDialogDispatchProps, ExportDialogProps>(null, mapDispatchToProps)(ExportDialog);
 export default ConnectedExportDialog;
 
 export function createExportDialog(extension: LoadedExtension) {

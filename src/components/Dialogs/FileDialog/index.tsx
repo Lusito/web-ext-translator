@@ -7,12 +7,12 @@
 import * as React from "react";
 import "./style.css";
 import Dialog from "../Dialog";
-import { State } from "../../../shared";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import { WetAction } from "../../../actions";
 import { getNewDialogIndex } from "../../Dialogs";
 
-interface FileDialogStateProps {
+interface FileDialogDispatchProps {
     closeDialog?: (key: string) => void;
 }
 
@@ -23,7 +23,9 @@ interface FileDialogProps {
     onCancel?: () => void;
 }
 
-function FileDialog({ title, onAccept, onCancel, closeDialog, index }: FileDialogProps & FileDialogStateProps) {
+type FileDialogMergedProps = FileDialogProps & FileDialogDispatchProps;
+
+function FileDialog({ title, onAccept, onCancel, closeDialog, index }: FileDialogMergedProps) {
     let inputRef: HTMLInputElement | null = null;
 
     function accept() {
@@ -51,17 +53,13 @@ function FileDialog({ title, onAccept, onCancel, closeDialog, index }: FileDialo
     </Dialog>;
 }
 
-function mapStateToProps({ }: State) {
-    return {};
-}
-
 function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
     return {
         closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key })
     };
 }
 
-const ConnectedFileDialog = connect<FileDialogStateProps>(mapStateToProps, mapDispatchToProps)(FileDialog);
+const ConnectedFileDialog = connect<{}, FileDialogDispatchProps, FileDialogProps>(null, mapDispatchToProps)(FileDialog);
 export default ConnectedFileDialog;
 
 export function createFileDialog(title: string, onAccept: (value: FileList) => void, onCancel?: () => void) {

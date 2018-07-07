@@ -7,7 +7,8 @@
 import * as React from "react";
 import "./style.css";
 import { WetAction } from "../../../actions";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import { State } from "../../../shared";
 import { adjustHeightsFor } from "../../../utils/adjustHeights";
 import { WetPlaceholder } from "../../../wetInterfaces";
@@ -84,10 +85,6 @@ class TranslationEditor extends React.Component<TranslationEditorMergedProps> {
     }
 }
 
-function mapStateToProps({ }: State): {} {
-    return {};
-}
-
 function mapDispatchToProps(dispatch: Dispatch<WetAction>): TranslationEditorDispatchProps {
     return {
         setMarkdown: (markdown: string) => dispatch({ type: "SET_MARKDOWN", payload: markdown }),
@@ -114,4 +111,4 @@ function mergeProps(stateProps: {}, dispatchProps: TranslationEditorDispatchProp
         setMessageValue: dispatchProps.setMessageValue
     };
 }
-export default connect<{}, TranslationEditorDispatchProps, TranslationEditorProps, TranslationEditorMergedProps, State>(mapStateToProps, mapDispatchToProps, mergeProps)(TranslationEditor);
+export default connect<{}, TranslationEditorDispatchProps, TranslationEditorProps, TranslationEditorMergedProps, State>(null, mapDispatchToProps, mergeProps)(TranslationEditor);

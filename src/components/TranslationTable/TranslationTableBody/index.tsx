@@ -6,20 +6,14 @@
 
 import * as React from "react";
 import "./style.css";
-import { State, LoadedExtension } from "../../../shared";
-import { Dispatch, connect } from "react-redux";
-import { WetAction } from "../../../actions";
+import { LoadedExtension } from "../../../shared";
 import { TranslationTableRow } from "../TranslationTableRow";
 
 interface TranslationTableBodyProps {
     extension: LoadedExtension;
 }
 
-type TranslationTableBodyDispatchProps = {};
-
-type TranslationTableBodyMergedProps = TranslationTableBodyProps & TranslationTableBodyDispatchProps;
-
-function TranslationTableBody({ extension }: TranslationTableBodyMergedProps) {
+export default function TranslationTableBody({ extension }: TranslationTableBodyProps) {
     const firstLanguage = extension.firstLocale ? extension.languages[extension.firstLocale] : null;
     const secondLanguage = extension.secondLocale ? extension.languages[extension.secondLocale] : null;
     const rows = extension.mainLanguage.messages.map((message) => {
@@ -36,19 +30,3 @@ function TranslationTableBody({ extension }: TranslationTableBodyMergedProps) {
         </table>
     </div>;
 }
-
-function mapStateToProps({ }: State) {
-    return {};
-}
-
-function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
-    return {};
-}
-
-function mergeProps(stateProps: {}, dispatchProps: TranslationTableBodyDispatchProps, ownProps: TranslationTableBodyProps): TranslationTableBodyMergedProps {
-    return {
-        ...ownProps,
-        ...dispatchProps
-    };
-}
-export default connect<{}, TranslationTableBodyDispatchProps, TranslationTableBodyProps, TranslationTableBodyMergedProps, State>(mapStateToProps, mapDispatchToProps, mergeProps)(TranslationTableBody);

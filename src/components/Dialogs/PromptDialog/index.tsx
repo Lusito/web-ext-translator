@@ -7,13 +7,13 @@
 import * as React from "react";
 import "./style.css";
 import Dialog from "../Dialog";
-import { State } from "../../../shared";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import { WetAction } from "../../../actions";
 import { getNewDialogIndex } from "../../Dialogs";
 import { renderMarkdown } from "../../MarkdownPreview";
 
-interface PromptDialogStateProps {
+interface PromptDialogDispatchProps {
     closeDialog?: (key: string) => void;
 }
 
@@ -33,7 +33,9 @@ interface PromptDialogProps {
     onCancel?: () => void;
 }
 
-function PromptDialog({ title, text, initialValue, placeholder, validate, onAccept, onCancel, closeDialog, index }: PromptDialogProps & PromptDialogStateProps) {
+type PromptDialogMergedProps = PromptDialogProps & PromptDialogDispatchProps;
+
+function PromptDialog({ title, text, initialValue, placeholder, validate, onAccept, onCancel, closeDialog, index }: PromptDialogMergedProps) {
     let inputRef: HTMLInputElement | null = null;
     let hintRef: HTMLDivElement | null = null;
     let value = initialValue;
@@ -95,17 +97,13 @@ function PromptDialog({ title, text, initialValue, placeholder, validate, onAcce
     </Dialog>;
 }
 
-function mapStateToProps({ }: State) {
-    return {};
-}
-
 function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
     return {
         closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key })
     };
 }
 
-const ConnectedPromptDialog = connect<PromptDialogStateProps>(mapStateToProps, mapDispatchToProps)(PromptDialog);
+const ConnectedPromptDialog = connect<{}, PromptDialogDispatchProps, PromptDialogProps>(null, mapDispatchToProps)(PromptDialog);
 export default ConnectedPromptDialog;
 
 export function createPromptDialog(title: string, text: string, initialValue: string, placeholder: string, onAccept: (value: string) => void, validate?: (value: string) => PromptValidationResult, onCancel?: () => void) {
