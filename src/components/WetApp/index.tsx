@@ -17,7 +17,7 @@ import { MarkdownScreen } from "../MarkdownScreen";
 const welcomeScreenMarkdown = `\
 ## Welcome!
 This tool allows you to translate web-extensions. To get started, try:
-- Load a Web-Extension with a Github URL, for example: [https://github.com/lusito/forget-me-not/tree/feature/wet](?gh=https://github.com/lusito/forget-me-not/tree/feature/wet))
+- Load a Web-Extension with a Github URL, for example: [https://github.com/lusito/forget-me-not/tree/feature/wet](?gh=https://github.com/lusito/forget-me-not/tree/feature/wet)
 - Upload a Web-Extension ZIP file.
 - Then you can edit translations, add new languages and export them to a zip file.
 - All without registration!
