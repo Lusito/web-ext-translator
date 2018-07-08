@@ -1,7 +1,10 @@
 [![License](https://img.shields.io/badge/License-zlib/libpng-blue.svg)](https://github.com/Lusito/web-ext-translator/blob/master/LICENSE)
 
 An easy to use translation tool for web-extensions with markdown preview.
-It's mostly written in TypeScript, HTML & CSS. It runs inside of a JavaFX WebKit container, which adds the interfaces for reading and writing files.
+It's mostly written in TypeScript, HTML & CSS using React and BEM.
+It is both an online web-app as well as a standalone tool using JavaFX WebKit as a container, which adds the interfaces for reading and writing files.
+
+You can check out the online version here: https://lusito.github.io/web-ext-translator/
 
 [![Screenshot](https://raw.githubusercontent.com/Lusito/web-ext-translator/master/screenshot.png)](https://raw.githubusercontent.com/Lusito/web-ext-translator/master/screenshot.png)
 
@@ -10,6 +13,27 @@ It's mostly written in TypeScript, HTML & CSS. It runs inside of a JavaFX WebKit
 - It is quite painful to manage i18n messages.json files for web-extensions manually.
 - Comparing two languages side-by-side makes it easier to spot missing translations
 - Being able to edit multi-line translations with a markdown preview was one of the major goals.
+  - The markdown preview even replaces placeholders with their respective example.
+- It allows users of the online editor to easily load translations from a ZIP file or a Github repository (even branches).
+- After changes have been done, translations can be exported to a ZIP file.
+
+### Advanced features for your web-extension
+
+- WET adds hashes to all messages.json files, except the default locale in order to show which translations have been changed (not yet implemented).
+- WET helps reduce git changes and thus merge conflicts:
+  - It automatically formats your messages.json into a homogeneous format.
+  - The order of the translations in the messages.json is kept
+- You can define groups inside of your messages.json to keep translations organized.
+
+### Working with groups
+
+In your messages.json, you can add a group entry like this:
+
+```"__WET_GROUP__": { "message": "Branding" },```
+
+This will insert a group header in the translations editor. You can place multiple groups in your messages.json. It is valid JSON to use the same key multiple times in an object, so adding `__WET_GROUP__` as key is no problem. If you, however, want to use unique keys, using `__WET_GROUP__` as a prefix works as well.
+
+Check out [this example](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/feature/wet) if you want to see groups in action.
 
 ### Installation via NPM
 
