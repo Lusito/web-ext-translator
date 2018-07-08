@@ -49,6 +49,6 @@ const ConnectedConfirmDialog = connect<{}, ConfirmDialogDispatchProps, ConfirmDi
 export default ConnectedConfirmDialog;
 
 export function createConfirmDialog(title: string, message: string, onAccept: () => void, onCancel?: () => void) {
-  const index = getNewDialogIndex().toString();
-  return <ConnectedConfirmDialog key={index} index={index} title={title} message={message} onAccept={onAccept} onCancel={onCancel} />;
+    const index = getNewDialogIndex().toString();
+    return <ConnectedConfirmDialog key={index} index={index} title={title} message={message} onAccept={onAccept} onCancel={onCancel} />;
 }

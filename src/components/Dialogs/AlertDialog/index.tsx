@@ -5,7 +5,6 @@
  */
 
 import * as React from "react";
-import "./style.css";
 import Dialog from "../Dialog";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
@@ -24,7 +23,7 @@ interface AlertDialogProps {
     onClose?: () => void;
 }
 
-type AlertDialogMergedProps =  AlertDialogProps & AlertDialogDispatchProps;
+type AlertDialogMergedProps = AlertDialogProps & AlertDialogDispatchProps;
 
 function AlertDialog({ title, message, onClose, closeDialog, index }: AlertDialogMergedProps) {
     function close() {

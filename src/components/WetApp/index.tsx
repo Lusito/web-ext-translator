@@ -35,7 +35,7 @@ function WetApp({ loading, extension }: WetAppProps) {
         {loading && <LoadingScreen label={loading} />}
         {!loading && <main>
             <Toolbar />
-            {extension ? <TranslationTable extension={extension} /> : <MarkdownScreen markdown={welcomeScreenMarkdown}/>}
+            {extension ? <TranslationTable extension={extension} /> : <MarkdownScreen markdown={welcomeScreenMarkdown} />}
         </main>}
         {!loading && <MarkdownPreview />}
         <Dialogs />

@@ -91,7 +91,7 @@ function PromptDialog({ title, text, initialValue, placeholder, validate, onAcce
 
     const buttons = [{ label: "OK", focus: false, onClick: accept }, { label: "Cancel", focus: false, onClick: cancel }];
     return <Dialog className="prompt-dialog" title={title || ""} buttons={buttons}>
-        { text ? <Markdown className="prompt-dialog__text" markdown={text} /> : "" }
+        {text ? <Markdown className="prompt-dialog__text" markdown={text} /> : ""}
         <input ref={onInputRef} onChange={onChange} onKeyDown={onKeyDown} className="prompt-dialog__input" placeholder={placeholder} />
         <div ref={onHintRef} className="prompt-dialog__hint"></div>
     </Dialog>;

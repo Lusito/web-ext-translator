@@ -130,4 +130,5 @@ function mergeProps(stateProps: {}, dispatchProps: LanguageSelectDispatchProps, 
         selectLanguage: dispatchProps.selectLanguage
     };
 }
+
 export default connect<{}, LanguageSelectDispatchProps, LanguageSelectProps, LanguageSelectMergedProps, State>(null, mapDispatchToProps, mergeProps)(LanguageSelect);

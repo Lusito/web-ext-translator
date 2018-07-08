@@ -68,6 +68,7 @@ a {
     margin-left: 0;
     margin-top: -16px;
 }
+
 .tooltip_right[data-tooltip]:after {
     top: 50%;
     left: 150%;
@@ -76,6 +77,7 @@ a {
     border-top: 5px solid transparent;
     margin-left: -10px;
 }
+
 .tooltip_left[data-tooltip]:before {
     width: 200px;
     top: 50%;
@@ -83,6 +85,7 @@ a {
     margin-left: -200px;
     margin-top: -16px;
 }
+
 .tooltip_left[data-tooltip]:after {
     top: 50%;
     left: -50%;

@@ -18,7 +18,7 @@ interface MarkdownPreviewStateProps {
 function MarkdownPreview({ previewVisible, markdown }: MarkdownPreviewStateProps) {
     return <div className={previewVisible ? "markdown-preview is-visible" : "markdown-preview"}>
         <h2 className="markdown-preview__title">Markdown Preview</h2>
-        <Markdown className="markdown-preview__content" markdown={previewVisible ? markdown : "" } />
+        <Markdown className="markdown-preview__content" markdown={previewVisible ? markdown : ""} />
     </div>;
 }
 

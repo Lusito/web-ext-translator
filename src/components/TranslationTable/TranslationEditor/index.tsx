@@ -111,4 +111,5 @@ function mergeProps(stateProps: {}, dispatchProps: TranslationEditorDispatchProp
         setMessageValue: dispatchProps.setMessageValue
     };
 }
+
 export default connect<{}, TranslationEditorDispatchProps, TranslationEditorProps, TranslationEditorMergedProps, State>(null, mapDispatchToProps, mergeProps)(TranslationEditor);

@@ -12,6 +12,7 @@ export interface WetActionLoadPayload {
     languages: WetLanguage[];
     mainLanguage: WetLanguage;
 }
+
 export interface WetActionLoad {
     type: "LOAD";
     payload: WetActionLoadPayload;

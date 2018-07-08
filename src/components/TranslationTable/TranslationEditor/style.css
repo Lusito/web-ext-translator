@@ -16,7 +16,7 @@
     outline: none;
 }
 
-.translation-editor:focus + .translation-editor-outline {
+.translation-editor:focus+.translation-editor-outline {
     position: absolute;
     top: 0;
     left: 0;
