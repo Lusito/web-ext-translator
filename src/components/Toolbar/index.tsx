@@ -35,14 +35,14 @@ export function Toolbar(props: ToolbarProps) {
     const appBridge = props.appBridge;
     const contextElements = appBridge
         ? [
-            <IconButton icon="folder-o" tooltip="Open a directory" onClick={() => loadFromAppBridge(appBridge, true)} className="icon-button--toolbar" />,
-            <IconButton icon="floppy-o" tooltip="Save to Disk" onClick={() => saveToAppBridge(appBridge)} className="icon-button--toolbar" />
+            <IconButton key="open" icon="folder-o" tooltip="Open a directory" onClick={() => loadFromAppBridge(appBridge, true)} className="icon-button--toolbar" />,
+            <IconButton key="save" icon="floppy-o" tooltip="Save to Disk" onClick={() => saveToAppBridge(appBridge)} className="icon-button--toolbar" />
         ]
         : [
-            <IconButton icon="github" tooltip="Load from Github" onClick={props.onShowImportFromGithub} className="icon-button--toolbar" />,
-            <IconButton icon="file-archive-o" tooltip="Import an extension from a ZIP file" onClick={props.onShowConvert} className="icon-button--toolbar" />,
-            <div className="toolbar__separator" />,
-            <IconButton icon="download" tooltip="Export to ZIP" onClick={props.onSave} className="icon-button--toolbar" />
+            <IconButton key="load_github" icon="github" tooltip="Load from Github" onClick={props.onShowImportFromGithub} className="icon-button--toolbar" />,
+            <IconButton key="load_zip" icon="file-archive-o" tooltip="Import an extension from a ZIP file" onClick={props.onShowConvert} className="icon-button--toolbar" />,
+            <div key="separator" className="toolbar__separator" />,
+            <IconButton key="download" icon="download" tooltip="Export to ZIP" onClick={props.onSave} className="icon-button--toolbar" />
         ];
     return <div className="toolbar">
         {contextElements}

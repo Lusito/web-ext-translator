@@ -18,7 +18,8 @@ export default function TranslationTableBody({ extension }: TranslationTableBody
     const secondLanguage = extension.secondLocale ? extension.languages[extension.secondLocale] : null;
     const rows = extension.mainLanguage.messages.map((message) => {
         if (message.group) {
-            return <tr className="translation-table-body__section">
+            const key = message.name.startsWith("__WET_GROUP__") ? message.name + message.message : message.name;
+            return <tr className="translation-table-body__section" key={key}>
                 <th colSpan={3} className="translation-table-body__th">{message.message}</th>
             </tr>;
         }
