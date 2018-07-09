@@ -23,7 +23,7 @@ export default function TranslationTableBody({ extension }: TranslationTableBody
                 <th colSpan={3} className="translation-table-body__th">{message.message}</th>
             </tr>;
         }
-        return <TranslationTableRow key={message.name} message={message} firstLanguage={firstLanguage} secondLanguage={secondLanguage} />;
+        return <TranslationTableRow key={message.name} message={message} firstLanguage={firstLanguage} secondLanguage={secondLanguage} mainLanguage={extension.mainLanguage} />;
     });
     return <div className="translation-table-body">
         <table className="translation-table-body__table">

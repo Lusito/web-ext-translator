@@ -25,3 +25,7 @@
     border: 1px solid #0075ad;
     pointer-events: none;
 }
+
+.translation-editor--is-modified {
+    box-shadow: inset -2px 0px 0px 0px red;
+}

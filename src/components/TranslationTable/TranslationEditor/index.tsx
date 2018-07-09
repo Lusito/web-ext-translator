@@ -21,6 +21,7 @@ interface TranslationEditorDispatchProps {
 }
 
 interface TranslationEditorProps {
+    modified: boolean;
     value: string;
     messageKey: string;
     placeholders?: WetPlaceholder[];
@@ -52,8 +53,11 @@ class TranslationEditor extends React.Component<TranslationEditorMergedProps> {
 
     public render() {
         const disabled = !this.props.messageKey || !this.props.locale;
+        const classes = ["translation-editor"];
+        if (this.props.modified)
+            classes.push("translation-editor--is-modified");
         return <React.Fragment>
-            <textarea ref={this.onInputRef} onChange={this.onChange} onFocus={this.updateMarkdown} disabled={disabled} value={this.props.value} className="translation-editor"></textarea>
+            <textarea ref={this.onInputRef} onChange={this.onChange} onFocus={this.updateMarkdown} disabled={disabled} value={this.props.value} className={classes.join(" ")}></textarea>
             <div className="translation-editor-outline" />
         </React.Fragment>;
     }
@@ -102,6 +106,7 @@ function mergeProps(stateProps: {}, dispatchProps: TranslationEditorDispatchProp
     }
 
     return {
+        modified: ownProps.modified,
         value: ownProps.value,
         messageKey: ownProps.messageKey,
         placeholders: ownProps.placeholders,
