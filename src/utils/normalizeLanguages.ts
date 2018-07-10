@@ -19,9 +19,11 @@ export function normalizeLanguages(languages: WetLanguage[], mainLanguage: WetLa
         const isMainLanguage = language === mainLanguage;
 
         for (const message of language.messages) {
+            if (message.group)
+                continue;
             if (isMainLanguage)
                 message.hash = "";
-            else if (!message.hash && !message.group)
+            else if (!message.hash)
                 message.hash = hashForLanguage(mainLanguage, message.name);
         }
     });

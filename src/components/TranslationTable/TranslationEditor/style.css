@@ -27,5 +27,5 @@
 }
 
 .translation-editor--is-modified {
-    box-shadow: inset -2px 0px 0px 0px red;
+    box-shadow: inset -3px 0px 0px 0px red;
 }
