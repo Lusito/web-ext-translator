@@ -26,9 +26,17 @@
 }
 
 .dialog__button {
+    color: black;
+    background: #dddddd;
     border: 1px solid rgb(41, 41, 41);
     margin: 0 2px;
     padding: 2px 20px;
+}
+
+.dialog__button:hover {
+    background: #4ea2ff;
+    color: white;
+    border-color: #bbb;
 }
 
 .dialog__button:focus {
