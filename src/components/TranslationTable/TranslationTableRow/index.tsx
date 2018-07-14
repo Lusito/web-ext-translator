@@ -6,7 +6,7 @@
 
 import * as React from "react";
 import { WetMessage, WetLanguage } from "../../../wetInterfaces";
-import TranslationEditor from "../TranslationEditor/index";
+import TranslationEditor from "../TranslationEditor";
 import { hashFor } from "../../../utils/getHashFor";
 
 interface TranslationTableRowProps {

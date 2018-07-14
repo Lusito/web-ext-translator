@@ -4,76 +4,88 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import { WetMessage, WetPlaceholder, WetLanguage } from "../wetInterfaces";
+import { WetMessage, WetPlaceholder, WetLanguage, WetMessageType } from "../wetInterfaces";
+import { MessagesTokenizer } from "./MessagesTokenizer";
 
-const whiteSpace = /\s/;
-const allowedEscapeChars: { [s: string]: string } = {
-    "b": "\b",
-    "f": "\f",
-    "r": "\r",
-    "n": "\n",
-    "t": "\t",
-    "u": "\\u", // fixme: needs to be written back correctly.
-    "\"": "\"",
-    "\\": "\\"
-};
-
-function parsePlaceholder(parser: MessagesParser) {
-    const name = parser.readQuotedString();
-    parser.expectChar(":");
-    parser.expectChar("{");
+function parsePlaceholder(tokenizer: MessagesTokenizer) {
+    const name = tokenizer.expectValueToken("string") as string;
+    tokenizer.expectCharToken(":");
+    tokenizer.expectCharToken("{");
     const result: WetPlaceholder = {
         name,
         content: "",
         example: ""
     };
     do {
-        const key = parser.readQuotedString();
-        parser.expectChar(":");
+        const key = tokenizer.expectValueToken("string") as string;
+        tokenizer.expectCharToken(":");
         if (key === "content")
-            result.content = parser.readQuotedString();
+            result.content = tokenizer.expectValueToken("string") as string;
         else if (key === "example")
-            result.example = parser.readQuotedString();
+            result.example = tokenizer.expectValueToken("string") as string;
         else
-            console.warn(`Found unknown key '${key}' at ${parser.getPosition()}, will be ignored`);
-    } while (parser.isChar(",", true));
-    parser.expectChar("}");
+            console.warn(`Found unknown key '${key}' at ${tokenizer.getTokenPosition()}, will be ignored`);
+    } while (tokenizer.testCharToken(","));
+    tokenizer.expectCharToken("}");
     return result;
 }
 
-function parseMessage(parser: MessagesParser) {
-    const name = parser.readQuotedString();
-    parser.expectChar(":");
-    parser.expectChar("{");
-    const result: WetMessage = {
-        group: name.startsWith("__WET_GROUP__"),
-        name,
-        message: ""
-    };
+function skipValue(tokenizer: MessagesTokenizer) {
+    const token = tokenizer.skipComments();
+    if (token.type === "char") {
+        if (token.content === "{") {
+            if (!tokenizer.testCharToken("}")) {
+                do {
+                    tokenizer.expectValueToken("string");
+                    tokenizer.expectCharToken(":");
+                    skipValue(tokenizer);
+                } while (tokenizer.testCharToken(","));
+                tokenizer.expectCharToken("}");
+            }
+        } else if (token.content === "[") {
+            if (!tokenizer.testCharToken("]")) {
+                do {
+                    skipValue(tokenizer);
+                } while (tokenizer.testCharToken(","));
+                tokenizer.expectCharToken("]");
+            }
+        } else {
+            throw new Error(`Unexpected char token '${token.content}' at ${tokenizer.getTokenPosition()}`);
+        }
+    }
+}
+
+function parseMessage(tokenizer: MessagesTokenizer, name: string) {
+    tokenizer.expectCharToken(":");
+    tokenizer.expectCharToken("{");
+    const type = name.startsWith("__WET_GROUP__") ? WetMessageType.GROUP : WetMessageType.MESSAGE;
+    const result: WetMessage = { type, name, message: "" };
+
     do {
-        const key = parser.readQuotedString();
-        parser.expectChar(":");
+        const key = tokenizer.expectValueToken("string");
+        tokenizer.expectCharToken(":");
         if (key === "message")
-            result.message = parser.readQuotedString();
+            result.message = tokenizer.expectValueToken("string") as string;
         else if (key === "description")
-            result.description = parser.readQuotedString();
+            result.description = tokenizer.expectValueToken("string") as string;
         else if (key === "hash")
-            result.hash = parser.readQuotedString();
+            result.hash = tokenizer.expectValueToken("string") as string;
         else if (key === "placeholders") {
-            parser.expectChar("{");
-            if (!parser.isChar("}", true)) {
+            tokenizer.expectCharToken("{");
+            if (!tokenizer.testCharToken("}")) {
                 if (!result.placeholders)
                     result.placeholders = [];
                 do {
-                    result.placeholders.push(parsePlaceholder(parser));
-                } while (parser.isChar(",", true));
-                parser.expectChar("}");
+                    result.placeholders.push(parsePlaceholder(tokenizer));
+                } while (tokenizer.testCharToken(","));
+                tokenizer.expectCharToken("}");
             }
         } else {
-            console.warn(`Found unknown key '${key}' at ${parser.getPosition()}, will be ignored`);
+            console.warn(`Found unknown key '${key}' at ${tokenizer.getTokenPosition()}, will be ignored`);
+            skipValue(tokenizer);
         }
-    } while (parser.isChar(",", true));
-    parser.expectChar("}");
+    } while (!tokenizer.isDone() && tokenizer.testCharToken(","));
+    tokenizer.expectCharToken("}");
     return result;
 }
 
@@ -85,103 +97,27 @@ export function parseMessagesFile(locale: string, fileContent: string) {
         messagesByKey: {}
     };
 
-    const parser = new MessagesParser(locale, fileContent);
-    parser.expectChar("{");
-    if (!parser.isChar("}", true)) {
-        do {
-            const msg = parseMessage(parser);
+    const tokenizer = new MessagesTokenizer(`${locale}/messages.json`, fileContent);
+    tokenizer.expectCharToken("{");
+    while (!tokenizer.isDone()) {
+        const token = tokenizer.next();
+        if (token.type === "comment") {
+            language.messages.push({
+                type: WetMessageType.COMMENT,
+                name: `group_${language.messages.length}`,
+                message: token.content as string
+            });
+        } else if (token.content === "}") {
+            return language;
+        } else if (typeof (token.content) === "string") {
+            const msg = parseMessage(tokenizer, token.content);
             language.messages.push(msg);
-            if (!msg.group)
+            if (msg.type === WetMessageType.MESSAGE)
                 language.messagesByKey[msg.name] = msg;
-        } while (parser.isChar(",", true));
-        parser.expectChar("}");
+            if (!tokenizer.testCharToken(","))
+                break;
+        }
     }
+    tokenizer.expectCharToken("}");
     return language;
-}
-
-class MessagesParser {
-    private readonly locale: string;
-    private lines: string[] = [];
-    private line: number = 0;
-    private lineContent: string = "";
-    private column: number = 0;
-
-    public constructor(locale: string, fileContent: string) {
-        this.locale = locale;
-        this.lines = fileContent.split(/\r\n|\r|\n/);
-        this.lineContent = this.lines[0] || "";
-    }
-
-    public isChar(c: string, swallow?: boolean): boolean {
-        if (!this.skipWhiteSpaces())
-            return false;
-        const result = this.lineContent[this.column] === c;
-        if (result && swallow)
-            this.column++;
-        return result;
-    }
-
-    public getPosition() {
-        return `${this.locale}/messages.json:${this.getLine()}:${this.getColumn()}`;
-    }
-
-    public expectChar(expected: string) {
-        if (!this.skipWhiteSpaces())
-            throw new Error(`Expected '${expected}', found [EOF] at ${this.getPosition()}`);
-        const actual = this.lineContent[this.column];
-        if (actual !== expected)
-            throw new Error(`Expected '${expected}', found '${actual}' at ${this.getPosition()}`);
-        this.column++;
-    }
-
-    public readQuotedString() {
-        this.expectChar("\"");
-        let token = "";
-        while (this.column < this.lineContent.length) {
-            const c = this.lineContent[this.column];
-            // Check for escape characters
-            if (c === "\\") {
-                const c2 = this.lineContent[++this.column];
-                const escaped = allowedEscapeChars[c2] || c2;
-                token += escaped;
-                this.column++;
-                continue;
-            }
-            // done?
-            else if (c === "\"") {
-                this.column++;
-                return token;
-            }
-
-            token += c;
-            this.column++;
-        }
-        throw new Error(`Unexpected end of line at ${this.getPosition()}`);
-    }
-
-    public getLine(): number {
-        return this.line + 1;
-    }
-
-    public getColumn(): number {
-        return this.column;
-    }
-
-    private skipWhiteSpaces() {
-        while (this.line < this.lines.length) {
-            if (this.column >= this.lineContent.length) {
-                this.line++;
-                this.lineContent = (this.lines[this.line] || "").trim();
-                this.column = 0;
-                if (this.line >= this.lines.length)
-                    return false;
-            }
-            while (this.column < this.lineContent.length) {
-                if (!whiteSpace.test(this.lineContent[this.column]))
-                    return true;
-                this.column++;
-            }
-        }
-        return false;
-    }
 }

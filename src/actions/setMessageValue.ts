@@ -5,7 +5,7 @@
  */
 
 import { State } from "../shared";
-import { WetMessage } from "../wetInterfaces";
+import { WetMessage, WetMessageType } from "../wetInterfaces";
 import { hashForLanguage } from "../utils/getHashFor";
 
 export interface WetActionSetMessageValuePayload {
@@ -33,7 +33,7 @@ export function handleSetMessageValue(state: State, payload: WetActionSetMessage
         hash = hashForLanguage(mainLanguage, payload.key);
 
     const messages = [...language.messages];
-    const newMessage: WetMessage = { name: payload.key, message: payload.value, hash, group: false };
+    const newMessage: WetMessage = { name: payload.key, message: payload.value, hash, type: WetMessageType.MESSAGE };
     const messagesByKey = { ...language.messagesByKey, [payload.key]: newMessage };
     messages[messages.findIndex((m) => m.name === payload.key)] = newMessage;
     const newLanguage = { ...language, messagesByKey, messages };

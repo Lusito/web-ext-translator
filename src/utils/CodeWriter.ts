@@ -33,7 +33,6 @@ export class CodeWriter {
             throw new Error("Indentation too low");
         this.indentation = this.indentation.substr(0, this.indentation.length - 4);
         this.lines.push(this.indentation + line);
-        this.emptyLine();
     }
 
     public comment(line: string) {

@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import { WetLanguage } from "../wetInterfaces";
+import { WetLanguage, WetMessageType } from "../wetInterfaces";
 import { localeCodeToEnglish } from "../lib/localeCodeToEnglish";
 import { hashForLanguage } from "./getHashFor";
 
@@ -15,16 +15,16 @@ export function normalizeLanguages(languages: WetLanguage[], mainLanguage: WetLa
     languages.forEach((language) => {
         const l2e = localeCodeToEnglish(language.locale);
         language.label = l2e.found ? l2e.name : language.locale;
-        language.messages = language.messages.filter((m) => m.name !== "__WET_LOCALE__");
+        language.messages = language.messages.filter((m) => m.name !== "__WET_LOCALE__" && m.name !== "__WET_FORMATTER__");
         const isMainLanguage = language === mainLanguage;
 
         for (const message of language.messages) {
-            if (message.group)
-                continue;
-            if (isMainLanguage)
-                message.hash = "";
-            else if (!message.hash)
-                message.hash = hashForLanguage(mainLanguage, message.name);
+            if (message.type === WetMessageType.MESSAGE) {
+                if (isMainLanguage)
+                    message.hash = "";
+                else if (!message.hash)
+                    message.hash = hashForLanguage(mainLanguage, message.name);
+            }
         }
     });
 }

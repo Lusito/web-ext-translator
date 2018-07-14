@@ -19,10 +19,10 @@ You can check out the online version here: https://lusito.github.io/web-ext-tran
 
 ### Advanced features for your web-extension
 
-- WET adds hashes to all messages.json files, except the default locale in order to show which translations have been changed (not yet implemented).
+- WET adds hashes to all messages.json files, except the default locale in order to show which translations have been changed (by a red border on the right side of the editor).
 - WET helps reduce git changes and thus merge conflicts:
-  - It automatically formats your messages.json into a homogeneous format.
-  - The order of the translations in the messages.json is kept
+  - It automatically formats your messages.json into a homogeneous format (see below for formatting options).
+  - The order of the translations in the messages.json is kept.
 - You can define groups inside of your messages.json to keep translations organized.
 
 ### Working with groups
@@ -34,6 +34,40 @@ In your messages.json, you can add a group entry like this:
 This will insert a group header in the translations editor. You can place multiple groups in your messages.json. It is valid JSON to use the same key multiple times in an object, so adding `__WET_GROUP__` as key is no problem. If you, however, want to use unique keys, using `__WET_GROUP__` as a prefix works as well.
 
 Check out [this example](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/feature/wet) if you want to see groups in action.
+
+### Working with comments
+
+JSON files in web-extensions conform to the JSON standard with one exception: [single line comments are allowed](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json)!
+
+WET uses this fact, so that you can write comments instead, so the above example simply becomes:
+
+```// Branding```
+
+- Any comment you write before a message will be shown the same way as a group in the editor and later written back as comment.
+- Comments within the message objects themselves will be ignored and not written back during export!
+
+### Customizing the formatter
+
+WET enforces a json format style upon you, since it would be difficult to keep the original formatting. The default formatter writes messages on multiple lines with indentation:
+```json
+"extensionName": {
+    "message": "My extension name",
+    "description": "Extension name as shown on the add-ons listing page.",
+    "hash": "8138b17e7f1daceffca0d19015bb86e7"
+},
+```
+However, if you prefer to have each message on a single line like this:
+```json
+"extensionName": { "message": "My extension name", "description": "Extension name as shown on the add-ons listing page.", "hash": "8138b17e7f1daceffca0d19015bb86e7" },
+```
+
+You can do so by adding this message to your `default` locales `messages.json` file:
+
+```json
+"__WET_FORMATTER__": { "message": "single_line" },
+```
+
+This setting will be re-exported only on the default locale.
 
 ### Installation via NPM
 

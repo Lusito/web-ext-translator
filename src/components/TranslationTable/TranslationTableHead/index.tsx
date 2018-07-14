@@ -8,13 +8,14 @@ import * as React from "react";
 import "./style.css";
 import LanguageSelect from "../../LanguageSelect";
 import { LoadedExtension } from "../../../shared";
+import { WetMessageType } from "../../../wetInterfaces";
 
 interface TranslationTableHeadProps {
     extension: LoadedExtension;
 }
 
 export default function TranslationTableHead({ extension }: TranslationTableHeadProps) {
-    const longestKey = extension.mainLanguage.messages.reduce((longest, msg) => (!msg.group && longest.length < msg.name.length) ? msg.name : longest, "");
+    const longestKey = extension.mainLanguage.messages.reduce((longest, msg) => (msg.type === WetMessageType.MESSAGE && longest.length < msg.name.length) ? msg.name : longest, "");
     return <div className="translation-table-head">
         <table className="translation-table-head__table">
             <thead>

@@ -4,8 +4,14 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
+export enum WetMessageType {
+    GROUP,
+    COMMENT,
+    MESSAGE
+}
+
 export interface WetMessage {
-    group: boolean;
+    type: WetMessageType;
     name: string;
     message: string;
     description?: string;
