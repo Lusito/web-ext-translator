@@ -13,10 +13,10 @@ import store from "./store";
 import "./style.css";
 import { adjustAllHeights } from "./utils/adjustHeights";
 import { getParameter } from "./utils/getParameter";
-import { importFromGithub } from "./utils/importFromGithub";
 import WetApp from "./components/WetApp";
 import packageJSON from "../package.json";
 import { WET_PROTOCOL_VERSION } from "./wetInterfaces";
+import { github } from "./vcs";
 
 ReactDOM.render(
     <Provider store={store}>
@@ -30,7 +30,7 @@ adjustAllHeights();
 
 (() => {
     const gh = getParameter("gh");
-    gh && importFromGithub(gh);
+    gh && github.import(gh);
 })();
 
 window.wet = {

@@ -17,10 +17,10 @@ import { createFileDialog } from "../Dialogs/FileDialog";
 import { importFromZip } from "../../utils/importFromZip";
 import { createAlertDialog } from "../Dialogs/AlertDialog";
 import { createPromptDialog } from "../Dialogs/PromptDialog";
-import { importFromGithub } from "../../utils/importFromGithub";
 import store from "../../store";
 import { WetAppBridge } from "../../wetInterfaces";
 import { loadFromAppBridge, saveToAppBridge } from "../../actions/setAppBridge";
+import { github } from "../../vcs";
 
 export interface ToolbarProps {
     onShowConvert?: () => void;
@@ -66,7 +66,7 @@ function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
     return {
         onShowAbout: () => dispatch({ type: "SHOW_DIALOG", payload: createAlertDialog("Web-Extension Translator", `- Version: ${packageJSON.version}\n- Author: Santo Pfingsten\n- Support on Github: [web-ext-translator](https://github.com/Lusito/web-ext-translator/issues)`) }),
         onShowConvert: () => dispatch({ type: "SHOW_DIALOG", payload: createFileDialog("Select your web-extension zip file", (fileList: FileList) => importFromZip(fileList[0])) }),
-        onShowImportFromGithub: () => dispatch({ type: "SHOW_DIALOG", payload: createPromptDialog("Import from Github", importGithubMarkdown, "", "e.g. https://github.com/Lusito/forget-me-not", (value: string) => importFromGithub(value)) }),
+        onShowImportFromGithub: () => dispatch({ type: "SHOW_DIALOG", payload: createPromptDialog("Import from Github", importGithubMarkdown, "", "e.g. https://github.com/Lusito/forget-me-not", (value: string) => github.import(value)) }),
         onSave: () => {
             const extension = store.getState().extension;
             extension && dispatch({ type: "SHOW_DIALOG", payload: createExportDialog(extension) });
