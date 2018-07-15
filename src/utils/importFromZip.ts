@@ -22,10 +22,8 @@ export function importFromZip(zipFile: File) {
                     if (zipEntry.dir) {
                         const localeDir = zip.folder(zipEntry.name);
                         const msgFile = localeDir.file("messages.json");
-                        if (msgFile) {
-                            console.log(msgFile.name);
+                        if (msgFile)
                             promises.push(msgFile.async("text").then((s) => parseMessagesFile(relativePath.substr(0, relativePath.length - 1), s)));
-                        }
                     }
                 });
                 Promise.all(promises).then((languages) => {
