@@ -6,7 +6,6 @@
 
 package info.lusito.web_ext_translator;
 
-import com.sun.javafx.webkit.WebConsoleListener;
 import java.net.URL;
 import java.util.Optional;
 import javafx.application.Application;
@@ -42,9 +41,6 @@ public class Main extends Application {
                 new Image(this.getClass().getResource("/app_icons/icon32.png").toString()),
                 new Image(this.getClass().getResource("/app_icons/icon48.png").toString()),
                 new Image(this.getClass().getResource("/app_icons/icon64.png").toString())
-        );
-        WebConsoleListener.setDefaultListener((webView, message, lineNumber, sourceId)
-                -> System.out.println("Console: [" + sourceId + ":" + lineNumber + "] " + message)
         );
         primaryStage.setTitle("Web Extension Translator");
         browser = new WebView();

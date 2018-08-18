@@ -15,7 +15,7 @@ import { adjustAllHeights } from "./utils/adjustHeights";
 import { getParameter } from "./utils/getParameter";
 import WetApp from "./components/WetApp";
 import packageJSON from "../package.json";
-import { WET_PROTOCOL_VERSION } from "./wetInterfaces";
+import { WET_PROTOCOL_VERSION, WetAppBridge } from "./wetInterfaces";
 import { github } from "./vcs";
 
 ReactDOM.render(
@@ -33,11 +33,30 @@ adjustAllHeights();
     gh && github.import(gh);
 })();
 
+function setBridge(bridge: WetAppBridge) {
+    store.dispatch({ type: "SET_APP_BRIDGE", payload: bridge });
+
+    // redirect console messages
+    function createConsoleProxy(method: string) {
+        return (...args: any[]) => {
+            const message = args.map((v) => JSON.stringify(v)).join(", ");
+            let stack: string | null = null;
+            if (method === "error") {
+                stack = new Error(message).stack || null;
+            }
+            bridge.consoleProxy(method, message, stack);
+        };
+    }
+
+    for (const key in console)
+        (console as any)[key] = createConsoleProxy(key);
+}
+
 window.wet = {
     version: packageJSON.version,
     protocolVersion: WET_PROTOCOL_VERSION,
     registerExtension: () => {
         console.error("Not implemented yet");
     },
-    setBridge: (bridge) => store.dispatch({ type: "SET_APP_BRIDGE", payload: bridge })
+    setBridge
 };

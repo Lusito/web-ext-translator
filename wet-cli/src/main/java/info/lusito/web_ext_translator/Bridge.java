@@ -112,4 +112,12 @@ public class Bridge {
     public void openBrowser(String url) {
         hostServices.showDocument(url);
     }
+    
+    public void consoleProxy(String method, String message, String stack) {
+        if ("error".equals(method)) {
+            System.err.println(method + ": " + message + "\nStacktrace:\n" + stack + "\n");
+        } else {
+            System.out.println(method + ": " + message + "\n");
+        }
+    }
 }

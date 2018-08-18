@@ -60,6 +60,7 @@ export interface WetAppBridge {
     setDirty(dirty: boolean): void;
     openDirectory(): boolean;
     openBrowser(url: string): void;
+    consoleProxy(method: string, message: string, stack: string | null): void;
 }
 
 declare global {
