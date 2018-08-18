@@ -12,6 +12,10 @@ export class GithubProvider extends VcsBaseProvider {
         return "Github";
     }
 
+    protected getSubmitUrl(info: VcsInfo): string | undefined {
+        return `https://github.com/${info.user}/${info.repository}/issues/new?title={{TITLE}}&body={{BODY}}`;
+    }
+
     protected parseUrl(url: string): VcsInfo | null {
         const parts = url.split("/");
         if (parts.length >= 5 && parts[2] === "github.com") {

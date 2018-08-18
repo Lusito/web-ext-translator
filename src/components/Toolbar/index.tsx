@@ -21,11 +21,13 @@ import store from "../../store";
 import { WetAppBridge } from "../../wetInterfaces";
 import { loadFromAppBridge, saveToAppBridge } from "../../actions/setAppBridge";
 import { github } from "../../vcs";
+import { createSubmitDialog } from "../Dialogs/SubmitDialog";
 
 export interface ToolbarProps {
     onShowConvert?: () => void;
     onShowImportFromGithub?: () => void;
     onSave?: () => void;
+    onSubmit?: () => void;
     onTogglePreview?: () => void;
     onShowAbout?: () => void;
     appBridge: WetAppBridge | null;
@@ -42,7 +44,8 @@ export function Toolbar(props: ToolbarProps) {
             <IconButton key="load_github" icon="github" tooltip="Load from Github" onClick={props.onShowImportFromGithub} className="icon-button--toolbar" />,
             <IconButton key="load_zip" icon="file-archive-o" tooltip="Import an extension from a ZIP file" onClick={props.onShowConvert} className="icon-button--toolbar" />,
             <div key="separator" className="toolbar__separator" />,
-            <IconButton key="download" icon="download" tooltip="Export to ZIP" onClick={props.onSave} className="icon-button--toolbar" />
+            <IconButton key="download" icon="download" tooltip="Export to ZIP" onClick={props.onSave} className="icon-button--toolbar" />,
+            <IconButton key="submit" icon="arrow-circle-right" tooltip="Submit changes to the developers" onClick={props.onSubmit} className="icon-button--toolbar" />
         ];
     return <div className="toolbar">
         {contextElements}
@@ -70,6 +73,16 @@ function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
         onSave: () => {
             const extension = store.getState().extension;
             extension && dispatch({ type: "SHOW_DIALOG", payload: createExportDialog(extension) });
+        },
+        onSubmit: () => {
+            const extension = store.getState().extension;
+            let payload;
+            if (extension && extension.submitUrl)
+                payload = createSubmitDialog(extension);
+            else
+                payload = createAlertDialog("Github projects only", "This action only works for github projects at this moment. Please export the translations as ZIP file and send it manually to the developers.");
+
+            dispatch({ type: "SHOW_DIALOG", payload });
         },
         onTogglePreview: () => dispatch({ type: "PREVIEW_TOGGLE", payload: null })
     };

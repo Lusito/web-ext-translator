@@ -11,6 +11,7 @@ import { adjustAllHeights } from "../utils/adjustHeights";
 export interface WetActionLoadPayload {
     languages: WetLanguage[];
     mainLanguage: WetLanguage;
+    submitUrl?: string;
 }
 
 export interface WetActionLoad {
@@ -24,6 +25,6 @@ export function handleLoad(state: State, payload: WetActionLoadPayload): State {
     const firstLocale = payload.mainLanguage.locale;
     const secondLocale = payload.languages.map((l) => l.locale).find((l) => l !== firstLocale) || null;
     adjustAllHeights();
-    const extension = { languages, mainLanguage: payload.mainLanguage, firstLocale, secondLocale };
+    const extension = { languages, mainLanguage: payload.mainLanguage, firstLocale, secondLocale, submitUrl: payload.submitUrl };
     return { ...state, extension, markdown: "" };
 }

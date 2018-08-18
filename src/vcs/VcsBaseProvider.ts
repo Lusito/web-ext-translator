@@ -37,6 +37,8 @@ export abstract class VcsBaseProvider {
 
     protected abstract getName(): string;
 
+    protected abstract getSubmitUrl(info: VcsInfo): string | undefined;
+
     protected abstract parseUrl(url: string): VcsInfo | null;
 
     protected abstract fetch(info: VcsInfo): Promise<VcsFetchResult>;
@@ -52,7 +54,8 @@ export abstract class VcsBaseProvider {
                 if (!mainLanguage)
                     throw new Error("Could not locate main language");
                 normalizeLanguages(languages, mainLanguage);
-                store.dispatch({ type: "LOAD", payload: { languages, mainLanguage } });
+                const submitUrl = this.getSubmitUrl(info);
+                store.dispatch({ type: "LOAD", payload: { languages, mainLanguage, submitUrl } });
                 store.dispatch({ type: "SET_LOADING", payload: "" });
             }).catch((err) => {
                 store.dispatch({ type: "SHOW_DIALOG", payload: createAlertDialog("Something went wrong!", `Failed to import ${this.getName()} Project. Reason: ${err}`) });

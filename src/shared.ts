@@ -11,6 +11,7 @@ export interface LoadedExtension {
     secondLocale: string | null;
     languages: { [s: string]: WetLanguage };
     mainLanguage: WetLanguage;
+    submitUrl?: string;
 }
 
 export interface State {
