@@ -33,7 +33,7 @@ In your messages.json, you can add a group entry like this:
 
 This will insert a group header in the translations editor. You can place multiple groups in your messages.json. It is valid JSON to use the same key multiple times in an object, so adding `__WET_GROUP__` as key is no problem. If you, however, want to use unique keys, using `__WET_GROUP__` as a prefix works as well.
 
-Check out [this example](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/feature/wet) if you want to see groups in action.
+Check out [this example](https://lusito.github.io/web-ext-translator/?gh=https://github.com/lusito/forget-me-not/tree/develop) if you want to see groups in action.
 
 ### Working with comments
 
