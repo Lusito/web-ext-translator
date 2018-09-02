@@ -16,6 +16,7 @@ import { WetActionSetMessageValue, handleSetMessageValue } from "./setMessageVal
 import { WetActionLoad, handleLoad } from "./load";
 import { WetActionSetLoading, handleSetLoading } from "./setLoading";
 import { WetActionSetAppBridge, handleSetAppBridge } from "./setAppBridge";
+import { WetActionEnableWebExtensionMode, handleEnableWebExtensionMode } from "./enableWebExtensionMode";
 
 export type WetAction =
     WetActionAddLanguage |
@@ -28,7 +29,8 @@ export type WetAction =
     WetActionHideDialog |
     WetActionLoad |
     WetActionSetLoading |
-    WetActionSetAppBridge;
+    WetActionSetAppBridge |
+    WetActionEnableWebExtensionMode;
 
 export function reducer(state: State, action: WetAction) {
     switch (action.type) {
@@ -43,6 +45,7 @@ export function reducer(state: State, action: WetAction) {
         case "LOAD": return handleLoad(state, action.payload);
         case "SET_LOADING": return handleSetLoading(state, action.payload);
         case "SET_APP_BRIDGE": return handleSetAppBridge(state, action.payload);
+        case "ENABLE_WEB_EXTENSION_MODE": return handleEnableWebExtensionMode(state);
     }
 
     return state;

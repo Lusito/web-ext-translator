@@ -22,15 +22,18 @@ import { WetAppBridge } from "../../wetInterfaces";
 import { loadFromAppBridge, saveToAppBridge } from "../../actions/setAppBridge";
 import { github } from "../../vcs";
 import { createSubmitDialog } from "../Dialogs/SubmitDialog";
+import { createApplyDialog } from "../Dialogs/ApplyDialog";
 
 export interface ToolbarProps {
     onShowConvert?: () => void;
     onShowImportFromGithub?: () => void;
     onSave?: () => void;
     onSubmit?: () => void;
+    onApply?: () => void;
     onTogglePreview?: () => void;
     onShowAbout?: () => void;
     appBridge: WetAppBridge | null;
+    webExtensionMode: boolean;
 }
 
 export function Toolbar(props: ToolbarProps) {
@@ -47,6 +50,12 @@ export function Toolbar(props: ToolbarProps) {
             <IconButton key="download" icon="download" tooltip="Export to ZIP" onClick={props.onSave} className="icon-button--toolbar" />,
             <IconButton key="submit" icon="arrow-circle-right" tooltip="Submit changes to the developers" onClick={props.onSubmit} className="icon-button--toolbar" />
         ];
+
+    if (!appBridge && props.webExtensionMode) {
+        contextElements.push(<div key="separator2" className="toolbar__separator" />);
+        contextElements.push(<IconButton key="apply" icon="share-square-o" tooltip="Send to extension to preview" onClick={props.onApply} className="icon-button--toolbar" />);
+    }
+
     return <div className="toolbar">
         {contextElements}
         <div className="toolbar__separator" />
@@ -56,8 +65,8 @@ export function Toolbar(props: ToolbarProps) {
     </div>;
 }
 
-function mapStateToProps({ appBridge }: State) {
-    return { appBridge };
+function mapStateToProps({ appBridge, webExtensionMode }: State) {
+    return { appBridge, webExtensionMode };
 }
 
 const importGithubMarkdown = `You can import translations from a github project like this:  \
@@ -81,6 +90,16 @@ function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
                 payload = createSubmitDialog(extension);
             else
                 payload = createAlertDialog("Github projects only", "This action only works for github projects at this moment. Please export the translations as ZIP file and send it manually to the developers.");
+
+            dispatch({ type: "SHOW_DIALOG", payload });
+        },
+        onApply: () => {
+            const extension = store.getState().extension;
+            let payload;
+            if (extension && extension.vcsInfo)
+                payload = createApplyDialog(extension);
+            else
+                payload = createAlertDialog("Github projects only", "This action only works for github projects at this moment.");
 
             dispatch({ type: "SHOW_DIALOG", payload });
         },

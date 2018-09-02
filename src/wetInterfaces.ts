@@ -32,15 +32,6 @@ export interface WetPlaceholder {
     example?: string;
 }
 
-export interface ExtensionInfo {
-    protocolVersion: number;
-    id: string;
-    name: string;
-    mainLanguage: WetLanguage;
-    languages: WetLanguage[];
-    applyLanguage: (language: WetLanguage) => void;
-}
-
 export const WET_PROTOCOL_VERSION = 1;
 
 export interface MessagesFile {
@@ -68,7 +59,6 @@ declare global {
         wet: {
             version: string;
             protocolVersion: number;
-            registerExtension(extensionInfo: ExtensionInfo): void;
             setBridge(bride: WetAppBridge): void;
         };
     }

@@ -24,6 +24,7 @@ You can check out the online version here: https://lusito.github.io/web-ext-tran
   - It automatically formats your messages.json into a homogeneous format (see below for formatting options).
   - The order of the translations in the messages.json is kept.
 - You can define groups inside of your messages.json to keep translations organized.
+- You can apply changes to your extensions live from the online editor using [wet-layer](https://github.com/Lusito/wet-layer)
 
 ### Working with groups
 

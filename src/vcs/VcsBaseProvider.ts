@@ -10,6 +10,7 @@ import { parseMessagesFile } from "../utils/parseMessagesFile";
 import { createAlertDialog } from "../components/Dialogs/AlertDialog";
 
 export interface VcsInfo {
+    host: string;
     user: string;
     repository: string;
     branch: string;
@@ -44,18 +45,18 @@ export abstract class VcsBaseProvider {
     protected abstract fetch(info: VcsInfo): Promise<VcsFetchResult>;
 
     public import(url: string) {
-        const info = this.parseUrl(url);
-        if (info) {
-            store.dispatch({ type: "SET_LOADING", payload: `Importing ${info.repository} from ${this.getName()}` });
+        const vcsInfo = this.parseUrl(url);
+        if (vcsInfo) {
+            store.dispatch({ type: "SET_LOADING", payload: `Importing ${vcsInfo.repository} from ${this.getName()}` });
 
-            this.fetch(info).then((result) => {
+            this.fetch(vcsInfo).then((result) => {
                 const languages = result.files.map((file) => parseMessagesFile(file.locale.replace(/_/g, "-"), file.contents));
                 const mainLanguage = languages.find((r) => r.locale === result.defaultLocale) || null;
                 if (!mainLanguage)
                     throw new Error("Could not locate main language");
                 normalizeLanguages(languages, mainLanguage);
-                const submitUrl = this.getSubmitUrl(info);
-                store.dispatch({ type: "LOAD", payload: { languages, mainLanguage, submitUrl } });
+                const submitUrl = this.getSubmitUrl(vcsInfo);
+                store.dispatch({ type: "LOAD", payload: { languages, mainLanguage, submitUrl, vcsInfo } });
                 store.dispatch({ type: "SET_LOADING", payload: "" });
             }).catch((err) => {
                 store.dispatch({ type: "SHOW_DIALOG", payload: createAlertDialog("Something went wrong!", `Failed to import ${this.getName()} Project. Reason: ${err}`) });

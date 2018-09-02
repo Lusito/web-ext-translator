@@ -5,6 +5,7 @@
  */
 
 import { WetLanguage, WetAppBridge } from "./wetInterfaces";
+import { VcsInfo } from "./vcs/VcsBaseProvider";
 
 export interface LoadedExtension {
     firstLocale: string | null;
@@ -12,6 +13,7 @@ export interface LoadedExtension {
     languages: { [s: string]: WetLanguage };
     mainLanguage: WetLanguage;
     submitUrl?: string;
+    vcsInfo?: VcsInfo;
 }
 
 export interface State {
@@ -20,6 +22,7 @@ export interface State {
     markdown: string;
     loading: string;
     extension: LoadedExtension | null;
+    webExtensionMode: boolean;
     appBridge: WetAppBridge | null;
 }
 

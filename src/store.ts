@@ -15,6 +15,7 @@ function getDefaultState(): State {
         markdown: "",
         loading: "",
         extension: null,
+        webExtensionMode: false,
         appBridge: null
     };
 }

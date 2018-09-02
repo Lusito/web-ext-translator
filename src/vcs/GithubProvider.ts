@@ -23,7 +23,7 @@ export class GithubProvider extends VcsBaseProvider {
             const user = parts.shift() as string;
             const repository = parts.shift() as string;
             const branch = (parts.shift() === "tree" && parts.join("/")) || "master";
-            return { user, repository, branch };
+            return { host: "github", user, repository, branch };
         }
         return null;
     }

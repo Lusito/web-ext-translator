@@ -52,11 +52,13 @@ function setBridge(bridge: WetAppBridge) {
         (console as any)[key] = createConsoleProxy(key);
 }
 
+window.addEventListener("message", (event) => {
+  if (event.source === window && event.data && event.data.action === "EnableWebExtensionMode")
+    store.dispatch({ type: "ENABLE_WEB_EXTENSION_MODE" });
+});
+
 window.wet = {
     version: packageJSON.version,
     protocolVersion: WET_PROTOCOL_VERSION,
-    registerExtension: () => {
-        console.error("Not implemented yet");
-    },
     setBridge
 };
