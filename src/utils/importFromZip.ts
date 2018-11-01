@@ -9,6 +9,8 @@ import { WetLanguage } from "../wetInterfaces";
 import store from "../store";
 import { parseMessagesFile } from "./parseMessagesFile";
 import { normalizeLanguages } from "./normalizeLanguages";
+import { parseJsonFile } from "./parseJsonFile";
+import { createAlertDialog } from "../components/Dialogs/AlertDialog";
 
 export function importFromZip(zipFile: File) {
     if (zipFile.name.toLowerCase().endsWith(".zip")) {
@@ -16,7 +18,7 @@ export function importFromZip(zipFile: File) {
             const locales = zip.folder("_locales");
             const manifestFile = zip.file("manifest.json");
             manifestFile.async("text").then((manifestContent) => {
-                const manifest = JSON.parse(manifestContent);
+                const manifest = parseJsonFile("manifest.json", manifestContent) as any;
                 const promises: Array<Promise<WetLanguage>> = [];
                 locales.forEach((relativePath, zipEntry) => {
                     if (zipEntry.dir) {
@@ -36,8 +38,10 @@ export function importFromZip(zipFile: File) {
             });
         }, (e) => {
             console.error("Error reading " + zipFile.name + ": " + e.message);
+            store.dispatch({ type: "SHOW_DIALOG", payload: createAlertDialog("Something went wrong!", `Error reading ${zipFile.name}: ${e.message}`) });
         });
     } else {
         console.error("Not a zip: " + zipFile.name);
+        store.dispatch({ type: "SHOW_DIALOG", payload: createAlertDialog("Something went wrong!", `Not a zip: ${zipFile.name}`) });
     }
 }
