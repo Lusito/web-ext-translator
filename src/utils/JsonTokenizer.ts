@@ -26,11 +26,11 @@ interface MessageToken {
     line: number;
     column: number;
     content: string | number | boolean | null;
-    type: "comment" | "string" | "number" | "boolean" | "null" | "identifier" | "char";
+    type: "comment" | "string" | "number" | "boolean" | "null" | "char";
 }
 
-export class MessagesTokenizer {
-    private readonly filename: string;
+export class JsonTokenizer {
+    private readonly resource: string;
     private lines: string[] = [];
     private line: number = 0;
     private lineContent: string = "";
@@ -39,9 +39,9 @@ export class MessagesTokenizer {
     private lastToken: MessageToken | null = null;
     private currentToken: MessageToken;
 
-    public constructor(filename: string, fileContent: string) {
-        this.filename = filename;
-        this.lines = fileContent.split(/\r\n|\r|\n/);
+    public constructor(resource: string, data: string) {
+        this.resource = resource;
+        this.lines = data.split(/\r\n|\r|\n/);
         this.lineContent = this.lines[0] || "";
         this.createNewToken();
     }
@@ -80,11 +80,27 @@ export class MessagesTokenizer {
             throw new Error(`Expected token '${value}', but got '${this.lastToken && this.lastToken.content}' at ${this.getTokenPosition()}`);
     }
 
+    public expectValueToken(type: "number"): number;
+    public expectValueToken(type: "string"): string;
+    public expectValueToken(type: "boolean"): boolean;
     public expectValueToken(type: "number" | "string" | "boolean") {
         // skip comments if a token is expected
         const token = this.skipComments();
         if (token.type !== type)
             throw new Error(`Expected token of type '${type}', but got a '${token.type}' at ${this.getTokenPosition()}`);
+        return token.content;
+    }
+
+    public tryValueToken(type: "number"): number | undefined;
+    public tryValueToken(type: "string"): string | undefined;
+    public tryValueToken(type: "boolean"): boolean | undefined;
+    public tryValueToken(type: "number" | "string" | "boolean") {
+        // skip comments if a token is expected
+        const token = this.skipComments();
+        if (token.type !== type) {
+            this.lastToken = token;
+            return undefined;
+        }
         return token.content;
     }
 
@@ -110,9 +126,8 @@ export class MessagesTokenizer {
             token.content = this.readNumber();
             token.type = "number";
         } else if (IDENTIFIER_CHARS.test(c)) {
-            this.lastChar = c;
-            token.content = this.readIdentifier();
-            token.type = "identifier";
+            token.content = this.readIdentifier(c);
+            token.type = token.content === null ? "null" : "boolean";
         } else if (c === "/" && this.peekChar() === "/") {
             token.type = "comment";
             token.content = this.lineContent.substr(this.column + 1).trim();
@@ -237,8 +252,8 @@ export class MessagesTokenizer {
         return this.charsToNumber(chars);
     }
 
-    private readIdentifier(): boolean | null {
-        const id = this.readIdentifierChars();
+    private readIdentifier(firstChar: string): boolean | null {
+        const id = this.readIdentifierChars(firstChar);
         switch (id) {
             case "true": return true;
             case "false": return false;
@@ -247,23 +262,24 @@ export class MessagesTokenizer {
         throw new Error(`Unexpected identifier '${id}' at ${this.getTokenPosition()}`);
     }
 
-    private readIdentifierChars(): string {
-        const chars = [];
+    private readIdentifierChars(firstChar: string): string {
+        const chars = [firstChar];
         while (this.column < this.lineContent.length) {
             const c = this.lineContent[this.column];
             if (!IDENTIFIER_CHARS.test(c))
                 break;
             chars.push(c);
+            this.column++;
         }
-        return chars.join();
+        return chars.join("");
     }
 
     public getPosition() {
-        return `${this.filename}:${this.getLine()}:${this.getColumn()}`;
+        return `${this.resource}:${this.getLine()}:${this.getColumn()}`;
     }
 
     public getTokenPosition() {
-        return `${this.filename}:${this.currentToken.line + 1}:${this.currentToken.column}`;
+        return `${this.resource}:${this.currentToken.line + 1}:${this.currentToken.column}`;
     }
 
     private expectChar(expected: string) {

@@ -5,6 +5,11 @@
  */
 
 import { VcsInfo, VcsBaseProvider, VcsFetchResult } from "./VcsBaseProvider";
+import { parseJsonFile } from "../utils/parseJsonFile";
+
+function responseToJSON(response: Response) {
+    return response.text().then((text) => parseJsonFile(response.url, text));
+}
 
 export class GithubProvider extends VcsBaseProvider {
 
@@ -31,16 +36,14 @@ export class GithubProvider extends VcsBaseProvider {
     protected fetch(info: VcsInfo): Promise<VcsFetchResult> {
         let localesPath = "";
         let defaultLocale = "";
-        return fetch(`https://api.github.com/repos/${info.user}/${info.repository}/git/trees/${info.branch}?recursive=1`).then((response) => {
-            return response.json();
-        }).then((jsonData) => {
+        return fetch(`https://api.github.com/repos/${info.user}/${info.repository}/git/trees/${info.branch}?recursive=1`).then(responseToJSON).then((jsonData: any) => {
             // Just in case, there are multiple _locales directories, choose the shortest path, as it's probably the right one.
             const paths = jsonData.tree.map((e: any) => e.path);
             localesPath = this.getShortestPathForName(paths, "_locales");
             const manifestPath = this.getShortestPathForName(paths, "manifest.json");
             return Promise.all([
-                fetch(`https://raw.githubusercontent.com/${info.user}/${info.repository}/${info.branch}/${manifestPath}`).then((response) => response.json()),
-                fetch(`https://api.github.com/repos/${info.user}/${info.repository}/contents/${localesPath}?ref=${info.branch}`).then((response) => response.json())
+                fetch(`https://raw.githubusercontent.com/${info.user}/${info.repository}/${info.branch}/${manifestPath}`).then(responseToJSON),
+                fetch(`https://api.github.com/repos/${info.user}/${info.repository}/contents/${localesPath}?ref=${info.branch}`).then(responseToJSON)
             ]);
         }).then((results: any[]) => {
             defaultLocale = results[0].default_locale;

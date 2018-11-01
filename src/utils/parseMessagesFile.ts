@@ -5,10 +5,10 @@
  */
 
 import { WetMessage, WetPlaceholder, WetLanguage, WetMessageType } from "../wetInterfaces";
-import { MessagesTokenizer } from "./MessagesTokenizer";
+import { JsonTokenizer } from "./JsonTokenizer";
 
-function parsePlaceholder(tokenizer: MessagesTokenizer) {
-    const name = tokenizer.expectValueToken("string") as string;
+function parsePlaceholder(tokenizer: JsonTokenizer) {
+    const name = tokenizer.expectValueToken("string");
     tokenizer.expectCharToken(":");
     tokenizer.expectCharToken("{");
     const result: WetPlaceholder = {
@@ -17,12 +17,12 @@ function parsePlaceholder(tokenizer: MessagesTokenizer) {
         example: ""
     };
     do {
-        const key = tokenizer.expectValueToken("string") as string;
+        const key = tokenizer.expectValueToken("string");
         tokenizer.expectCharToken(":");
         if (key === "content")
-            result.content = tokenizer.expectValueToken("string") as string;
+            result.content = tokenizer.expectValueToken("string");
         else if (key === "example")
-            result.example = tokenizer.expectValueToken("string") as string;
+            result.example = tokenizer.expectValueToken("string");
         else
             console.warn(`Found unknown key '${key}' at ${tokenizer.getTokenPosition()}, will be ignored`);
     } while (tokenizer.testCharToken(","));
@@ -30,7 +30,7 @@ function parsePlaceholder(tokenizer: MessagesTokenizer) {
     return result;
 }
 
-function skipValue(tokenizer: MessagesTokenizer) {
+function skipValue(tokenizer: JsonTokenizer) {
     const token = tokenizer.skipComments();
     if (token.type === "char") {
         if (token.content === "{") {
@@ -55,7 +55,7 @@ function skipValue(tokenizer: MessagesTokenizer) {
     }
 }
 
-function parseMessage(tokenizer: MessagesTokenizer, name: string) {
+function parseMessage(tokenizer: JsonTokenizer, name: string) {
     tokenizer.expectCharToken(":");
     tokenizer.expectCharToken("{");
     const type = name.startsWith("__WET_GROUP__") ? WetMessageType.GROUP : WetMessageType.MESSAGE;
@@ -65,11 +65,11 @@ function parseMessage(tokenizer: MessagesTokenizer, name: string) {
         const key = tokenizer.expectValueToken("string");
         tokenizer.expectCharToken(":");
         if (key === "message")
-            result.message = tokenizer.expectValueToken("string") as string;
+            result.message = tokenizer.expectValueToken("string");
         else if (key === "description")
-            result.description = tokenizer.expectValueToken("string") as string;
+            result.description = tokenizer.expectValueToken("string");
         else if (key === "hash")
-            result.hash = tokenizer.expectValueToken("string") as string;
+            result.hash = tokenizer.expectValueToken("string");
         else if (key === "placeholders") {
             tokenizer.expectCharToken("{");
             if (!tokenizer.testCharToken("}")) {
@@ -97,7 +97,7 @@ export function parseMessagesFile(locale: string, fileContent: string) {
         messagesByKey: {}
     };
 
-    const tokenizer = new MessagesTokenizer(`${locale}/messages.json`, fileContent);
+    const tokenizer = new JsonTokenizer(`${locale}/messages.json`, fileContent);
     tokenizer.expectCharToken("{");
     while (!tokenizer.isDone()) {
         const token = tokenizer.next();
