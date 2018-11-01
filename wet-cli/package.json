@@ -1,6 +1,6 @@
 {
   "name": "web-ext-translator",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "An easy to use translation tool for web-extensions",
   "keywords": [
     "Web-Extensions",
@@ -24,7 +24,7 @@
     "wet": "jdeploy-bundle/jdeploy.js"
   },
   "jdeploy": {
-    "jar": "target/web-ext-translator-2.0.7-jar-with-dependencies.jar"
+    "jar": "target/web-ext-translator-2.0.8-jar-with-dependencies.jar"
   },
   "files": [
     "jdeploy-bundle"

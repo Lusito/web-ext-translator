@@ -1,4 +1,1 @@
 - try or look up: what happens to placeholders that haven't been supplied with values?
-- use hashes for version checks
-- create middleware to use translation files by including them in the build process
-  - placeholders could reference other translations
