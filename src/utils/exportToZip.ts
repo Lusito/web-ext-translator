@@ -12,9 +12,12 @@ import { saveAs } from "file-saver";
 import { toJsonString } from "./toJsonString";
 
 function serializeMessageMultiLine(mainMessage: WetMessage, writeHash: boolean, language: WetLanguage, codeWriter: CodeWriter) {
+    const message = language.messagesByKey[mainMessage.name];
+    if (writeHash && (!message || !message.message))
+        return;
+
     codeWriter.begin(`${JSON.stringify(mainMessage.name)}: {`);
 
-    const message = mainMessage.type === WetMessageType.MESSAGE ? language.messagesByKey[mainMessage.name] : mainMessage;
     const description = mainMessage.description;
     const placeholders = mainMessage.placeholders;
     const hash = writeHash && message && message.hash;
@@ -44,10 +47,11 @@ function serializeMessageMultiLine(mainMessage: WetMessage, writeHash: boolean, 
 }
 
 function serializeMessageSingleLine(mainMessage: WetMessage, writeHash: boolean, language: WetLanguage, codeWriter: CodeWriter) {
-    const message = mainMessage.type === WetMessageType.MESSAGE ? language.messagesByKey[mainMessage.name] : mainMessage;
-    const attributes = [
-        `"message": ${toJsonString(message ? message.message : "")}`
-    ];
+    const message = language.messagesByKey[mainMessage.name];
+    if (writeHash && (!message || !message.message))
+        return;
+
+    const attributes = [`"message": ${toJsonString(message ? message.message : "")}`];
     const description = mainMessage.description;
     if (description)
         attributes.push(`"description": ${toJsonString(description)}`);
