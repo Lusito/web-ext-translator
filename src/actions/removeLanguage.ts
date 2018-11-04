@@ -5,6 +5,7 @@
  */
 
 import { State } from "../shared";
+import { setDirty } from "../utils/setDirty";
 
 export interface WetActionRemoveLanguage {
     type: "REMOVE_LANGUAGE";
@@ -19,5 +20,6 @@ export function handleRemoveLanguage(state: State, payload: string): State {
         return state;
     extension.languages = { ...extension.languages };
     delete extension.languages[payload];
+    setDirty(state.appBridge, true);
     return { ...state, extension };
 }

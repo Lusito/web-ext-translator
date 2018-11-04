@@ -8,6 +8,7 @@ import { State } from "../shared";
 import { WetLanguage } from "../wetInterfaces";
 import { adjustAllHeights } from "../utils/adjustHeights";
 import { VcsInfo } from "../vcs/VcsBaseProvider";
+import { setDirty } from "../utils/setDirty";
 
 export interface WetActionLoadPayload {
     languages: WetLanguage[];
@@ -28,5 +29,6 @@ export function handleLoad(state: State, payload: WetActionLoadPayload): State {
     const secondLocale = payload.languages.map((l) => l.locale).find((l) => l !== firstLocale) || null;
     adjustAllHeights();
     const extension = { languages, mainLanguage: payload.mainLanguage, firstLocale, secondLocale, submitUrl: payload.submitUrl, vcsInfo: payload.vcsInfo };
+    setDirty(state.appBridge, false);
     return { ...state, extension, markdown: "" };
 }

@@ -7,6 +7,7 @@
 import { State } from "../shared";
 import { WetMessage, WetMessageType } from "../wetInterfaces";
 import { hashForLanguage } from "../utils/getHashFor";
+import { setDirty } from "../utils/setDirty";
 
 export interface WetActionSetMessageValuePayload {
     key: string;
@@ -40,5 +41,6 @@ export function handleSetMessageValue(state: State, payload: WetActionSetMessage
     extension.languages = { ...extension.languages, [payload.locale]: newLanguage };
     if (mainLanguage === language)
         extension.mainLanguage = newLanguage;
+    setDirty(state.appBridge, true);
     return { ...state, extension };
 }

@@ -10,6 +10,7 @@ import { CodeWriter } from "./CodeWriter";
 import * as JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { toJsonString } from "./toJsonString";
+import { setDirty } from "./setDirty";
 
 function serializeMessageMultiLine(mainMessage: WetMessage, writeHash: boolean, language: WetLanguage, codeWriter: CodeWriter) {
     const message = language.messagesByKey[mainMessage.name];
@@ -108,4 +109,5 @@ export function exportToZip(languages: WetLanguage[], mainLanguage: WetLanguage)
         folder.file("messages.json", serializeMessages(l, mainLanguage));
     });
     zip.generateAsync({ type: "blob" }).then((content) => saveAs(content, "wet_export.zip"));
+    setDirty(null, false);
 }

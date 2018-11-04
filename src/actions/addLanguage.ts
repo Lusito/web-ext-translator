@@ -7,6 +7,7 @@
 import { State } from "../shared";
 import { localeCodeToEnglish } from "../lib/localeCodeToEnglish";
 import { WetLanguage } from "../wetInterfaces";
+import { setDirty } from "../utils/setDirty";
 
 export interface WetActionAddLanguage {
     type: "ADD_LANGUAGE";
@@ -22,5 +23,6 @@ export function handleAddLanguage(state: State, payload: string): State {
         return state;
     const language: WetLanguage = { locale: payload, label: result.name, messages: [], messagesByKey: {} };
     extension.languages = { ...extension.languages, [payload]: language };
+    setDirty(state.appBridge, true);
     return { ...state, extension };
 }

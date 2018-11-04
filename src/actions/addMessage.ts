@@ -6,6 +6,7 @@
 
 import { State } from "../shared";
 import { WetLanguage, WetMessageType, WetMessage } from "../wetInterfaces";
+import { setDirty } from "../utils/setDirty";
 
 export interface WetActionAddMessagePayload {
     asGroup: boolean;
@@ -58,5 +59,6 @@ export function handleAddMessage(state: State, payload: WetActionAddMessagePaylo
 
     extension.languages = { ...extension.languages, [mainLanguage.locale]: mainLanguage };
     extension.mainLanguage = mainLanguage;
+    setDirty(state.appBridge, true);
     return { ...state, extension };
 }

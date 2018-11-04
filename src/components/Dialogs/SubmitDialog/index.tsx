@@ -14,6 +14,7 @@ import { WetAction } from "../../../actions";
 import { getNewDialogIndex } from "../../Dialogs";
 import { copyToClipboard } from "../../../utils/copyToClipboard";
 import { serializeMessages } from "../../../utils/exportToZip";
+import { setDirty } from "../../../utils/setDirty";
 
 interface SubmitDialogDispatchProps {
     closeDialog?: (key: string) => void;
@@ -56,6 +57,7 @@ function SubmitDialog({ closeDialog, extension, index }: SubmitDialogMergedProps
                     .replace("{{TITLE}}", encodeURIComponent(title))
                     .replace("{{BODY}}", BODY_MESSAGE);
                 window.open(submitUrl);
+                setDirty(null, false);
             }
         }
     }

@@ -79,6 +79,7 @@ public class Bridge {
                 Path file = dir.resolve("messages.json");
                 Files.write(file, content.getBytes("utf-8"));
             }
+            setDirty(false);
             return null;
         } catch (IOException ex) {
             return ex.getMessage();
