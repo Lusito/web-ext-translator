@@ -1,4 +1,5 @@
 .translation-table-body {
+    position: relative;
     flex-grow: 1;
     padding: 10px;
     overflow-x: auto;

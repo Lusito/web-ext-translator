@@ -60,6 +60,8 @@ declare global {
             version: string;
             protocolVersion: number;
             setBridge(bride: WetAppBridge): void;
+            searchNext(text: string, force: boolean): void;
+            searchPrev(text: string): void;
         };
     }
 }

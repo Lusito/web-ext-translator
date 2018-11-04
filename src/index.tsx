@@ -17,6 +17,7 @@ import WetApp from "./components/WetApp";
 import packageJSON from "../package.json";
 import { WET_PROTOCOL_VERSION, WetAppBridge } from "./wetInterfaces";
 import { github } from "./vcs";
+import { searchNext, searchPrev } from "./search";
 
 ReactDOM.render(
     <Provider store={store}>
@@ -60,5 +61,7 @@ window.addEventListener("message", (event) => {
 window.wet = {
     version: packageJSON.version,
     protocolVersion: WET_PROTOCOL_VERSION,
-    setBridge
+    setBridge,
+    searchNext,
+    searchPrev
 };
