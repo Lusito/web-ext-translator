@@ -11,11 +11,12 @@ import { LoadedExtension } from "../../shared";
 
 interface TranslationTableProps {
     extension: LoadedExtension;
+    showPlus: boolean;
 }
 
-export function TranslationTable({ extension }: TranslationTableProps) {
+export function TranslationTable({ extension, showPlus }: TranslationTableProps) {
     return <React.Fragment>
         <TranslationTableHead extension={extension} />
-        <TranslationTableBody extension={extension} />
+        <TranslationTableBody extension={extension} showPlus={showPlus} />
     </React.Fragment>;
 }

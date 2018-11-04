@@ -28,22 +28,23 @@ If you are an extension developer, check out the [Github page](https://github.co
 interface WetAppProps {
     loading: string;
     extension: LoadedExtension | null;
+    showPlus: boolean;
 }
 
-function WetApp({ loading, extension }: WetAppProps) {
+function WetApp({ loading, extension, showPlus }: WetAppProps) {
     return <React.Fragment>
         {loading && <LoadingScreen label={loading} />}
         {!loading && <main>
             <Toolbar />
-            {extension ? <TranslationTable extension={extension} /> : <MarkdownScreen markdown={welcomeScreenMarkdown} />}
+            {extension ? <TranslationTable extension={extension} showPlus={showPlus} /> : <MarkdownScreen markdown={welcomeScreenMarkdown} />}
         </main>}
         {!loading && <MarkdownPreview />}
         <Dialogs />
     </React.Fragment>;
 }
 
-function mapStateToProps({ loading, extension }: State) {
-    return { loading, extension };
+function mapStateToProps({ loading, extension, appBridge }: State) {
+    return { loading, extension, showPlus: !!appBridge };
 }
 
 export default connect<WetAppProps>(mapStateToProps)(WetApp);

@@ -8,6 +8,7 @@ import * as React from "react";
 import { WetMessage, WetLanguage } from "../../../wetInterfaces";
 import TranslationEditor from "../TranslationEditor";
 import { hashFor } from "../../../utils/getHashFor";
+import { TranslationTablePlus } from "../TranslationTablePlus";
 
 interface TranslationTableRowProps {
     className?: string;
@@ -15,6 +16,7 @@ interface TranslationTableRowProps {
     firstLanguage: WetLanguage | null;
     secondLanguage: WetLanguage | null;
     message: WetMessage;
+    showPlus: boolean;
 }
 
 function getData(mainLanguage: WetLanguage, mainHash: string, lang: WetLanguage | null, key: string) {
@@ -25,7 +27,7 @@ function getData(mainLanguage: WetLanguage, mainHash: string, lang: WetLanguage 
     };
 }
 
-export function TranslationTableRow({ className, message, firstLanguage, secondLanguage, mainLanguage }: TranslationTableRowProps) {
+export function TranslationTableRow({ className, message, firstLanguage, secondLanguage, mainLanguage, showPlus }: TranslationTableRowProps) {
     const mainHash = hashFor(message.message);
     const first = getData(mainLanguage, mainHash, firstLanguage, message.name);
     const second = getData(mainLanguage, mainHash, secondLanguage, message.name);
@@ -37,5 +39,6 @@ export function TranslationTableRow({ className, message, firstLanguage, secondL
         <td className="translation-table-body__td">
             <TranslationEditor value={second.value} messageKey={message.name} placeholders={message.placeholders} locale={secondLanguage && secondLanguage.locale} modified={second.modified} />
         </td>
+        { showPlus ? <td className="translation-table-body__td"><TranslationTablePlus messageName={message.name} /></td> : null }
     </tr>;
 }

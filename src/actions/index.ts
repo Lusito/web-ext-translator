@@ -17,9 +17,11 @@ import { WetActionLoad, handleLoad } from "./load";
 import { WetActionSetLoading, handleSetLoading } from "./setLoading";
 import { WetActionSetAppBridge, handleSetAppBridge } from "./setAppBridge";
 import { WetActionEnableWebExtensionMode, handleEnableWebExtensionMode } from "./enableWebExtensionMode";
+import { handleAddMessage, WetActionAddMessage } from "./addMessage";
 
 export type WetAction =
     WetActionAddLanguage |
+    WetActionAddMessage |
     WetActionSelectLanguage |
     WetActionRemoveLanguage |
     WetActionSetMessageValue |
@@ -35,6 +37,7 @@ export type WetAction =
 export function reducer(state: State, action: WetAction) {
     switch (action.type) {
         case "ADD_LANGUAGE": return handleAddLanguage(state, action.payload);
+        case "ADD_MESSAGE": return handleAddMessage(state, action.payload);
         case "SELECT_LANGUAGE": return handleSelectLanguage(state, action.payload);
         case "REMOVE_LANGUAGE": return handleRemoveLanguage(state, action.payload);
         case "SET_MESSAGE_VALUE": return handleSetMessageValue(state, action.payload);

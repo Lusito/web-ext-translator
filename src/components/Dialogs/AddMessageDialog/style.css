@@ -1,0 +1,22 @@
+.add-message-dialog__input {
+    width: 100%;
+    background: #3C3C3C;
+    color: #CCCCCC;
+    border: none;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+}
+
+.add-message-dialog__input:focus {
+    outline: none;
+    border: 1px solid #0075ad;
+}
+
+.add-message-dialog__hint.is-invalid {
+    color: red;
+}
+
+.add-message-dialog__text {
+    padding: 5px;
+}
