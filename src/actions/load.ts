@@ -30,5 +30,5 @@ export function handleLoad(state: State, payload: WetActionLoadPayload): State {
     adjustAllHeights();
     const extension = { languages, mainLanguage: payload.mainLanguage, firstLocale, secondLocale, submitUrl: payload.submitUrl, vcsInfo: payload.vcsInfo };
     setDirty(state.appBridge, false);
-    return { ...state, extension, markdown: "" };
+    return { ...state, extension, markdown: "", markdownRTL: false };
 }

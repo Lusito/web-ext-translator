@@ -8,8 +8,12 @@
     box-sizing: border-box;
 }
 
-.markdown-preview.is-visible {
+.markdown-preview--is-visible {
     display: block;
+}
+
+.markdown-preview--is-rtl {
+    direction: rtl;
 }
 
 .markdown-preview__title {

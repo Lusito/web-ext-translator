@@ -13,19 +13,27 @@ import Markdown from "../Markdown";
 interface MarkdownPreviewStateProps {
     previewVisible: boolean;
     markdown: string;
+    markdownRTL: boolean;
 }
 
-function MarkdownPreview({ previewVisible, markdown }: MarkdownPreviewStateProps) {
-    return <div className={previewVisible ? "markdown-preview is-visible" : "markdown-preview"}>
+function MarkdownPreview({ previewVisible, markdown, markdownRTL }: MarkdownPreviewStateProps) {
+    let className = "markdown-preview";
+    if (previewVisible) {
+        className += " markdown-preview--is-visible";
+        if (markdownRTL)
+            className += " markdown-preview--is-rtl";
+    }
+    return <div className={className}>
         <h2 className="markdown-preview__title">Markdown Preview</h2>
         <Markdown className="markdown-preview__content" markdown={previewVisible ? markdown : ""} />
     </div>;
 }
 
-function mapStateToProps({ previewVisible, markdown }: State) {
+function mapStateToProps({ previewVisible, markdown, markdownRTL }: State) {
     return {
         previewVisible,
-        markdown
+        markdown,
+        markdownRTL
     };
 }
 

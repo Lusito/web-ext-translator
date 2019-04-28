@@ -55,9 +55,9 @@ function AddMessageDialog({ messageName, closeDialog, index }: AddMessageDialogM
             if (hintRef) {
                 const result = validate();
                 if (result.valid)
-                    hintRef.classList.remove("is-invalid");
+                    hintRef.classList.remove("add-message-dialog__hint--is-invalid");
                 else
-                    hintRef.classList.add("is-invalid");
+                    hintRef.classList.add("add-message-dialog__hint--is-invalid");
                 hintRef.textContent = result.message;
             }
         }

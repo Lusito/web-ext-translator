@@ -6,11 +6,16 @@
 
 import { State } from "../shared";
 
-export interface WetActionSetMarkdown {
-    type: "SET_MARKDOWN";
-    payload: string;
+export interface WetActionSetMarkdownPayload {
+    markdown: string;
+    rtl: boolean;
 }
 
-export function handleSetMarkdown(state: State, payload: string): State {
-    return { ...state, markdown: payload };
+export interface WetActionSetMarkdown {
+    type: "SET_MARKDOWN";
+    payload: WetActionSetMarkdownPayload;
+}
+
+export function handleSetMarkdown(state: State, payload: WetActionSetMarkdownPayload): State {
+    return { ...state, markdown: payload.markdown, markdownRTL: payload.rtl };
 }

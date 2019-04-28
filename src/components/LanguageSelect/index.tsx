@@ -13,6 +13,7 @@ import { State, LoadedExtension } from "../../shared";
 import { localeCodeToEnglish } from "../../lib/localeCodeToEnglish";
 import { createPromptDialog } from "../Dialogs/PromptDialog";
 import { WetLanguage } from "../../wetInterfaces";
+import { isLocaleRTL } from "../../lib/rtl";
 
 function validateLocale(value: string) {
     const result = localeCodeToEnglish(value);
@@ -64,12 +65,19 @@ class LanguageSelect extends React.Component<LanguageSelectMergedProps> {
         this.onChange = this.onChange.bind(this);
     }
 
+    public renderOption = (language: WetLanguage) => {
+        let className = "language-select__list-item";
+        if (isLocaleRTL(language.locale))
+            className += " language-select__list-item--is-rtl";
+        return <option key={language.locale} value={language.locale} className={className}>{language.label}</option>;
+    }
+
     public render() {
         const value = this.props.selection && this.props.selection.locale || "";
         return <select className="language-select" value={value} onChange={this.onChange} ref={this.onSelectRef}>
             <option key="null" style={{ fontStyle: "italic" }} value="" className="language-select__list-item">-- None --</option>
             <option key="+" style={{ fontStyle: "italic" }} value="+" className="language-select__list-item">++ New Language ++</option>
-            {this.props.languages.map((l) => <option key={l.locale} value={l.locale} className="language-select__list-item">{l.label}</option>)}
+            {this.props.languages.map(this.renderOption)}
         </select>;
     }
 

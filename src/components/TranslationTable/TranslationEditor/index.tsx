@@ -12,11 +12,12 @@ import { Dispatch } from "redux";
 import { State } from "../../../shared";
 import { adjustHeightsFor } from "../../../utils/adjustHeights";
 import { WetPlaceholder } from "../../../wetInterfaces";
+import { isLocaleRTL } from "../../../lib/rtl";
 
 const UNICODE_REGEX = /(\\u[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])/g;
 
 interface TranslationEditorDispatchProps {
-    setMarkdown: (markdown: string) => void;
+    setMarkdown: (markdown: string, rtl: boolean) => void;
     setMessageValue: (key: string, locale: string, value: string) => void;
 }
 
@@ -53,13 +54,19 @@ class TranslationEditor extends React.Component<TranslationEditorMergedProps> {
 
     public render() {
         const disabled = !this.props.messageKey || !this.props.locale;
-        const classes = ["translation-editor"];
+        let className = "translation-editor";
         if (this.props.modified)
-            classes.push("translation-editor--is-modified");
+            className += " translation-editor--is-modified";
+        if (this.isRtl())
+            className += " translation-editor--is-rtl";
         return <React.Fragment>
-            <textarea ref={this.onInputRef} onChange={this.onChange} onFocus={this.updateMarkdown} disabled={disabled} value={this.props.value} className={classes.join(" ")}></textarea>
+            <textarea ref={this.onInputRef} onChange={this.onChange} onFocus={this.updateMarkdown} disabled={disabled} value={this.props.value} className={className}></textarea>
             <div className="translation-editor-outline" />
         </React.Fragment>;
+    }
+
+    private isRtl() {
+        return !!this.props.locale && isLocaleRTL(this.props.locale);
     }
 
     private onInputRef(e: HTMLTextAreaElement) {
@@ -74,7 +81,7 @@ class TranslationEditor extends React.Component<TranslationEditorMergedProps> {
     private updateMarkdown() {
         if (this.inputRef) {
             const value = this.inputRef.value.replace(UNICODE_REGEX, (a, b) => JSON.parse(`"${b}"`));
-            this.props.setMarkdown(this.applyPlaceholders(this.props.messageKey, value));
+            this.props.setMarkdown(this.applyPlaceholders(this.props.messageKey, value), this.isRtl());
         }
     }
 
@@ -91,7 +98,7 @@ class TranslationEditor extends React.Component<TranslationEditorMergedProps> {
 
 function mapDispatchToProps(dispatch: Dispatch<WetAction>): TranslationEditorDispatchProps {
     return {
-        setMarkdown: (markdown: string) => dispatch({ type: "SET_MARKDOWN", payload: markdown }),
+        setMarkdown: (markdown: string, rtl: boolean) => dispatch({ type: "SET_MARKDOWN", payload: { markdown, rtl } }),
         setMessageValue: (key: string, locale: string, value: string) => dispatch({ type: "SET_MESSAGE_VALUE", payload: { key, value, locale } })
     };
 }

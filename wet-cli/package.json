@@ -1,6 +1,6 @@
 {
   "name": "web-ext-translator",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "description": "An easy to use translation tool for web-extensions",
   "keywords": [
     "Web-Extensions",
@@ -24,37 +24,12 @@
     "wet": "jdeploy-bundle/jdeploy.js"
   },
   "jdeploy": {
-    "jar": "target/web-ext-translator-2.0.10-jar-with-dependencies.jar"
+    "jar": "target/web-ext-translator-2.0.11-jar-with-dependencies.jar"
   },
   "files": [
     "jdeploy-bundle"
   ],
   "dependencies": {
     "jdeploy": "^1.0.21"
-  },
-  "devDependencies": {
-    "chosen-js": "^1.8.2",
-    "country-list": "^1.1.0",
-    "dragula": "^3.7.2",
-    "iso-639-1": "^1.3.2",
-    "jquery": "^3.2.1",
-    "markdown-it": "^8.4.0",
-    "shelljs": "^0.7.5",
-    "toastr": "^2.1.2",
-    "ts-keycode-enum": "^1.0.4",
-    "typed-undo": "^1.0.0",
-    "@types/chosen-js": "^1.6.2",
-    "@types/dragula": "^2.1.32",
-    "@types/jquery": "^3.2.16",
-    "@types/markdown-it": "0.0.4",
-    "@types/node": "^8.0.53",
-    "@types/toastr": "^2.1.35",
-    "css-loader": "^0.28.7",
-    "style-loader": "^0.19.0",
-    "svg-url-loader": "^2.3.0",
-    "ts-loader": "^3.2.0",
-    "typescript": "^2.6.2",
-    "url-loader": "^0.6.2",
-    "webpack": "^3.9.1"
   }
 }

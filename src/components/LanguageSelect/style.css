@@ -2,3 +2,7 @@
     display: block;
     width: 100%;
 }
+
+.language-select__list-item--is-rtl {
+    direction: rtl;
+}

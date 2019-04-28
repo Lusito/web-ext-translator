@@ -45,9 +45,9 @@ function PromptDialog({ title, text, initialValue, placeholder, validate, onAcce
             if (hintRef && validate) {
                 const result = validate(value);
                 if (result.valid)
-                    hintRef.classList.remove("is-invalid");
+                    hintRef.classList.remove("prompt-dialog__hint--is-invalid");
                 else
-                    hintRef.classList.add("is-invalid");
+                    hintRef.classList.add("prompt-dialog__hint--is-invalid");
                 hintRef.textContent = result.message;
             }
         }

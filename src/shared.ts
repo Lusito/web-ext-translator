@@ -20,6 +20,7 @@ export interface State {
     dialogs: JSX.Element[];
     previewVisible: boolean;
     markdown: string;
+    markdownRTL: boolean;
     loading: string;
     extension: LoadedExtension | null;
     webExtensionMode: boolean;

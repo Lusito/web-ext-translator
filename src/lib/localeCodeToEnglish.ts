@@ -33,9 +33,9 @@ function getIso639Name(locale: string) {
 export function localeCodeToEnglish(loc: string): LocaleResult {
     if (!loc)
         return { found: false, error: "Input must not be empty" };
-    const parts = loc.split("-");
     if (typeof loc !== "string")
         return { found: false, error: "Input must be string" };
+    const parts = loc.split("-");
     if (parts.length > 2)
         return { found: false, error: "Unexpected number of segments " + parts.length };
     const language = getIso639Name(parts[0]);

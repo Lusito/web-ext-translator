@@ -13,6 +13,7 @@ function getDefaultState(): State {
         dialogs: [],
         previewVisible: true,
         markdown: "",
+        markdownRTL: false,
         loading: "",
         extension: null,
         webExtensionMode: false,
