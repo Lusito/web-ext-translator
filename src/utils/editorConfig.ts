@@ -49,7 +49,7 @@ export function parseEditorConfig(data: string) {
     };
 
     for (const [ pattern, props ] of parseString(data)) {
-        // Preable has null pattern
+        // Preamble has null pattern
         if (pattern === null) {
             if (props.root === "true") {
                 parsedConfig.root = true;
@@ -111,7 +111,7 @@ export function parseEditorConfig(data: string) {
 }
 
 // Takes an array of EditorConfig objects and a path, loops through each
-// section within each config until all props from matching section are
+// section within each config until all props from matching sections are
 // reduced to a single set of props.
 export function getEditorConfigPropsForPath(editorConfigs: EditorConfig[], path: string) {
     let matchedSection: (EditorConfigSectionProps | undefined);
