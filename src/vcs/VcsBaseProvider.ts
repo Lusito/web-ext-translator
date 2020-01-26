@@ -4,6 +4,8 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
+import { EditorConfigSectionProps } from "../utils/editorConfig";
+
 import store from "../store";
 import { normalizeLanguages } from "../utils/normalizeLanguages";
 import { parseMessagesFile } from "../utils/parseMessagesFile";
@@ -19,6 +21,7 @@ export interface VcsInfo {
 export interface VcsLanguageFile {
     locale: string;
     contents: string;
+    editorConfig?: EditorConfigSectionProps;
 }
 
 export interface VcsFetchResult {
@@ -50,7 +53,11 @@ export abstract class VcsBaseProvider {
             store.dispatch({ type: "SET_LOADING", payload: `Importing ${vcsInfo.repository} from ${this.getName()}` });
 
             this.fetch(vcsInfo).then((result) => {
-                const languages = result.files.map((file) => parseMessagesFile(file.locale.replace(/_/g, "-"), file.contents));
+                const languages = result.files.map((file) => {
+                   const messagesFile = parseMessagesFile(file.locale.replace(/_/g, "-"), file.contents);
+                   messagesFile.editorConfig = file.editorConfig;
+                   return messagesFile;
+                });
                 const mainLanguage = languages.find((r) => r.locale === result.defaultLocale) || null;
                 if (!mainLanguage)
                     throw new Error("Could not locate main language");

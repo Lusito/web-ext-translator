@@ -4,6 +4,8 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
+import { EditorConfigSectionProps } from "./utils/editorConfig";
+
 export enum WetMessageType {
     GROUP,
     COMMENT,
@@ -24,6 +26,7 @@ export interface WetLanguage {
     label: string;
     messages: WetMessage[];
     messagesByKey: { [s: string]: WetMessage };
+    editorConfig?: EditorConfigSectionProps;
 }
 
 export interface WetPlaceholder {

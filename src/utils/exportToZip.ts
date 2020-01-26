@@ -74,7 +74,7 @@ function serializeMessageSingleLine(mainMessage: WetMessage, writeHash: boolean,
 export function serializeMessages(language: WetLanguage, mainLanguage: WetLanguage) {
     const formatterMessage = mainLanguage.messagesByKey.__WET_FORMATTER__;
     const singleLine = formatterMessage && formatterMessage.message === "single_line";
-    const codeWriter = new CodeWriter();
+    const codeWriter = new CodeWriter(language.editorConfig);
     let addEmptyLineBeforeGroup = false;
     codeWriter.begin("{");
     for (const mainMessage of mainLanguage.messages) {
