@@ -58,24 +58,27 @@ export function parseEditorConfig(data: string) {
 
         const parsedProps: KnownProps = {};
 
-        if (props.indent_style === "tab" || props.indent_style === "space") {
+        if (props.indent_style === "tab" || props.indent_style === "space" || props.indent_style === "unset") {
             parsedProps.indent_style = props.indent_style;
         }
         if ("indent_size" in props) {
+            if (props.indent_size === "unset") {
+                parsedProps.indent_size = props.indent_size;
+            }
             const indentSize = Number(props.indent_size);
             if (!isNaN(indentSize)) {
                 parsedProps.indent_size = indentSize;
             }
         }
-        if (props.end_of_line === "lf" || props.end_of_line === "crlf") {
+        if (props.end_of_line === "lf" || props.end_of_line === "crlf" || props.end_of_line === "unset") {
             parsedProps.end_of_line = props.end_of_line;
         }
-        if ("insert_final_newline" in props) {
-            if (props.insert_final_newline === "true") {
-                parsedProps.insert_final_newline = true;
-            } else if (props.insert_final_newline === "false") {
-                parsedProps.insert_final_newline = false;
-            }
+        if (props.insert_final_newline === "true") {
+            parsedProps.insert_final_newline = true;
+        } else if (props.insert_final_newline === "false") {
+            parsedProps.insert_final_newline = false;
+        } else if (props.insert_final_newline === "unset") {
+            parsedProps.insert_final_newline = props.insert_final_newline;
         }
 
         parsedConfig.sections.push({
