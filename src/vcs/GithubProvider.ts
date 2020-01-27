@@ -12,6 +12,10 @@ function responseToJSON(response: Response) {
     return response.text().then((text) => parseJsonFile(response.url, text));
 }
 
+function responseToText(response: Response) {
+    return response.text();
+}
+
 export class GithubProvider extends VcsBaseProvider {
 
     protected getName() {
@@ -54,20 +58,20 @@ export class GithubProvider extends VcsBaseProvider {
             const editorConfigFetches: Array<Promise<string>> = [];
             const editorConfigPaths = getEditorConfigPaths(paths, localesPath);
             for (const path of editorConfigPaths) {
-                editorConfigFetches.push(fetch(`${repoPrefixRaw}/${path}`).then((res) => res.text()));
+                editorConfigFetches.push(fetch(`${repoPrefixRaw}/${path}`).then(responseToText));
             }
 
             return Promise.all([
                 ...fetches,
                 Promise.all(editorConfigFetches)
             ]);
-        }).then((results: any[]) => {
-            defaultLocale = results[0].default_locale;
-            const locales: string[] = results[1].filter((v: { type: string }) => v.type === "dir").map((v: { name: string }) => v.name);
+        }).then(([ manifestResult, localesResult, editorConfigResult ]: any[]) => {
+            defaultLocale = manifestResult.default_locale;
+            const locales: string[] = localesResult.filter((v: { type: string }) => v.type === "dir").map((v: { name: string }) => v.name);
 
             let parsedEditorConfigs: EditorConfig[] = [];
-            if (results[2] && results[2].length) {
-                parsedEditorConfigs = results[2]
+            if (editorConfigResult && editorConfigResult.length) {
+                parsedEditorConfigs = editorConfigResult
                     .map((configText: string) => parseEditorConfig(configText));
             }
 
