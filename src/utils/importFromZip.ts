@@ -19,7 +19,7 @@ export function importFromZip(zipFile: File) {
             const locales = zip.folder("_locales");
             const manifestFile = zip.file("manifest.json");
             const editorConfigPaths = getEditorConfigPaths(Object.keys(zip.files), "_locales");
-            const editorConfigFiles = locales.filter((path, file) => editorConfigPaths.indexOf(file.name) > -1);
+            const editorConfigFiles = zip.filter((path, file) => editorConfigPaths.indexOf(file.name) > -1);
             manifestFile.async("text").then((manifestContent) => {
                 const manifest = parseJsonFile("manifest.json", manifestContent) as any;
                 const promises: Array<Promise<WetLanguage>> = [];
