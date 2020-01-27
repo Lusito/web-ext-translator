@@ -5,7 +5,7 @@
  */
 
 import { WetLanguage, WetMessageType, WetMessage } from "../wetInterfaces";
-import { CodeWriter } from "./CodeWriter";
+import { CodeWriter, CodeWriterOptions } from "./CodeWriter";
 
 import * as JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -74,7 +74,28 @@ function serializeMessageSingleLine(mainMessage: WetMessage, writeHash: boolean,
 export function serializeMessages(language: WetLanguage, mainLanguage: WetLanguage) {
     const formatterMessage = mainLanguage.messagesByKey.__WET_FORMATTER__;
     const singleLine = formatterMessage && formatterMessage.message === "single_line";
-    const codeWriter = new CodeWriter(language.editorConfig);
+
+    const codeWriterOptions: CodeWriterOptions = {};
+    if (language.editorConfig) {
+        if (language.editorConfig.end_of_line === "lf") {
+            codeWriterOptions.lineSeparator = "\n";
+        } else if (language.editorConfig.end_of_line === "crlf") {
+            codeWriterOptions.lineSeparator = "\r\n";
+        }
+        if (language.editorConfig.indent_style === "tab") {
+            codeWriterOptions.indentationStep = "\t";
+        } else if (typeof language.editorConfig.indent_size === "number") {
+            for (let i = 0; i < language.editorConfig.indent_size; i++) {
+                codeWriterOptions.indentationStep += " ";
+            }
+        }
+        if (typeof language.editorConfig.insert_final_newline === "boolean") {
+            codeWriterOptions.insertFinalNewline = language.editorConfig.insert_final_newline;
+        }
+    }
+
+    const codeWriter = new CodeWriter(codeWriterOptions);
+
     let addEmptyLineBeforeGroup = false;
     codeWriter.begin("{");
     for (const mainMessage of mainLanguage.messages) {
