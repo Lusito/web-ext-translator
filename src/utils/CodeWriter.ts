@@ -16,20 +16,14 @@ export class CodeWriter {
     private commentLines = 0;
     private indentation = "";
 
-    private lineSeparator: string = "\n";
-    private indentationStep: string = "    ";
-    private insertFinalNewline: boolean = true;
+    private lineSeparator: string;
+    private indentationStep: string;
+    private insertFinalNewline: boolean;
 
-    constructor (options: CodeWriterOptions) {
-        if (options.lineSeparator) {
-            this.lineSeparator = options.lineSeparator;
-        }
-        if (options.indentationStep) {
-            this.indentationStep = options.indentationStep;
-        }
-        if (options.insertFinalNewline !== undefined) {
-            this.insertFinalNewline = options.insertFinalNewline;
-        }
+    constructor ({ lineSeparator = "\n", indentationStep = "    ", insertFinalNewline = true }: CodeWriterOptions) {
+        this.lineSeparator = lineSeparator;
+        this.indentationStep = indentationStep;
+        this.insertFinalNewline = insertFinalNewline;
     }
 
     public begin(line: string) {
