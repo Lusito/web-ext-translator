@@ -14,43 +14,55 @@ import { createAlertDialog } from "../components/Dialogs/AlertDialog";
 import { getEditorConfigPaths, parseEditorConfig, getEditorConfigPropsForPath } from "../utils/editorConfig";
 
 export function importFromZip(zipFile: File) {
-    if (zipFile.name.toLowerCase().endsWith(".zip")) {
-        JSZip.loadAsync(zipFile).then((zip) => {
-            const locales = zip.folder("_locales");
-            const manifestFile = zip.file("manifest.json");
-            const editorConfigPaths = getEditorConfigPaths(Object.keys(zip.files), "_locales");
-            const editorConfigFiles = zip.filter((path, file) => editorConfigPaths.indexOf(file.name) > -1);
-            manifestFile.async("text").then((manifestContent) => {
-                const manifest = parseJsonFile("manifest.json", manifestContent) as any;
-                const promises: Array<Promise<WetLanguage>> = [];
-                Promise.all(editorConfigFiles.map(async (file) => {
-                    const fileContent = await file.async("text");
-                    return parseEditorConfig(fileContent);
-                })).then((parsedEditorConfigs) => {
-                    locales.forEach((relativePath, zipEntry) => {
-                        if (zipEntry.dir) {
-                            const localeDir = zip.folder(zipEntry.name);
-                            const msgFile = localeDir.file("messages.json");
-                            const section = getEditorConfigPropsForPath(parsedEditorConfigs, `${relativePath}/messages.json`);
-                            if (msgFile)
-                                promises.push(msgFile.async("text").then((s) => parseMessagesFile(relativePath.substr(0, relativePath.length - 1), s, section)));
-                        }
-                    });
-                    Promise.all(promises).then((languages) => {
-                        const mainLanguage = languages.find((r) => r.locale === manifest.default_locale) || null;
-                        if (mainLanguage) {
-                            normalizeLanguages(languages, mainLanguage);
-                            store.dispatch({ type: "LOAD", payload: { languages, mainLanguage } });
-                        }
-                    });
-                });
-            });
-        }, (e) => {
-            console.error("Error reading " + zipFile.name + ": " + e.message);
-            store.dispatch({ type: "SHOW_DIALOG", payload: createAlertDialog("Something went wrong!", `Error reading ${zipFile.name}: ${e.message}`) });
-        });
-    } else {
+    if (!zipFile.name.toLowerCase().endsWith(".zip")) {
         console.error("Not a zip: " + zipFile.name);
         store.dispatch({ type: "SHOW_DIALOG", payload: createAlertDialog("Something went wrong!", `Not a zip: ${zipFile.name}`) });
+        return;
     }
+
+    JSZip.loadAsync(zipFile).then(async (zip) => {
+        const localesFolder = zip.folder("_locales");
+        const manifestFile = zip.file("manifest.json");
+        const manifest = parseJsonFile("manifest.json", await manifestFile.async("text")) as any;
+
+        const languagePromises: Array<Promise<WetLanguage>> = [];
+
+        localesFolder.forEach((relativePath, zipEntry) => {
+            if (!zipEntry.dir) {
+                return;
+            }
+
+            const localeFolder = zip.folder(zipEntry.name);
+            const messagesFile = localeFolder.file("messages.json");
+
+            if (!messagesFile) {
+                return;
+            }
+
+            languagePromises.push((async () => {
+                const editorConfigPaths = getEditorConfigPaths(Object.keys(zip.files), localeFolder.name);
+                const editorConfigFiles = zip.filter((path, file) => editorConfigPaths.indexOf(file.name) > -1);
+
+                const parsedEditorConfigs = await Promise.all(
+                        editorConfigFiles.map(async (file) => {
+                            const fileContent = await file.async("text");
+                            return parseEditorConfig(fileContent);
+                        }));
+
+                const section = getEditorConfigPropsForPath(parsedEditorConfigs, `${relativePath}/messages.json`);
+                const messagesContent = await messagesFile.async("text");
+                return parseMessagesFile(relativePath.substr(0, relativePath.length - 1), messagesContent, section);
+            })());
+        });
+
+        const languages = await Promise.all(languagePromises);
+        const mainLanguage = languages.find((r) => r.locale === manifest.default_locale) || null;
+        if (mainLanguage) {
+            normalizeLanguages(languages, mainLanguage);
+            store.dispatch({ type: "LOAD", payload: { languages, mainLanguage } });
+        }
+    }, (e) => {
+        console.error("Error reading " + zipFile.name + ": " + e.message);
+        store.dispatch({ type: "SHOW_DIALOG", payload: createAlertDialog("Something went wrong!", `Error reading ${zipFile.name}: ${e.message}`) });
+    });
 }
