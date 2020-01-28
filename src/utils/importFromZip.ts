@@ -44,10 +44,7 @@ export function importFromZip(zipFile: File) {
                 const editorConfigFiles = zip.filter((path, file) => editorConfigPaths.indexOf(file.name) > -1);
 
                 const parsedEditorConfigs = await Promise.all(
-                        editorConfigFiles.map(async (file) => {
-                            const fileContent = await file.async("text");
-                            return parseEditorConfig(fileContent);
-                        }));
+                        editorConfigFiles.map((file) => file.async("text").then(parseEditorConfig)));
 
                 const messagesContent = await messagesFile.async("text");
                 const language = parseMessagesFile(relativePath.substr(0, relativePath.length - 1), messagesContent);

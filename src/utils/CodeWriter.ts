@@ -46,6 +46,10 @@ export class CodeWriter {
             this.lastIsEmpty = false;
         }
 
+        if (this.indentation.length < this.indentationStep.length) {
+            throw new Error("Indentation too low");
+        }
+
         this.indentation = this.indentation.substr(0, this.indentation.length - this.indentationStep.length);
         this.lines.push(this.indentation + line);
     }
