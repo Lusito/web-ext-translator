@@ -64,10 +64,11 @@ export function parseEditorConfig(data: string) {
         if ("indent_size" in props) {
             if (props.indent_size === "unset") {
                 parsedProps.indent_size = props.indent_size;
-            }
-            const indentSize = Number(props.indent_size);
-            if (!isNaN(indentSize)) {
-                parsedProps.indent_size = indentSize;
+            } else {
+                const indentSize = Number(props.indent_size);
+                if (!isNaN(indentSize)) {
+                    parsedProps.indent_size = indentSize;
+                }
             }
         }
         if (props.end_of_line === "lf" || props.end_of_line === "crlf" || props.end_of_line === "unset") {
