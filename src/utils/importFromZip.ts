@@ -40,7 +40,7 @@ export function importFromZip(zipFile: File) {
             }
 
             languagePromises.push((async () => {
-                const editorConfigPaths = getEditorConfigPaths(Object.keys(zip.files), localeFolder.name);
+                const editorConfigPaths = getEditorConfigPaths(Object.keys(zip.files), zipEntry.name);
                 const editorConfigFiles = zip.filter((path, file) => editorConfigPaths.indexOf(file.name) > -1);
 
                 const parsedEditorConfigs = await Promise.all(

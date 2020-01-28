@@ -95,7 +95,7 @@ export function getEditorConfigPropsForPath(editorConfigs: EditorConfig[], path:
     let matchedSection: (EditorConfigSectionProps | undefined);
 
     for (const nextConfig of editorConfigs) {
-        for (const { pattern, props } of nextConfig.sections) {
+        for (const { pattern, props } of nextConfig.sections.slice().reverse()) {
             const minimatch = new Minimatch(pattern, { matchBase: true });
             if (minimatch.match(path)) {
                 // If prop has already been set, it has precedence from a nearer config
