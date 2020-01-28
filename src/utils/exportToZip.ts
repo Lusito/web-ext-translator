@@ -85,6 +85,7 @@ export function serializeMessages(language: WetLanguage, mainLanguage: WetLangua
         if (language.editorConfig.indent_style === "tab") {
             codeWriterOptions.indentationStep = "\t";
         } else if (typeof language.editorConfig.indent_size === "number") {
+            codeWriterOptions.indentationStep = "";
             for (let i = 0; i < language.editorConfig.indent_size; i++) {
                 codeWriterOptions.indentationStep += " ";
             }
