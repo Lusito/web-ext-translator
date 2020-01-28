@@ -57,39 +57,53 @@ export class GithubProvider extends VcsBaseProvider {
         const defaultLocale = manifestResult.default_locale;
         const locales: string[] = localesResult.filter((v: { type: string }) => v.type === "dir").map((v: { name: string }) => v.name);
 
-        const fetches = locales.map(async (locale) => {
+        const editorConfigCache = new Map<string, Promise<string>>();
+
+        const fetches: Array<Promise<VcsLanguageFile>> = [];
+        for (const locale of locales) {
             const localePath = `${localesPath}/${locale}`;
             const messagesPath = `${localePath}/messages.json`;
 
             const editorConfigFetches: Array<Promise<string>> = [];
             const editorConfigPaths = getEditorConfigPaths(paths, localePath);
             for (const path of editorConfigPaths) {
-                editorConfigFetches.push(fetch(`${repoPrefixRaw}/${path}`).then(responseToText));
+                if (editorConfigCache.has(path)) {
+                    const promise = editorConfigCache.get(path);
+                    if (promise) {
+                        editorConfigFetches.push(promise);
+                    }
+                } else {
+                    const promise = fetch(`${repoPrefixRaw}/${path}`).then(responseToText);
+                    editorConfigCache.set(path, promise);
+                    editorConfigFetches.push(promise);
+                }
             }
 
-            const [ messagesContents, editorConfigContents ] = await Promise.all([
-                fetch(`${repoPrefixRaw}/${messagesPath}`).then(responseToText),
-                Promise.all(editorConfigFetches)
-            ]);
+            fetches.push((async () => {
+                const [ messagesContents, editorConfigContents ] = await Promise.all([
+                    fetch(`${repoPrefixRaw}/${messagesPath}`).then(responseToText),
+                    Promise.all(editorConfigFetches)
+                ]);
 
-            let parsedEditorConfigs: EditorConfig[] = [];
-            if (editorConfigContents && editorConfigContents.length) {
-                parsedEditorConfigs = editorConfigContents
-                    .map((configText) => parseEditorConfig(configText));
-            }
+                let parsedEditorConfigs: EditorConfig[] = [];
+                if (editorConfigContents && editorConfigContents.length) {
+                    parsedEditorConfigs = editorConfigContents
+                        .map((configText) => parseEditorConfig(configText));
+                }
 
-            const ret: VcsLanguageFile = {
-                locale,
-                contents: messagesContents
-            };
+                const ret: VcsLanguageFile = {
+                    locale,
+                    contents: messagesContents
+                };
 
-            const section = getEditorConfigPropsForPath(parsedEditorConfigs, messagesPath);
-            if (section) {
-                ret.editorConfig = section;
-            }
+                const section = getEditorConfigPropsForPath(parsedEditorConfigs, messagesPath);
+                if (section) {
+                    ret.editorConfig = section;
+                }
 
-            return ret;
-        });
+                return ret;
+            })());
+        }
 
         const files = await Promise.all(fetches);
 
