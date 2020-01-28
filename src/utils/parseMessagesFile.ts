@@ -6,7 +6,6 @@
 
 import { WetMessage, WetPlaceholder, WetLanguage, WetMessageType } from "../wetInterfaces";
 import { JsonTokenizer } from "./JsonTokenizer";
-import { EditorConfigSectionProps } from "./editorConfig";
 
 function parsePlaceholder(tokenizer: JsonTokenizer) {
     const name = tokenizer.expectValueToken("string");
@@ -90,17 +89,13 @@ function parseMessage(tokenizer: JsonTokenizer, name: string) {
     return result;
 }
 
-export function parseMessagesFile(locale: string, fileContent: string, editorConfig?: EditorConfigSectionProps) {
+export function parseMessagesFile(locale: string, fileContent: string) {
     const language: WetLanguage = {
         locale,
         label: locale,
         messages: [],
         messagesByKey: {}
     };
-
-    if (editorConfig) {
-        language.editorConfig = editorConfig;
-    }
 
     const tokenizer = new JsonTokenizer(`${locale}/messages.json`, fileContent);
     tokenizer.expectCharToken("{");

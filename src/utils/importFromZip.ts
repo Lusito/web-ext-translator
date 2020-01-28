@@ -49,9 +49,14 @@ export function importFromZip(zipFile: File) {
                             return parseEditorConfig(fileContent);
                         }));
 
-                const section = getEditorConfigPropsForPath(parsedEditorConfigs, `${relativePath}/messages.json`);
                 const messagesContent = await messagesFile.async("text");
-                return parseMessagesFile(relativePath.substr(0, relativePath.length - 1), messagesContent, section);
+                const language = parseMessagesFile(relativePath.substr(0, relativePath.length - 1), messagesContent);
+                const section = getEditorConfigPropsForPath(parsedEditorConfigs, `${relativePath}/messages.json`);
+                if (section) {
+                    language.editorConfig = section;
+                }
+
+                return language;
             })());
         });
 
