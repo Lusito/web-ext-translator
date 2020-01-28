@@ -38,62 +38,61 @@ export class GithubProvider extends VcsBaseProvider {
         return null;
     }
 
-    protected fetch(info: VcsInfo): Promise<VcsFetchResult> {
+    protected async fetch(info: VcsInfo): Promise<VcsFetchResult> {
         const repoPrefixRaw = `https://raw.githubusercontent.com/${info.user}/${info.repository}/${info.branch}`;
         const repoPrefixApi = `https://api.github.com/repos/${info.user}/${info.repository}`;
 
-        let localesPath = "";
-        let defaultLocale = "";
-        return fetch(`${repoPrefixApi}/git/trees/${info.branch}?recursive=1`).then(responseToJSON).then((jsonData: any) => {
-            // Just in case, there are multiple _locales directories, choose the shortest path, as it's probably the right one.
-            const paths = jsonData.tree.map((e: any) => e.path);
-            localesPath = this.getShortestPathForName(paths, "_locales");
-            const manifestPath = this.getShortestPathForName(paths, "manifest.json");
+        const jsonData: any = await fetch(`${repoPrefixApi}/git/trees/${info.branch}?recursive=1`).then(responseToJSON);
 
-            const fetches = [
-                fetch(`${repoPrefixRaw}/${manifestPath}`).then(responseToJSON),
-                fetch(`${repoPrefixApi}/contents/${localesPath}?ref=${info.branch}`).then(responseToJSON)
-            ];
+        // Just in case, there are multiple _locales directories, choose the shortest path, as it's probably the right one.
+        const paths = jsonData.tree.map((e: any) => e.path);
+        const localesPath = this.getShortestPathForName(paths, "_locales");
+        const manifestPath = this.getShortestPathForName(paths, "manifest.json");
+
+        const [ manifestResult, localesResult ]: any[] = await Promise.all([
+            fetch(`${repoPrefixRaw}/${manifestPath}`).then(responseToJSON),
+            fetch(`${repoPrefixApi}/contents/${localesPath}?ref=${info.branch}`).then(responseToJSON)
+        ]);
+
+        const defaultLocale = manifestResult.default_locale;
+        const locales: string[] = localesResult.filter((v: { type: string }) => v.type === "dir").map((v: { name: string }) => v.name);
+
+        const fetches = locales.map(async (locale) => {
+            const localePath = `${localesPath}/${locale}`;
+            const messagesPath = `${localePath}/messages.json`;
 
             const editorConfigFetches: Array<Promise<string>> = [];
-            const editorConfigPaths = getEditorConfigPaths(paths, localesPath);
+            const editorConfigPaths = getEditorConfigPaths(paths, localePath);
             for (const path of editorConfigPaths) {
                 editorConfigFetches.push(fetch(`${repoPrefixRaw}/${path}`).then(responseToText));
             }
 
-            return Promise.all([
-                ...fetches,
+            const [ messagesContents, editorConfigContents ] = await Promise.all([
+                fetch(`${repoPrefixRaw}/${messagesPath}`).then(responseToText),
                 Promise.all(editorConfigFetches)
             ]);
-        }).then(([ manifestResult, localesResult, editorConfigResult ]: any[]) => {
-            defaultLocale = manifestResult.default_locale;
-            const locales: string[] = localesResult.filter((v: { type: string }) => v.type === "dir").map((v: { name: string }) => v.name);
 
             let parsedEditorConfigs: EditorConfig[] = [];
-            if (editorConfigResult && editorConfigResult.length) {
-                parsedEditorConfigs = editorConfigResult
-                    .map((configText: string) => parseEditorConfig(configText));
+            if (editorConfigContents && editorConfigContents.length) {
+                parsedEditorConfigs = editorConfigContents
+                    .map((configText) => parseEditorConfig(configText));
             }
 
-            const fetches = locales.map((locale) => {
-                const localePath = `${localesPath}/${locale}/messages.json`;
+            const ret: VcsLanguageFile = {
+                locale,
+                contents: messagesContents
+            };
 
-                return fetch(`${repoPrefixRaw}/${localePath}`)
-                    .then((response) => response.text())
-                    .then((contents) => {
-                        const ret: VcsLanguageFile  = { locale, contents };
+            const section = getEditorConfigPropsForPath(parsedEditorConfigs, messagesPath);
+            if (section) {
+                ret.editorConfig = section;
+            }
 
-                        const section = getEditorConfigPropsForPath(parsedEditorConfigs, localePath);
-                        if (section) {
-                            ret.editorConfig = section;
-                        }
-
-                        return ret;
-                    });
-            });
-            return Promise.all(fetches);
-        }).then((files) => {
-            return { files, defaultLocale };
+            return ret;
         });
+
+        const files = await Promise.all(fetches);
+
+        return { files, defaultLocale };
     }
 }
