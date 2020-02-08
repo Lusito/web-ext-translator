@@ -61,14 +61,12 @@ export function parseEditorConfig(data: string) {
         if (props.indent_style === "tab" || props.indent_style === "space" || props.indent_style === "unset") {
             parsedProps.indent_style = props.indent_style;
         }
-        if ("indent_size" in props) {
-            if (props.indent_size === "unset") {
-                parsedProps.indent_size = props.indent_size;
-            } else {
-                const indentSize = Number(props.indent_size);
-                if (!isNaN(indentSize)) {
-                    parsedProps.indent_size = indentSize;
-                }
+        if (props.indent_size === "unset") {
+            parsedProps.indent_size = props.indent_size;
+        } else if ("indent_size" in props) {
+            const indentSize = Number(props.indent_size);
+            if (!isNaN(indentSize)) {
+                parsedProps.indent_size = indentSize;
             }
         }
         if (props.end_of_line === "lf" || props.end_of_line === "crlf" || props.end_of_line === "unset") {
@@ -82,7 +80,7 @@ export function parseEditorConfig(data: string) {
             parsedProps.insert_final_newline = props.insert_final_newline;
         }
 
-        parsedConfig.sections.push({
+        parsedConfig.sections.unshift({
             pattern,
             props: parsedProps
         });
@@ -95,17 +93,10 @@ export function getEditorConfigPropsForPath(editorConfigs: EditorConfig[], path:
     let matchedSection: (EditorConfigSectionProps | undefined);
 
     for (const nextConfig of editorConfigs) {
-        for (const { pattern, props } of nextConfig.sections.slice().reverse()) {
+        for (const { pattern, props } of nextConfig.sections) {
             const minimatch = new Minimatch(pattern, { matchBase: true });
             if (minimatch.match(path)) {
-                // If prop has already been set, it has precedence from a nearer config
-                for (const prop in props) {
-                    if (matchedSection && (prop in matchedSection)) {
-                        delete props[prop];
-                    }
-                }
-
-                matchedSection = { ...matchedSection, ...props };
+                matchedSection = { ...props, ...matchedSection };
             }
         }
 
