@@ -58,23 +58,23 @@ export class GithubProvider extends VcsBaseProvider {
             .filter((v: { type: string }) => v.type === "dir")
             .map((v: { name: string }) => v.name);
 
-        const configMap = new Map<string, Promise<EditorConfig>>();
+        const configCache = new Map<string, Promise<EditorConfig>>();
         const fetches: Array<Promise<VcsLanguageFile>> = locales.map(async (locale) => {
             const localePath = `${localesPath}/${locale}`;
             const messagesPath = `${localePath}/messages.json`;
-            const configPaths = getEditorConfigPaths(paths, localePath);
 
-            for (const path of configPaths) {
-                if (configMap.has(path)) {
-                    continue;
+            const matchedConfigs = getEditorConfigPaths(paths, localePath).map((path) => {
+                if (!configCache.has(path)) {
+                    configCache.set(path, fetch(`${repoPrefixRaw}/${path}`)
+                        .then(responseToText)
+                        .then(parseEditorConfig));
                 }
-                configMap.set(path, fetch(`${repoPrefixRaw}/${path}`)
-                    .then(responseToText)
-                    .then(parseEditorConfig));
-            }
+
+                return configCache.get(path)!;
+            });
 
             const [ parsedConfigs, contents ] = await Promise.all([
-                Promise.all(configPaths.map((path) => configMap.get(path)!)),
+                Promise.all(matchedConfigs),
                 fetch(`${repoPrefixRaw}/${messagesPath}`)
                     .then(responseToText)
             ]);
