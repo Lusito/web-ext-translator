@@ -21,6 +21,7 @@ export function importFromZip(zipFile: File) {
     }
 
     JSZip.loadAsync(zipFile).then(async (zip) => {
+        const paths = Object.keys(zip.files);
         const localesFolder = zip.folder("_locales");
         const manifestFile = zip.file("manifest.json");
         if (!manifestFile) {
@@ -28,41 +29,37 @@ export function importFromZip(zipFile: File) {
         }
 
         const manifest = parseJsonFile("manifest.json", await manifestFile.async("text")) as any;
-        const languagePromises: Array<Promise<WetLanguage>> = [];
 
-        const parsedEditorConfigs = new Map<string, EditorConfig>();
+        const configCache = new Map<string, EditorConfig>();
+        const languagePromises: Array<Promise<WetLanguage>> = [];
 
         localesFolder.forEach((relativePath, zipEntry) => {
             if (!zipEntry.dir) {
                 return;
             }
 
-            const localeFolder = zip.folder(zipEntry.name);
-            const messagesFile = localeFolder.file("messages.json");
+            const locale = relativePath.slice(0, -1);
+            const localePath = zipEntry.name.slice(0, -1);
+
+            const messagesPath = `${localePath}/messages.json`;
+            const messagesFile = zip.file(messagesPath);
             if (!messagesFile) {
                 return;
             }
 
             languagePromises.push((async () => {
-                const editorConfigFiles = getEditorConfigPaths(Object.keys(zip.files), zipEntry.name)
-                    .map((path) => zip.file(path));
-
-                const matchedConfigs = await Promise.all(editorConfigFiles.map(async (file) => {
-                    if (parsedEditorConfigs.has(file.name)) {
-                        return parsedEditorConfigs.get(file.name)!;
+                const configPaths = getEditorConfigPaths(paths, localePath);
+                const matchedConfigs = await Promise.all(configPaths.map(async (path) => {
+                    const file = zip.file(path);
+                    if (!configCache.has(path)) {
+                        configCache.set(path, parseEditorConfig(await file.async("text")));
                     }
-                    const parsedConfig = parseEditorConfig(await file.async("text"));
-                    parsedEditorConfigs.set(file.name, parsedConfig);
-                    return parsedConfig;
+                    return configCache.get(path)!;
                 }));
 
                 const messagesContent = await messagesFile.async("text");
-                const language = parseMessagesFile(relativePath.substr(0, relativePath.length - 1), messagesContent);
-
-                const section = getEditorConfigPropsForPath(matchedConfigs, `${relativePath}/messages.json`);
-                if (section) {
-                    language.editorConfig = section;
-                }
+                const language = parseMessagesFile(locale, messagesContent);
+                language.editorConfig = getEditorConfigPropsForPath(matchedConfigs, messagesPath);
 
                 return language;
             })());
