@@ -18,7 +18,7 @@ function parseArray(tokenizer: JsonTokenizer) {
 }
 
 function parseObject(tokenizer: JsonTokenizer) {
-    const result = {};
+    const result: {[s: string]: JsonValue} = {};
     do {
         const key = tokenizer.tryValueToken("string");
         if (key === undefined)

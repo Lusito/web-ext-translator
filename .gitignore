@@ -3,6 +3,7 @@
 
 ### Generated files ####
 dist/
+.cache
 target/
 bin/
 jdeploy-bundle/

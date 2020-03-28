@@ -5,9 +5,10 @@
  */
 
 // tslint:disable-next-line:no-submodule-imports
+import "regenerator-runtime";
 import "font-awesome/css/font-awesome.min.css";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React from "react";
+import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import store from "./store";
 import "./style.css";

@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import * as React from "react";
+import React from "react";
 import "./style.css";
 import { LoadedExtension } from "../../../shared";
 import { TranslationTableRow } from "../TranslationTableRow";

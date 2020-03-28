@@ -35,7 +35,6 @@ declare module 'country-list' {
          */
         getData(): Array<{ code: string, name: string }>;
     }
-    function CountryList(): CountryListInterface;
-    namespace CountryList { }
-    export = CountryList;
+    const countryList: CountryListInterface;
+    export default countryList;
 }

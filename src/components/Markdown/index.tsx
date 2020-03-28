@@ -4,10 +4,10 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import * as React from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { State } from "../../shared";
-import * as MarkdownIt from "markdown-it";
+import MarkdownIt from "markdown-it";
 import { WetAppBridge } from "../../wetInterfaces";
 
 const md = new MarkdownIt();

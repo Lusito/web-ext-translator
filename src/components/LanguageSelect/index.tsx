@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import * as React from "react";
+import React from "react";
 import "./style.css";
 import { WetAction } from "../../actions";
 import { connect } from "react-redux";
@@ -19,7 +19,7 @@ function validateLocale(value: string) {
     const result = localeCodeToEnglish(value);
     return {
         valid: result.found,
-        message: result.found ? result.name : result.error
+        message: result.found === false ? result.error : result.name
     };
 }
 

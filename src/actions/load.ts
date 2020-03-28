@@ -23,7 +23,7 @@ export interface WetActionLoad {
 }
 
 export function handleLoad(state: State, payload: WetActionLoadPayload): State {
-    const languages = {};
+    const languages: {[locale:string]: WetLanguage} = {};
     payload.languages.forEach((lang) => languages[lang.locale] = lang);
     const firstLocale = payload.mainLanguage.locale;
     const secondLocale = payload.languages.map((l) => l.locale).find((l) => l !== firstLocale) || null;

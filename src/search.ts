@@ -23,11 +23,11 @@ function updateSearchConfig() {
     currentData.element = currentData.searchableElements[0];
     currentData.offset = 0;
     const selection = window.getSelection();
-    if (selection && selection.baseNode && selection.baseNode.nodeType === 3) {
-        const el = selection.baseNode.parentElement;
+    if (selection && selection.anchorNode && selection.anchorNode.nodeType === 3) {
+        const el = selection.anchorNode.parentElement;
         if (el && el.className.includes("translation-table-body__")) {
             currentData.element = el;
-            currentData.offset = selection.baseOffset;
+            currentData.offset = selection.anchorOffset;
             isDone = true;
         }
     }
@@ -64,7 +64,7 @@ function setSelection(start: number, length: number) {
         pre.style.font = "14px monospace";
         pre.style.whiteSpace = "pre-wrap";
         for (const key in rect)
-            pre.style[key] = `${rect[key]}px`;
+            pre.style[key as keyof typeof rect] = `${rect[key as keyof typeof rect]}px`;
         pre.style.height = "auto";
         const body = document.querySelector(".translation-table-body") as HTMLElement;
         body.appendChild(pre);

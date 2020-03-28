@@ -5,12 +5,11 @@
  */
 
 import { iso_639_1, iso_639_2 } from "iso-639";
-import * as countryList from "country-list";
-const ISO3166_1 = countryList();
+import countryList from "country-list";
 
-type LocaleResult = { found: false, error: string } | { found: true, name: string };
+type LocaleResult = { found?: false, error: string } | { found: true, name: string };
 
-const names = ["en", "de", "fr"];
+const names = ["en", "de", "fr"] as const;
 
 function getIso639Name(locale: string) {
     const first = iso_639_1[locale];
@@ -43,7 +42,7 @@ export function localeCodeToEnglish(loc: string): LocaleResult {
         return { found: false, error: "Language not found in ISO 639" };
 
     if (parts.length === 2) {
-        const country = ISO3166_1.getName(parts[1]);
+        const country = countryList.getName(parts[1]);
         if (!country)
             return { found: false, error: "Country not found in ISO 3166-1" };
         return { found: true, name: language + ", " + country };

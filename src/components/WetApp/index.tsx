@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import * as React from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { State, LoadedExtension } from "../../shared";
 import Toolbar from "../Toolbar";

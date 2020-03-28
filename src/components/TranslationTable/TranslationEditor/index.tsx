@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import * as React from "react";
+import React from "react";
 import "./style.css";
 import { WetAction } from "../../../actions";
 import { connect } from "react-redux";
@@ -104,7 +104,7 @@ function mapDispatchToProps(dispatch: Dispatch<WetAction>): TranslationEditorDis
 }
 
 function mergeProps(stateProps: {}, dispatchProps: TranslationEditorDispatchProps, ownProps: TranslationEditorProps): TranslationEditorMergedProps {
-    const placeholdersMap = {};
+    const placeholdersMap: {[name: string]: string} = {};
     if (ownProps.placeholders) {
         for (const placeholder of ownProps.placeholders) {
             if (placeholder.example)

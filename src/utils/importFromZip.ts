@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import * as JSZip from "jszip";
+import JSZip from "jszip";
 import store from "../store";
 import { createAlertDialog } from "../components/Dialogs/AlertDialog";
 import { getEditorConfigPaths } from "../utils/editorConfig";

@@ -7,7 +7,7 @@
 import { WetLanguage, WetMessageType, WetMessage } from "../wetInterfaces";
 import { CodeWriter } from "./CodeWriter";
 
-import * as JSZip from "jszip";
+import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { toJsonString } from "./toJsonString";
 import { setDirty } from "./setDirty";
