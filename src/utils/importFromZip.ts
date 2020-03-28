@@ -8,7 +8,8 @@ import JSZip from "jszip";
 import store from "../store";
 import { createAlertDialog } from "../components/Dialogs/AlertDialog";
 import { getEditorConfigPaths } from "../utils/editorConfig";
-import { loadFiles, LocaleFile, LoaderFile } from "./loader";
+import { loadFiles } from "./loader";
+import { WetLocaleFile, WetLoaderFile } from "web-ext-translator-shared";
 
 export function importFromZip(zipFile: File) {
     if (!zipFile.name.toLowerCase().endsWith(".zip")) {
@@ -24,7 +25,7 @@ export function importFromZip(zipFile: File) {
         if (!manifestFile)
             throw new Error("Extension manifest not found.");
 
-        const languages: Array<Promise<LocaleFile>> = [];
+        const languages: Array<Promise<WetLocaleFile>> = [];
         const editorConfigsToLoad = new Set<string>();
 
         localesFolder.forEach((relativePath, zipEntry) => {
@@ -37,7 +38,7 @@ export function importFromZip(zipFile: File) {
                     const editorConfigPaths = getEditorConfigPaths(paths, localePath);
                     editorConfigPaths.forEach((path) => editorConfigsToLoad.add(path));
 
-                    languages.push((async (): Promise<LocaleFile> => {
+                    languages.push((async (): Promise<WetLocaleFile> => {
                         return {
                             path: messagesPath,
                             data: await messagesFile.async("text"),
@@ -49,7 +50,7 @@ export function importFromZip(zipFile: File) {
             }
         });
 
-        const editorConfigs: LoaderFile[] = [];
+        const editorConfigs: WetLoaderFile[] = [];
         for (const path of editorConfigsToLoad.values()) {
             editorConfigs.push({
                 path,

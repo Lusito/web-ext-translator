@@ -18,8 +18,8 @@ import { importFromZip } from "../../utils/importFromZip";
 import { createAlertDialog } from "../Dialogs/AlertDialog";
 import { createPromptDialog } from "../Dialogs/PromptDialog";
 import store from "../../store";
-import { WetAppBridge } from "../../wetInterfaces";
-import { loadFromAppBridge, saveToAppBridge } from "../../actions/setAppBridge";
+import { WetAppBridge } from "web-ext-translator-shared";
+import { saveToAppBridge } from "../../actions/setAppBridge";
 import { github } from "../../vcs";
 import { createSubmitDialog } from "../Dialogs/SubmitDialog";
 import { createApplyDialog } from "../Dialogs/ApplyDialog";
@@ -40,7 +40,7 @@ export function Toolbar(props: ToolbarProps) {
     const appBridge = props.appBridge;
     const contextElements = appBridge
         ? [
-            <IconButton key="open" icon="folder-o" tooltip="Open a directory" onClick={() => loadFromAppBridge(appBridge, true)} className="icon-button--toolbar" />,
+            <IconButton key="open" icon="folder-o" tooltip="Open a directory" onClick={() => appBridge.openDirectory()} className="icon-button--toolbar" />,
             <IconButton key="save" icon="floppy-o" tooltip="Save to Disk" onClick={() => saveToAppBridge(appBridge)} className="icon-button--toolbar" />
         ]
         : [

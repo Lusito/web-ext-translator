@@ -8,7 +8,7 @@ import React from "react";
 import "./style.css";
 import { LoadedExtension } from "../../../shared";
 import { TranslationTableRow } from "../TranslationTableRow";
-import { WetMessageType } from "../../../wetInterfaces";
+import { WetMessageType } from "web-ext-translator-shared";
 import { TranslationTablePlus } from "../TranslationTablePlus";
 
 interface TranslationTableBodyProps {

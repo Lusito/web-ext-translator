@@ -25,6 +25,10 @@
     margin-left: -20px;
 }
 
+.icon-button.icon-button--toolbar:last-child:before {
+    margin-left: -90px;
+}
+
 .icon-button.icon-button--toolbar:not(:disabled):hover {
     background-size: 30px;
 }

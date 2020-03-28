@@ -7,7 +7,7 @@
 import { VcsInfo, VcsBaseProvider } from "./VcsBaseProvider";
 import { parseJsonFile } from "../utils/parseJsonFile";
 import { getEditorConfigPaths } from "../utils/editorConfig";
-import { LoaderData, LocaleFile, LoaderFile } from "../utils/loader";
+import { WetLoaderData, WetLocaleFile, WetLoaderFile } from "web-ext-translator-shared";
 
 function responseToJSON(response: Response) {
     return response.text().then((text) => parseJsonFile(response.url, text));
@@ -39,7 +39,7 @@ export class GithubProvider extends VcsBaseProvider {
         return null;
     }
 
-    protected async fetch(info: VcsInfo): Promise<LoaderData> {
+    protected async fetch(info: VcsInfo): Promise<WetLoaderData> {
         const repoPrefixRaw = `https://raw.githubusercontent.com/${info.user}/${info.repository}/${info.branch}`;
         const repoPrefixApi = `https://api.github.com/repos/${info.user}/${info.repository}`;
 
@@ -56,7 +56,7 @@ export class GithubProvider extends VcsBaseProvider {
         const locales = localesResult.filter((v) => v.type === "dir").map((v) => v.name);
 
         const editorConfigsToLoad = new Set<string>();
-        const fetches = locales.map(async (locale): Promise<LocaleFile> => {
+        const fetches = locales.map(async (locale): Promise<WetLocaleFile> => {
             const localePath = `${localesPath}/${locale}`;
             const messagesPath = `${localePath}/messages.json`;
             const editorConfigPaths = getEditorConfigPaths(paths, localePath);
@@ -70,7 +70,7 @@ export class GithubProvider extends VcsBaseProvider {
             };
         });
 
-        const editorConfigs: LoaderFile[] = [];
+        const editorConfigs: WetLoaderFile[] = [];
         for (const path of editorConfigsToLoad.values()) {
             editorConfigs.push({
                 path,

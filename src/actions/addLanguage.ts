@@ -6,7 +6,7 @@
 
 import { State } from "../shared";
 import { localeCodeToEnglish } from "../lib/localeCodeToEnglish";
-import { WetLanguage } from "../wetInterfaces";
+import { WetLanguage } from "web-ext-translator-shared";
 import { setDirty } from "../utils/setDirty";
 
 export interface WetActionAddLanguage {

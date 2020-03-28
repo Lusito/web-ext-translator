@@ -5,7 +5,7 @@
  */
 
 import { State } from "../shared";
-import { WetLanguage } from "../wetInterfaces";
+import { WetLanguage } from "web-ext-translator-shared";
 import { adjustAllHeights } from "../utils/adjustHeights";
 import { VcsInfo } from "../vcs/VcsBaseProvider";
 import { setDirty } from "../utils/setDirty";

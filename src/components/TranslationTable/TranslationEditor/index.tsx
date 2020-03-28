@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { State } from "../../../shared";
 import { adjustHeightsFor } from "../../../utils/adjustHeights";
-import { WetPlaceholder } from "../../../wetInterfaces";
+import { WetPlaceholder } from "web-ext-translator-shared";
 import { isLocaleRTL } from "../../../lib/rtl";
 
 const UNICODE_REGEX = /(\\u[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])/g;

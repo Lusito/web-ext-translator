@@ -17,7 +17,7 @@ function getDefaultState(): State {
         loading: "",
         extension: null,
         webExtensionMode: false,
-        appBridge: null
+        appBridge: (window as any).electronBridge || null
     };
 }
 

@@ -15,7 +15,6 @@ import { State } from "../shared";
 import { WetActionSetMessageValue, handleSetMessageValue } from "./setMessageValue";
 import { WetActionLoad, handleLoad } from "./load";
 import { WetActionSetLoading, handleSetLoading } from "./setLoading";
-import { WetActionSetAppBridge, handleSetAppBridge } from "./setAppBridge";
 import { WetActionEnableWebExtensionMode, handleEnableWebExtensionMode } from "./enableWebExtensionMode";
 import { handleAddMessage, WetActionAddMessage } from "./addMessage";
 
@@ -31,7 +30,6 @@ export type WetAction =
     WetActionHideDialog |
     WetActionLoad |
     WetActionSetLoading |
-    WetActionSetAppBridge |
     WetActionEnableWebExtensionMode;
 
 export function reducer(state: State, action: WetAction) {
@@ -47,7 +45,6 @@ export function reducer(state: State, action: WetAction) {
         case "SET_MARKDOWN": return handleSetMarkdown(state, action.payload);
         case "LOAD": return handleLoad(state, action.payload);
         case "SET_LOADING": return handleSetLoading(state, action.payload);
-        case "SET_APP_BRIDGE": return handleSetAppBridge(state, action.payload);
         case "ENABLE_WEB_EXTENSION_MODE": return handleEnableWebExtensionMode(state);
     }
 

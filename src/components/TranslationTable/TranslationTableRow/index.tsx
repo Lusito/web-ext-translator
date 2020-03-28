@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { WetMessage, WetLanguage } from "../../../wetInterfaces";
+import { WetMessage, WetLanguage } from "web-ext-translator-shared";
 import TranslationEditor from "../TranslationEditor";
 import { hashFor } from "../../../utils/getHashFor";
 import { TranslationTablePlus } from "../TranslationTablePlus";

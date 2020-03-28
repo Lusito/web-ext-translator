@@ -1,6 +1,6 @@
 {
   "name": "web-ext-translator-online",
-  "version": "2.0.11",
+  "version": "3.0.0",
   "private": true,
   "homepage": ".",
   "bugs": {
@@ -13,7 +13,7 @@
   "license": "Zlib",
   "author": "Santo Pfingsten",
   "scripts": {
-    "build": "rimraf docs .cache && tsc --noEmit && parcel build -d docs src/index.html",
+    "build": "rimraf docs .cache && tsc --noEmit && parcel build -d docs --public-url . src/index.html",
     "lint:package": "sort-package-json --check",
     "lint:package:fix": "sort-package-json",
     "start": "parcel src/index.html"
@@ -35,7 +35,8 @@
     "redux": "^4.0.5",
     "regenerator-runtime": "^0.13.5",
     "ts-keycode-enum": "^1.0.6",
-    "ts-loader": "^6.2.2"
+    "ts-loader": "^6.2.2",
+    "web-ext-translator-shared": "^3.0.0"
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.1",

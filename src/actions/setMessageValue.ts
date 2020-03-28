@@ -5,7 +5,7 @@
  */
 
 import { State } from "../shared";
-import { WetMessage, WetMessageType } from "../wetInterfaces";
+import { WetMessage, WetMessageType } from "web-ext-translator-shared";
 import { hashForLanguage } from "../utils/getHashFor";
 import { setDirty } from "../utils/setDirty";
 

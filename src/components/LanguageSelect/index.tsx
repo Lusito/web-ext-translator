@@ -12,7 +12,7 @@ import { Dispatch } from "redux";
 import { State, LoadedExtension } from "../../shared";
 import { localeCodeToEnglish } from "../../lib/localeCodeToEnglish";
 import { createPromptDialog } from "../Dialogs/PromptDialog";
-import { WetLanguage } from "../../wetInterfaces";
+import { WetLanguage } from "web-ext-translator-shared";
 import { isLocaleRTL } from "../../lib/rtl";
 
 function validateLocale(value: string) {

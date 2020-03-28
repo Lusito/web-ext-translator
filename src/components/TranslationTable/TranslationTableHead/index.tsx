@@ -8,7 +8,7 @@ import React from "react";
 import "./style.css";
 import LanguageSelect from "../../LanguageSelect";
 import { LoadedExtension } from "../../../shared";
-import { WetMessageType } from "../../../wetInterfaces";
+import { WetMessageType } from "web-ext-translator-shared";
 
 interface TranslationTableHeadProps {
     extension: LoadedExtension;

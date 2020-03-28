@@ -1,6 +1,6 @@
 import { parseString, KnownProps } from "editorconfig";
 import { Minimatch } from "minimatch";
-import { LoaderFile } from "./loader";
+import { WetLoaderFile } from "web-ext-translator-shared";
 
 export interface EditorConfig {
     root: boolean;
@@ -88,7 +88,7 @@ export function parseEditorConfig(data: string) {
     return parsedConfig;
 }
 
-export function parseEditorConfigs(files: LoaderFile[]) {
+export function parseEditorConfigs(files: WetLoaderFile[]) {
     const editorConfigs: { [s: string]: EditorConfig } = {};
     for (const file of files)
         editorConfigs[file.path] = parseEditorConfig(file.data);

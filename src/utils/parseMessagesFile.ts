@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import { WetMessage, WetPlaceholder, WetLanguage, WetMessageType } from "../wetInterfaces";
+import { WetMessage, WetPlaceholder, WetLanguage, WetMessageType } from "web-ext-translator-shared";
 import { JsonTokenizer } from "./JsonTokenizer";
 
 function parsePlaceholder(tokenizer: JsonTokenizer) {

@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import { WetLanguage, WetAppBridge } from "./wetInterfaces";
+import { WetLanguage, WetAppBridge } from "web-ext-translator-shared";
 import { VcsInfo } from "./vcs/VcsBaseProvider";
 
 export interface LoadedExtension {

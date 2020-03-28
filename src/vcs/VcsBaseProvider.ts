@@ -6,7 +6,8 @@
 
 import store from "../store";
 import { createAlertDialog } from "../components/Dialogs/AlertDialog";
-import { loadFiles, LoaderData } from "../utils/loader";
+import { loadFiles } from "../utils/loader";
+import { WetLoaderData } from "web-ext-translator-shared";
 
 export interface VcsInfo {
     host: string;
@@ -31,7 +32,7 @@ export abstract class VcsBaseProvider {
 
     protected abstract parseUrl(url: string): VcsInfo | null;
 
-    protected abstract fetch(info: VcsInfo): Promise<LoaderData>;
+    protected abstract fetch(info: VcsInfo): Promise<WetLoaderData>;
 
     public import(url: string) {
         const vcsInfo = this.parseUrl(url);

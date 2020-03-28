@@ -12,7 +12,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { WetAction } from "../../../actions";
 import { getNewDialogIndex } from "../../Dialogs";
-import { WetLanguage } from "../../../wetInterfaces";
+import { WetLanguage } from "web-ext-translator-shared";
 import { exportToZip } from "../../../utils/exportToZip";
 
 interface ExportDialogDispatchProps {

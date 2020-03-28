@@ -8,7 +8,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { State } from "../../shared";
 import MarkdownIt from "markdown-it";
-import { WetAppBridge } from "../../wetInterfaces";
+import { WetAppBridge } from "web-ext-translator-shared";
 
 const md = new MarkdownIt();
 

@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import { WetLanguage, WetMessageType } from "../wetInterfaces";
+import { WetLanguage, WetMessageType } from "web-ext-translator-shared";
 import { localeCodeToEnglish } from "../lib/localeCodeToEnglish";
 import { hashForLanguage } from "./getHashFor";
 

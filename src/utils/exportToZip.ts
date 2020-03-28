@@ -4,7 +4,7 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import { WetLanguage, WetMessageType, WetMessage } from "../wetInterfaces";
+import { WetLanguage, WetMessageType, WetMessage } from "web-ext-translator-shared";
 import { CodeWriter } from "./CodeWriter";
 
 import JSZip from "jszip";

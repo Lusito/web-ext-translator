@@ -1,4 +1,4 @@
-import { WetLanguage } from "../wetInterfaces";
+import { WetLanguage } from "web-ext-translator-shared";
 import { x64 as murmurhash3jsx64 } from "murmurhash3js";
 
 export const hashFor = murmurhash3jsx64.hash128;

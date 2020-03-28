@@ -2,25 +2,9 @@ import { getEditorConfigPropsForPath, EditorConfig, parseEditorConfigs } from ".
 import { parseMessagesFile } from "./parseMessagesFile";
 import { parseJsonFile } from "./parseJsonFile";
 import { normalizeLanguages } from "./normalizeLanguages";
-import { WetLanguage } from "../wetInterfaces";
+import { WetLanguage, WetLocaleFile, WetLoaderData } from "web-ext-translator-shared";
 
-export interface LoaderFile {
-    path: string;
-    data: string;
-}
-
-export interface LocaleFile extends LoaderFile {
-    locale: string;
-    editorConfigs: string[];
-}
-
-export interface LoaderData {
-    locales: LocaleFile[];
-    manifest: LoaderFile;
-    editorConfigs: LoaderFile[];
-}
-
-function applyCodeWriterOptions(file: LocaleFile, editorConfigs: { [s: string]: EditorConfig }, language: WetLanguage) {
+function applyCodeWriterOptions(file: WetLocaleFile, editorConfigs: { [s: string]: EditorConfig }, language: WetLanguage) {
     if (file.editorConfigs.length) {
         const matchedConfigs = file.editorConfigs.map((path) => editorConfigs[path]);
         const editorConfig = getEditorConfigPropsForPath(matchedConfigs, file.path);
@@ -52,7 +36,7 @@ function applyCodeWriterOptions(file: LocaleFile, editorConfigs: { [s: string]: 
     return language;
 }
 
-export function loadFiles({ locales, manifest, editorConfigs }: LoaderData) {
+export function loadFiles({ locales, manifest, editorConfigs }: WetLoaderData) {
     const { default_locale } = parseJsonFile(manifest.path, manifest.data) as any;
     const parsedEditorConfigs = parseEditorConfigs(editorConfigs);
     const languages = locales.map((file) => applyCodeWriterOptions(

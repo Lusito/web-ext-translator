@@ -4,13 +4,9 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-export interface CodeWriterOptions {
-    lineSeparator: string;
-    indentationStep: string;
-    insertFinalNewline: boolean;
-}
+import { WetCodeWriterOptions } from "web-ext-translator-shared";
 
-const defaultCodeWriterOptions: CodeWriterOptions = {
+const defaultCodeWriterOptions: WetCodeWriterOptions = {
     lineSeparator: "\n",
     indentationStep: "    ",
     insertFinalNewline: true
@@ -21,9 +17,9 @@ export class CodeWriter {
     private lastIsEmpty = true;
     private commentLines = 0;
     private indentation = "";
-    private options: CodeWriterOptions;
+    private options: WetCodeWriterOptions;
 
-    constructor (options: Partial<CodeWriterOptions>) {
+    constructor (options: Partial<WetCodeWriterOptions>) {
         this.options = {
             ...defaultCodeWriterOptions,
             ...options
