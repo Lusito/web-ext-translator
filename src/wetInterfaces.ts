@@ -4,7 +4,8 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import { EditorConfigSectionProps } from "./utils/editorConfig";
+import { CodeWriterOptions } from "./utils/CodeWriter";
+import { LoaderData } from "./utils/loader";
 
 export enum WetMessageType {
     GROUP,
@@ -26,7 +27,7 @@ export interface WetLanguage {
     label: string;
     messages: WetMessage[];
     messagesByKey: { [s: string]: WetMessage };
-    editorConfig?: EditorConfigSectionProps;
+    codeWriterOptions?: Partial<CodeWriterOptions>;
 }
 
 export interface WetPlaceholder {
@@ -37,20 +38,25 @@ export interface WetPlaceholder {
 
 export const WET_PROTOCOL_VERSION = 1;
 
-export interface MessagesFile {
-    locale: string;
-    content: string;
+export interface LoadFilesResultError {
+    error: string;
 }
 
-export interface MessagesListResult {
-    files: (MessagesFile[]) | null;
-    manifest: string;
-    error: string | null;
+export interface LoadFilesResultSuccess {
+    error: null;
+    data: LoaderData;
+}
+
+export type LoadFilesResult = LoadFilesResultError | LoadFilesResultSuccess;
+
+export interface SaveFilesEntry {
+    locale: string;
+    data: string;
 }
 
 export interface WetAppBridge {
-    loadMessagesList(): MessagesListResult;
-    saveMessagesList(list: MessagesFile[]): string | null;
+    loadFiles(): LoadFilesResult;
+    saveFiles(files: SaveFilesEntry[]): string | null;
     setDirty(dirty: boolean): void;
     openDirectory(): boolean;
     openBrowser(url: string): void;

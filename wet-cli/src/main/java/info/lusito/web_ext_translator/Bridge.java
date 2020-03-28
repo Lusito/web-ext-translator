@@ -13,6 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 import javafx.application.HostServices;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -31,53 +34,60 @@ public class Bridge {
         this.hostServices = hostServices;
     }
 
-    public MessagesListResult loadMessagesList() {
+    public LoadFilesResult loadFiles() {
         Path localesDir = extDir.resolve("_locales");
-        ArrayList<MessagesFile> list = new ArrayList();
-        String manifest;
         Path manifestFile = extDir.resolve("manifest.json");
         if (Files.exists(manifestFile) && Files.exists(localesDir)) {
-            try {
-                manifest = new String(Files.readAllBytes(manifestFile), UTF8);
-            } catch (IOException ex) {
-                return new MessagesListResult(ex.getMessage());
-            }
             DirectoryStream.Filter<Path> filter = (file) -> Files.isDirectory(file);
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(localesDir, filter)) {
+                HashMap<String, Path> editorConfigMap = new HashMap();
+                ArrayList<LocaleFile> list = new ArrayList();
                 for (Path path : directoryStream) {
                     Path messagesPath = path.resolve("messages.json");
                     if (Files.exists(messagesPath) && !Files.isDirectory(messagesPath)) {
-                        list.add(new MessagesFile(path.getFileName().toString(), new String(Files.readAllBytes(messagesPath), UTF8)));
+                        ArrayList<Path> editorConfigPaths = getEditorConfigPaths(path);
+                        String[] editorConfigPathArray = new String[editorConfigPaths.size()];
+                        int index = 0;
+                        for (Path editorConfigPath : editorConfigPaths) {
+                            String key = getFilePath(editorConfigPath);
+                            editorConfigMap.put(key, editorConfigPath);
+                            editorConfigPathArray[index++] = key;
+                        }
+                        list.add(readLocaleFile(messagesPath, editorConfigPathArray));
                     }
                 }
-            } catch (IOException ex) {
-                return new MessagesListResult(ex.getMessage());
+                final List<LoaderFile> editorConfigList = editorConfigMap.values().stream().map(this::readFile).collect(Collectors.toList());
+                return new LoadFilesResult(null, new LoaderData(
+                        list.toArray(new LocaleFile[list.size()]),
+                        readFile(manifestFile), editorConfigList.toArray(new LoaderFile[editorConfigList.size()])));
+            } catch (Exception ex) {
+                return new LoadFilesResult(ex.getMessage(), null);
             }
-            return new MessagesListResult(list.toArray(new MessagesFile[list.size()]), manifest);
         }
-        return new MessagesListResult("manifest.json or _locales directory missing");
+        return new LoadFilesResult("manifest.json or _locales directory missing", null);
     }
 
-    public String saveMessagesList(JSObject list) {
+    public String saveFiles(JSObject list) {
         Path localesDir = extDir.resolve("_locales");
         try {
             if (!Files.exists(localesDir)) {
                 Files.createDirectory(localesDir);
             }
             assert (list != null) : "list must not be null";
-            for (int i = 0; i < (Integer) list.getMember("length"); i++) {
+            int length = (Integer) list.getMember("length");
+            for (int i = 0; i < length; i++) {
                 JSObject obj = (JSObject) list.getSlot(i);
                 String locale = (String) obj.getMember("locale");
                 assert (locale != null) : "locale must not be null";
-                String content = (String) obj.getMember("content");
-                assert (content != null) : "content must not be null";
+                String data = (String) obj.getMember("data");
+                assert (data != null) : "content must not be null";
 
-                Path dir = localesDir.resolve(locale);
+                Path dir = localesDir.resolve(locale.replace("-", "_"));
                 if (!Files.exists(dir)) {
                     Files.createDirectory(dir);
                 }
                 Path file = dir.resolve("messages.json");
-                Files.write(file, content.getBytes("utf-8"));
+                Files.write(file, data.getBytes("utf-8"));
             }
             setDirty(false);
             return null;
@@ -113,12 +123,58 @@ public class Bridge {
     public void openBrowser(String url) {
         hostServices.showDocument(url);
     }
-    
+
     public void consoleProxy(String method, String message, String stack) {
         if ("error".equals(method)) {
             System.err.println(method + ": " + message + "\nStacktrace:\n" + stack + "\n");
         } else {
             System.out.println(method + ": " + message + "\n");
         }
+    }
+
+    private LoaderFile readFile(Path path) {
+        try {
+            return new LoaderFile(getFilePath(path), new String(Files.readAllBytes(path), UTF8));
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private LocaleFile readLocaleFile(Path path, String[] editorConfigPaths) {
+        try {
+            return new LocaleFile(
+                    getFilePath(path),
+                    new String(Files.readAllBytes(path), UTF8),
+                    path.getParent().getFileName().toString().replace("_", "-"),
+                    editorConfigPaths
+            );
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private String getFilePath(Path path) {
+        return extDir.relativize(path).toString().replace("\\", "/");
+    }
+
+    private ArrayList<Path> getEditorConfigPaths(Path path) {
+        ArrayList<Path> result = new ArrayList();
+
+        while (!path.equals(extDir)) {
+
+            Path configPath = path.resolve(".editorconfig");
+            if (Files.exists(configPath)) {
+                result.add(configPath);
+            }
+
+            path = path.getParent();
+        }
+
+        Path configPath = extDir.resolve(".editorconfig");
+        if (Files.exists(configPath)) {
+            result.add(configPath);
+        }
+
+        return result;
     }
 }

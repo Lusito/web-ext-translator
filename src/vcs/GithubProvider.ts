@@ -4,9 +4,10 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import { VcsInfo, VcsBaseProvider, VcsFetchResult, VcsLanguageFile } from "./VcsBaseProvider";
+import { VcsInfo, VcsBaseProvider } from "./VcsBaseProvider";
 import { parseJsonFile } from "../utils/parseJsonFile";
-import { getEditorConfigPaths, parseEditorConfig, getEditorConfigPropsForPath, EditorConfig } from "../utils/editorConfig";
+import { getEditorConfigPaths } from "../utils/editorConfig";
+import { LoaderData, LocaleFile, LoaderFile } from "../utils/loader";
 
 function responseToJSON(response: Response) {
     return response.text().then((text) => parseJsonFile(response.url, text));
@@ -38,7 +39,7 @@ export class GithubProvider extends VcsBaseProvider {
         return null;
     }
 
-    protected async fetch(info: VcsInfo): Promise<VcsFetchResult> {
+    protected async fetch(info: VcsInfo): Promise<LoaderData> {
         const repoPrefixRaw = `https://raw.githubusercontent.com/${info.user}/${info.repository}/${info.branch}`;
         const repoPrefixApi = `https://api.github.com/repos/${info.user}/${info.repository}`;
 
@@ -49,44 +50,41 @@ export class GithubProvider extends VcsBaseProvider {
         const localesPath = this.getShortestPathForName(paths, "_locales");
         const manifestPath = this.getShortestPathForName(paths, "manifest.json");
 
-        const [manifestResult, localesResult]: any[] = await Promise.all([
-            fetch(`${repoPrefixRaw}/${manifestPath}`).then(responseToJSON),
-            fetch(`${repoPrefixApi}/contents/${localesPath}?ref=${info.branch}`).then(responseToJSON)
-        ]);
+        const manifestResult = await fetch(`${repoPrefixRaw}/${manifestPath}`).then(responseToText);
+        const localesResult = await fetch(`${repoPrefixApi}/contents/${localesPath}?ref=${info.branch}`).then(responseToJSON) as Array<{ type: string, name: string }>;
 
-        const locales: string[] = localesResult
-            .filter((v: { type: string }) => v.type === "dir")
-            .map((v: { name: string }) => v.name);
+        const locales = localesResult.filter((v) => v.type === "dir").map((v) => v.name);
 
-        const configCache = new Map<string, Promise<EditorConfig>>();
-        const fetches: Array<Promise<VcsLanguageFile>> = locales.map(async (locale) => {
+        const editorConfigsToLoad = new Set<string>();
+        const fetches = locales.map(async (locale): Promise<LocaleFile> => {
             const localePath = `${localesPath}/${locale}`;
             const messagesPath = `${localePath}/messages.json`;
+            const editorConfigPaths = getEditorConfigPaths(paths, localePath);
+            editorConfigPaths.forEach((path) => editorConfigsToLoad.add(path));
 
-            const matchedConfigs = getEditorConfigPaths(paths, localePath).map((path) => {
-                if (!configCache.has(path)) {
-                    configCache.set(path, fetch(`${repoPrefixRaw}/${path}`)
-                        .then(responseToText)
-                        .then(parseEditorConfig));
-                }
-
-                return configCache.get(path)!;
-            });
-
-            const [ parsedConfigs, contents ] = await Promise.all([
-                Promise.all(matchedConfigs),
-                fetch(`${repoPrefixRaw}/${messagesPath}`)
-                    .then(responseToText)
-            ]);
-
-            const section = getEditorConfigPropsForPath(parsedConfigs, messagesPath);
-
-            return { locale, contents, section };
+            return {
+                path: messagesPath,
+                data: await fetch(`${repoPrefixRaw}/${messagesPath}`).then(responseToText),
+                locale,
+                editorConfigs: editorConfigPaths
+            };
         });
 
+        const editorConfigs: LoaderFile[] = [];
+        for (const path of editorConfigsToLoad.values()) {
+            editorConfigs.push({
+                path,
+                data: await fetch(`${repoPrefixRaw}/${path}`).then(responseToText)
+            });
+        }
+
         return {
-            files: await Promise.all(fetches),
-            defaultLocale: manifestResult.default_locale
+            locales: await Promise.all(fetches),
+            manifest: {
+                path: manifestPath,
+                data: manifestResult
+            },
+            editorConfigs
         };
     }
 }

@@ -5,7 +5,7 @@
  */
 
 import { WetLanguage, WetMessageType, WetMessage } from "../wetInterfaces";
-import { CodeWriter, CodeWriterOptions } from "./CodeWriter";
+import { CodeWriter } from "./CodeWriter";
 
 import * as JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -75,24 +75,10 @@ export function serializeMessages(language: WetLanguage, mainLanguage: WetLangua
     const formatterMessage = mainLanguage.messagesByKey.__WET_FORMATTER__;
     const singleLine = formatterMessage && formatterMessage.message === "single_line";
 
-    const codeWriterOptions: CodeWriterOptions = {};
-    if (language.editorConfig) {
-        if (language.editorConfig.end_of_line === "lf") {
-            codeWriterOptions.lineSeparator = "\n";
-        } else if (language.editorConfig.end_of_line === "crlf") {
-            codeWriterOptions.lineSeparator = "\r\n";
-        }
-        if (language.editorConfig.indent_style === "tab") {
-            codeWriterOptions.indentationStep = "\t";
-        } else if (typeof language.editorConfig.indent_size === "number") {
-            codeWriterOptions.indentationStep = " ".repeat(language.editorConfig.indent_size);
-        }
-        if (typeof language.editorConfig.insert_final_newline === "boolean") {
-            codeWriterOptions.insertFinalNewline = language.editorConfig.insert_final_newline;
-        }
-    }
-
-    const codeWriter = new CodeWriter(codeWriterOptions);
+    const codeWriter = new CodeWriter({
+        ...mainLanguage.codeWriterOptions,
+        ...language.codeWriterOptions
+    });
 
     let addEmptyLineBeforeGroup = false;
     codeWriter.begin("{");

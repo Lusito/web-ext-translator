@@ -5,25 +5,29 @@
  */
 
 export interface CodeWriterOptions {
-    lineSeparator?: string;
-    indentationStep?: string;
-    insertFinalNewline?: boolean;
+    lineSeparator: string;
+    indentationStep: string;
+    insertFinalNewline: boolean;
 }
+
+const defaultCodeWriterOptions: CodeWriterOptions = {
+    lineSeparator: "\n",
+    indentationStep: "    ",
+    insertFinalNewline: true
+};
 
 export class CodeWriter {
     private readonly lines: string[] = [];
     private lastIsEmpty = true;
     private commentLines = 0;
     private indentation = "";
+    private options: CodeWriterOptions;
 
-    private lineSeparator: string;
-    private indentationStep: string;
-    private insertFinalNewline: boolean;
-
-    constructor ({ lineSeparator = "\n", indentationStep = "    ", insertFinalNewline = true }: CodeWriterOptions) {
-        this.lineSeparator = lineSeparator;
-        this.indentationStep = indentationStep;
-        this.insertFinalNewline = insertFinalNewline;
+    constructor (options: Partial<CodeWriterOptions>) {
+        this.options = {
+            ...defaultCodeWriterOptions,
+            ...options
+        };
     }
 
     public begin(line: string) {
@@ -34,7 +38,7 @@ export class CodeWriter {
             this.commentLines = 0;
         }
         this.lines.push(this.indentation + line);
-        this.indentation += this.indentationStep;
+        this.indentation += this.options.indentationStep;
         this.lastIsEmpty = false;
     }
 
@@ -46,11 +50,10 @@ export class CodeWriter {
             this.lastIsEmpty = false;
         }
 
-        if (this.indentation.length < this.indentationStep.length) {
+        if (this.indentation.length < this.options.indentationStep.length)
             throw new Error("Indentation too low");
-        }
 
-        this.indentation = this.indentation.substr(0, this.indentation.length - this.indentationStep.length);
+        this.indentation = this.indentation.substr(0, this.indentation.length - this.options.indentationStep.length);
         this.lines.push(this.indentation + line);
     }
 
@@ -82,16 +85,15 @@ export class CodeWriter {
 
     public emptyLine() {
         if (!this.lastIsEmpty) {
-            if (this.commentLines > 0) {
+            if (this.commentLines > 0)
                 this.lines.push(this.indentation + " *");
-            } else if (this.insertFinalNewline) {
+            else if (this.options.insertFinalNewline)
                 this.lines.push("");
-            }
             this.lastIsEmpty = true;
         }
     }
 
     public toString() {
-        return this.lines.join(this.lineSeparator);
+        return this.lines.join(this.options.lineSeparator);
     }
 }

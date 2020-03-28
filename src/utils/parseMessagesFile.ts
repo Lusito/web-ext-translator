@@ -89,7 +89,7 @@ function parseMessage(tokenizer: JsonTokenizer, name: string) {
     return result;
 }
 
-export function parseMessagesFile(locale: string, fileContent: string) {
+export function parseMessagesFile(path: string, locale: string, fileContent: string) {
     const language: WetLanguage = {
         locale,
         label: locale,
@@ -97,7 +97,7 @@ export function parseMessagesFile(locale: string, fileContent: string) {
         messagesByKey: {}
     };
 
-    const tokenizer = new JsonTokenizer(`${locale}/messages.json`, fileContent);
+    const tokenizer = new JsonTokenizer(path, fileContent);
     tokenizer.expectCharToken("{");
     while (!tokenizer.isDone()) {
         const token = tokenizer.next();

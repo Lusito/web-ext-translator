@@ -1,5 +1,6 @@
 import { parseString, KnownProps } from "editorconfig";
 import { Minimatch } from "minimatch";
+import { LoaderFile } from "./loader";
 
 export interface EditorConfig {
     root: boolean;
@@ -14,17 +15,15 @@ export interface EditorConfigSection {
 export type EditorConfigSectionProps = KnownProps;
 
 // Find .editorconfig files in parent directories
-export function getEditorConfigPaths(paths: string[], startingPath = "") {
+export function getEditorConfigPaths(paths: string[], startingPath: string) {
     const editorConfigPaths: string[] = [];
     const pathComponents = startingPath.split("/");
 
     while (pathComponents.length) {
-        const parentPath = pathComponents.join("/");
-        const parentEditorConfigPath = `${parentPath}/.editorconfig`;
+        const parentEditorConfigPath = `${pathComponents.join("/")}/.editorconfig`;
 
-        if (paths.indexOf(`${parentPath}/.editorconfig`) > -1) {
+        if (paths.indexOf(parentEditorConfigPath) > -1)
             editorConfigPaths.push(parentEditorConfigPath);
-        }
 
         pathComponents.pop();
     }
@@ -87,6 +86,13 @@ export function parseEditorConfig(data: string) {
     }
 
     return parsedConfig;
+}
+
+export function parseEditorConfigs(files: LoaderFile[]) {
+    const editorConfigs: { [s: string]: EditorConfig } = {};
+    for (const file of files)
+        editorConfigs[file.path] = parseEditorConfig(file.data);
+    return editorConfigs;
 }
 
 export function getEditorConfigPropsForPath(editorConfigs: EditorConfig[], path: string) {

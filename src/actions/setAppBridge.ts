@@ -5,13 +5,11 @@
  */
 
 import { State } from "../shared";
-import { WetAppBridge, MessagesFile } from "../wetInterfaces";
-import { parseMessagesFile } from "../utils/parseMessagesFile";
-import { normalizeLanguages } from "../utils/normalizeLanguages";
+import { WetAppBridge, SaveFilesEntry, LoadFilesResultSuccess } from "../wetInterfaces";
 import store from "../store";
 import { serializeMessages } from "../utils/exportToZip";
-import { parseJsonFile } from "../utils/parseJsonFile";
 import { createAlertDialog } from "../components/Dialogs/AlertDialog";
+import { loadFiles } from "../utils/loader";
 
 export interface WetActionSetAppBridge {
     type: "SET_APP_BRIDGE";
@@ -20,16 +18,12 @@ export interface WetActionSetAppBridge {
 
 export function loadFromAppBridge(bridge: WetAppBridge, showFolderDialog: boolean) {
     if (!showFolderDialog || bridge.openDirectory()) {
-        const result = bridge.loadMessagesList();
-        if (!result.error && result.files && result.manifest) {
+        const result = bridge.loadFiles();
+        if (result.error) {
+            throw new Error(result.error);
+        } else {
             try {
-                const manifest = parseJsonFile("manifest.json", result.manifest) as any;
-                const languages = result.files.map((file) => parseMessagesFile(file.locale.replace("_", "-"), file.content));
-                const mainLanguage = languages.find((r) => r.locale === manifest.default_locale) || null;
-                if (mainLanguage) {
-                    normalizeLanguages(languages, mainLanguage);
-                    store.dispatch({ type: "LOAD", payload: { languages, mainLanguage } });
-                }
+                store.dispatch({ type: "LOAD", payload: loadFiles((result as LoadFilesResultSuccess).data) });
             } catch (e) {
                 console.error("error loading files: ", e);
                 store.dispatch({ type: "SHOW_DIALOG", payload: createAlertDialog("Something went wrong!", `Failed to load folder. Reason: ${e.message}`) });
@@ -41,12 +35,13 @@ export function loadFromAppBridge(bridge: WetAppBridge, showFolderDialog: boolea
 export function saveToAppBridge(appBridge: WetAppBridge) {
     const extension = store.getState().extension;
     if (extension) {
-        const list: MessagesFile[] = [];
-        for (const key in extension.languages) {
-            const lang = extension.languages[key];
-            list.push({ locale: lang.locale.replace("-", "_"), content: serializeMessages(lang, extension.mainLanguage) });
-        }
-        appBridge.saveMessagesList(list);
+        const files: SaveFilesEntry[] = Object.keys(extension.languages)
+            .map((key) => extension.languages[key])
+            .map((lang) => ({
+                locale: lang.locale,
+                data: serializeMessages(lang, extension.mainLanguage)
+            }));
+        appBridge.saveFiles(files);
     }
 }
 
