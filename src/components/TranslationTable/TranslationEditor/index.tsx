@@ -4,22 +4,14 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import React from "react";
+import React, { useRef, useEffect, useCallback, useMemo } from "react";
 import "./style.css";
-import { WetAction } from "../../../actions";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { State } from "../../../shared";
-import { adjustHeightsFor } from "../../../utils/adjustHeights";
+import { useDispatch } from "react-redux";
 import { WetPlaceholder } from "web-ext-translator-shared";
+import { throttle } from "throttle-debounce";
 import { isLocaleRTL } from "../../../lib/rtl";
 
 const UNICODE_REGEX = /(\\u[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])/g;
-
-interface TranslationEditorDispatchProps {
-    setMarkdown: (markdown: string, rtl: boolean) => void;
-    setMessageValue: (key: string, locale: string, value: string) => void;
-}
 
 interface TranslationEditorProps {
     modified: boolean;
@@ -29,99 +21,79 @@ interface TranslationEditorProps {
     locale: string | null;
 }
 
-function getPlaceholderValue(key: string, placeholders: { [s: string]: string }) {
-    const exactMatch = placeholders[key];
+function getPlaceholderValue(key: string, placeholders?: WetPlaceholder[]) {
+    if (!placeholders)
+        return null;
+    const validPlaceholders = placeholders.filter((p) => !!p.example);
+    const exactMatch = validPlaceholders.find((p) => p.name === key);
     if (exactMatch)
-        return exactMatch;
+        return exactMatch.example;
     const lowerKey = key.toLowerCase();
-    const matchKey = Object.getOwnPropertyNames(placeholders).find((e) => e.toLowerCase() === lowerKey);
-    return matchKey && placeholders[matchKey] || null;
+    const match = placeholders.find((e) => e.name.toLowerCase() === lowerKey);
+    return match ? match.example : null;
 }
 
-type TranslationEditorMergedProps = TranslationEditorProps & TranslationEditorDispatchProps & {
-    placeholdersMap: { [s: string]: string };
-};
+export default ({ messageKey, locale, modified, value, placeholders }: TranslationEditorProps) => {
+    const inputRef = useRef<HTMLDivElement | null>(null);
+    const dispatch = useDispatch();
+    const disabled = !messageKey || !locale;
+    let className = "translation-editor";
+    if (modified)
+        className += " translation-editor--is-modified";
+    const rtl = locale && isLocaleRTL(locale);
+    if (rtl)
+        className += " translation-editor--is-rtl";
+    if (!value)
+        className += " translation-editor--is-empty";
 
-class TranslationEditor extends React.Component<TranslationEditorMergedProps> {
-    private inputRef: HTMLTextAreaElement | null = null;
+    useEffect(() => {
+        if (inputRef.current.textContent !== value || inputRef.current.querySelector("*"))
+            inputRef.current.textContent = value;
+    }, [value]);
 
-    public constructor(props: TranslationEditorMergedProps, context?: any) {
-        super(props, context);
-        this.onInputRef = this.onInputRef.bind(this);
-        this.onChange = this.onChange.bind(this);
-        this.updateMarkdown = this.updateMarkdown.bind(this);
+    const removeFormatting = () => {
+        if (inputRef.current.querySelector("*"))
+            inputRef.current.textContent = inputRef.current.textContent;
     }
+    const updateMarkdown = useMemo(() => throttle(200, () => {
+        if (inputRef.current) {
+            const newValue = inputRef.current.textContent.replace(UNICODE_REGEX, (a, b) => JSON.parse(`"${b}"`));
+            const markdown = newValue.replace(/\$\w+\$/g, (s) => getPlaceholderValue(s.substr(1, s.length - 2), placeholders) || s);
+            dispatch({ type: "SET_MARKDOWN", payload: { markdown, rtl } });
+        }
+    }), [placeholders, rtl]);
+    const onChange = useMemo(() => throttle(200, () => {
+        if (inputRef.current) {
+            if (locale && messageKey) {
+                const newValue = inputRef.current.textContent;
+                removeFormatting();
+                dispatch({ type: "SET_MESSAGE_VALUE", payload: { key: messageKey, value: newValue, locale } });
+            }
+            updateMarkdown();
+        }
+    }), [updateMarkdown, locale, messageKey]);
+    const onFocus = () => {
+        removeFormatting();
+        updateMarkdown();
+    };
+    useEffect(() => {
+        const parent = inputRef.current.parentElement;
+        const doFocus = () => inputRef.current.focus();
+        parent.addEventListener("click", doFocus);
+        return () => parent.removeEventListener("click", doFocus);
+    }, []);
 
-    public render() {
-        const disabled = !this.props.messageKey || !this.props.locale;
-        let className = "translation-editor";
-        if (this.props.modified)
-            className += " translation-editor--is-modified";
-        if (this.isRtl())
-            className += " translation-editor--is-rtl";
-        return <React.Fragment>
-            <textarea ref={this.onInputRef} onChange={this.onChange} onFocus={this.updateMarkdown} disabled={disabled} value={this.props.value} className={className}></textarea>
+    return (
+        <React.Fragment>
+            <div
+                className={className}
+                ref={inputRef}
+                contentEditable={!disabled}
+                onFocus={onFocus}
+                onInput={onChange}
+                data-searchable={value}
+            />
             <div className="translation-editor-outline" />
-        </React.Fragment>;
-    }
-
-    private isRtl() {
-        return !!this.props.locale && isLocaleRTL(this.props.locale);
-    }
-
-    private onInputRef(e: HTMLTextAreaElement) {
-        this.inputRef = e;
-    }
-
-    private applyPlaceholders(key: string, value: string) {
-        const placeholdersMap = this.props.placeholdersMap;
-        return value.replace(/\$\w+\$/g, (s) => getPlaceholderValue(s.substr(1, s.length - 2), placeholdersMap) || s);
-    }
-
-    private updateMarkdown() {
-        if (this.inputRef) {
-            const value = this.inputRef.value.replace(UNICODE_REGEX, (a, b) => JSON.parse(`"${b}"`));
-            this.props.setMarkdown(this.applyPlaceholders(this.props.messageKey, value), this.isRtl());
-        }
-    }
-
-    private onChange() {
-        if (this.inputRef) {
-            this.props.locale && this.props.messageKey && this.props.setMessageValue(this.props.messageKey, this.props.locale, this.inputRef.value);
-            const row = this.inputRef.closest(".translation-table-body__row ");
-            if (row)
-                adjustHeightsFor(row);
-            this.updateMarkdown();
-        }
-    }
+        </React.Fragment>
+    );
 }
-
-function mapDispatchToProps(dispatch: Dispatch<WetAction>): TranslationEditorDispatchProps {
-    return {
-        setMarkdown: (markdown: string, rtl: boolean) => dispatch({ type: "SET_MARKDOWN", payload: { markdown, rtl } }),
-        setMessageValue: (key: string, locale: string, value: string) => dispatch({ type: "SET_MESSAGE_VALUE", payload: { key, value, locale } })
-    };
-}
-
-function mergeProps(stateProps: {}, dispatchProps: TranslationEditorDispatchProps, ownProps: TranslationEditorProps): TranslationEditorMergedProps {
-    const placeholdersMap: {[name: string]: string} = {};
-    if (ownProps.placeholders) {
-        for (const placeholder of ownProps.placeholders) {
-            if (placeholder.example)
-                placeholdersMap[placeholder.name] = placeholder.example;
-        }
-    }
-
-    return {
-        modified: ownProps.modified,
-        value: ownProps.value,
-        messageKey: ownProps.messageKey,
-        placeholders: ownProps.placeholders,
-        placeholdersMap,
-        locale: ownProps.locale,
-        setMarkdown: dispatchProps.setMarkdown,
-        setMessageValue: dispatchProps.setMessageValue
-    };
-}
-
-export default connect<{}, TranslationEditorDispatchProps, TranslationEditorProps, TranslationEditorMergedProps, State>(null, mapDispatchToProps, mergeProps)(TranslationEditor);

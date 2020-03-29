@@ -23,7 +23,7 @@ export default function TranslationTableBody({ extension, showPlus }: Translatio
         if (message.type !== WetMessageType.MESSAGE) {
             const key = message.name.startsWith("__WET_GROUP__") ? message.name + message.message : message.name;
             return <tr className="translation-table-body__section" key={key}>
-                <th colSpan={3} className="translation-table-body__th">{message.message}</th>
+                <th colSpan={3} className="translation-table-body__th" data-searchable={message.message}>{message.message}</th>
                 { showPlus ? <th className="translation-table-body__th"><TranslationTablePlus messageName={message.name} /></th> : null }
             </tr>;
         }

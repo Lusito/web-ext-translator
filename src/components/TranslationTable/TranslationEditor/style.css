@@ -1,32 +1,37 @@
 .translation-editor {
-    width: 100%;
+    min-height: 10px;
     box-sizing: border-box;
-    resize: none;
-    display: block;
+    display: inline;
     border: none;
     background: #333333;
     color: #ec7a30;
     font: 14px monospace;
-    padding: 5px;
-    overflow: hidden;
-    margin-bottom: -19px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    z-index: 10;
+}
+.translation-editor--is-empty {
+    display: block;
 }
 
 .translation-editor:focus {
     outline: none;
 }
 
-.translation-editor:focus+.translation-editor-outline {
+.translation-editor-outline {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    border: 1px solid #0075ad;
+    border: 1px solid transparent;
     pointer-events: none;
 }
+.translation-editor:focus+.translation-editor-outline {
+    border-color: #0075ad;
+}
 
-.translation-editor--is-modified {
+.translation-editor--is-modified+.translation-editor-outline {
     box-shadow: inset -3px 0px 0px 0px red;
 }
 

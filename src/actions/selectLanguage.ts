@@ -5,7 +5,6 @@
  */
 
 import { State } from "../shared";
-import { adjustAllHeights } from "../utils/adjustHeights";
 
 export interface WetActionSelectLanguagePayload {
     first: boolean;
@@ -27,6 +26,5 @@ export function handleSelectLanguage(state: State, payload: WetActionSelectLangu
         extension.firstLocale = payload.locale;
     else
         extension.secondLocale = payload.locale;
-    adjustAllHeights();
     return { ...state, extension };
 }

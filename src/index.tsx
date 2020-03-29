@@ -12,7 +12,6 @@ import ReactDOM from "react-dom";
 import { Provider, useSelector } from "react-redux";
 import store from "./store";
 import "./style.css";
-import { adjustAllHeights } from "./utils/adjustHeights";
 import { getParameter } from "./utils/getParameter";
 import WetApp from "./components/WetApp";
 import { github } from "./vcs";
@@ -35,9 +34,6 @@ ReactDOM.render(
     </Provider>,
     document.getElementById("root") as HTMLElement
 );
-
-window.addEventListener("resize", adjustAllHeights);
-adjustAllHeights();
 
 (() => {
     const gh = getParameter("gh");

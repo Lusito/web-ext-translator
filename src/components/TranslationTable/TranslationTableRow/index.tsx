@@ -32,7 +32,7 @@ export function TranslationTableRow({ className, message, firstLanguage, secondL
     const first = getData(mainLanguage, mainHash, firstLanguage, message.name);
     const second = getData(mainLanguage, mainHash, secondLanguage, message.name);
     return <tr className={`translation-table-body__row ${className}`} title={message.description}>
-        <td className="translation-table-body__td">{message.name}</td>
+        <td className="translation-table-body__td" data-searchable={message.name}>{message.name}</td>
         <td className="translation-table-body__td">
             <TranslationEditor value={first.value} messageKey={message.name} placeholders={message.placeholders} locale={firstLanguage && firstLanguage.locale} modified={first.modified} />
         </td>

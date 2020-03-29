@@ -1,0 +1,48 @@
+.translation-search {
+    padding: 5px;
+}
+.translation-search__input {
+    width: 100px;
+    background: #3C3C3C;
+    color: #CCCCCC;
+    border: none;
+    padding: 2px 5px;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    margin-right: 2px;
+}
+
+.translation-search__input:focus {
+    outline: none;
+    border: 1px solid #0075ad;
+}
+
+
+.translation-search__button {
+    height: 100%;
+    color: black;
+    background: #dddddd;
+    border: 1px solid rgb(41, 41, 41);
+    margin: 0 2px;
+    padding: 2px 20px;
+}
+
+.translation-search__button:hover {
+    background: #4ea2ff;
+    color: white;
+    border-color: #bbb;
+}
+
+.translation-search__button:focus {
+    border: 1px solid #0075ad;
+    outline: none;
+}
+
+.search-highlight {
+    background: #ec7a3063;
+    color: white;
+}
+
+.search-highlight--is-active {
+    background: #129cdb99;
+}
