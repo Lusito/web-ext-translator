@@ -1,27 +1,21 @@
-import { contextBridge, shell, dialog, ipcRenderer } from "electron";
+import { contextBridge, shell, ipcRenderer } from "electron";
 import { WetSaveFilesEntry } from "web-ext-translator-shared";
 
 const extDir = window.location.hash.substr(1);
+let isDirty = false
+let forceQuit = false;
 
-function preventClose() {
-    dialog.showMessageBox({
-        type: "question",
-        title: "Files have not been saved",
-        message: "There are unsaved changes. Discard these changes?",
-        buttons: [
-            "OK",
-            "Cancel"
-        ],
-        defaultId: 1,
-        cancelId: 1
-    }).then((result) => {
-        if (result.response === 0) {
-            ipcRenderer.send('close');
-        }
-    });
-    return false;
-}
-function noop() {}
+window.addEventListener('beforeunload', evt => {
+    if (!forceQuit && isDirty) {
+        evt.returnValue = false;
+        setTimeout(() => {
+            if (ipcRenderer.sendSync('close')) {
+                forceQuit = true
+                window.close()
+            }
+        });
+    }
+});
 
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
@@ -33,11 +27,11 @@ contextBridge.exposeInMainWorld(
         saveFiles(files: WetSaveFilesEntry[]) {
             const error = ipcRenderer.sendSync('saveFiles', extDir, files);
             if (!error)
-                this.setDirty(false);
+                isDirty = false;
             return error;
         },
         setDirty(dirty: boolean) {
-            window.onbeforeunload = dirty ? preventClose : noop;
+            isDirty = dirty;
         },
         openDirectory() {
             ipcRenderer.send('openDirectory');

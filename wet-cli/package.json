@@ -21,9 +21,15 @@
   "bin": {
     "wet": "dist/cli.js"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "copy": "rimraf dist/docs && copyfiles ../docs/**/*.* dist/docs",
-    "build": "rimraf dist && tsc && npm run copy",
+    "build": "npm run clean && tsc && npm run copy",
+    "clean": "rimraf dist && rimraf README.md",
+    "copy": "cpx ../docs/**/*.* ./dist/docs && cpx ../README.md .",
+    "lint:package": "sort-package-json --check",
+    "lint:package:fix": "sort-package-json",
     "start": "electron ."
   },
   "dependencies": {
@@ -32,8 +38,9 @@
     "web-ext-translator-shared": "^3.0.0"
   },
   "devDependencies": {
-    "copyfiles": "^2.2.0",
+    "cpx": "^1.5.0",
     "rimraf": "^3.0.2",
+    "sort-package-json": "^1.40.0",
     "typescript": "^3.8.3"
   },
   "preferGlobal": true

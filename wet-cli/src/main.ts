@@ -18,7 +18,8 @@ function createWindow(workingDirectory: string) {
             preload: path.join(__dirname, "preload.js")
         }
     });
-    mainWindow.setMenu(null);
+    if (!app.commandLine.hasSwitch('debug'))
+        mainWindow.setMenu(null);
     mainWindow.loadURL(fileUrl(path.join(__dirname, "docs", "index.html")) + "#" + workingDirectory);
 }
 
@@ -35,8 +36,17 @@ function on(channel: string, listener: (event: IpcMainEvent, ...args: any[]) => 
 }
 
 on("close", (event) => {
-    const window = BrowserWindow.fromWebContents(event.sender);
-    window && window.close();
+    return dialog.showMessageBoxSync({
+        type: "question",
+        title: "Files have not been saved",
+        message: "There are unsaved changes. Discard these changes?",
+        buttons: [
+            "OK",
+            "Cancel"
+        ],
+        defaultId: 1,
+        cancelId: 1
+    }) === 0;
 });
 
 on("openDirectory", (event) => {
@@ -105,7 +115,7 @@ on("saveFiles", (event, extDir: string, files: WetSaveFilesEntry[]) => {
                 const dir = path.join(localesDir, locale.replace("-", "_"));
                 if (!isDirectory(dir))
                     fs.mkdirSync(dir);
-                const file = path.join(dir, "messages.jon");
+                const file = path.join(dir, "messages.json");
                 fs.writeFileSync(file, data);
             }
             return null;
