@@ -19,19 +19,19 @@ import { github } from "./vcs";
 import { State } from "./shared";
 import { loadFromAppBridge } from "./actions/setAppBridge";
 
-const Loader = () => {
+const AppBridgeLoader = (): null => {
     const bridge = useSelector((state: State) => state.appBridge);
     useEffect(() => {
         if (bridge)
             loadFromAppBridge(bridge);
     }, [bridge]);
-    return <></>;
+    return null;
 }
 
 ReactDOM.render(
     <Provider store={store}>
         <WetApp />
-        <Loader />
+        <AppBridgeLoader />
     </Provider>,
     document.getElementById("root") as HTMLElement
 );
