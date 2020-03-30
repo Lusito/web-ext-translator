@@ -1,5 +1,6 @@
 import { contextBridge, shell, ipcRenderer } from "electron";
 import { WetSaveFilesEntry } from "web-ext-translator-shared";
+import { Key } from "ts-keycode-enum";
 
 const extDir = window.location.hash.substr(1);
 let isDirty = false
@@ -15,6 +16,10 @@ window.addEventListener('beforeunload', evt => {
             }
         });
     }
+});
+
+window.addEventListener('keyup', e => {
+    if (e.ctrlKey && e.keyCode == Key.F) ipcRenderer.send("show-search");
 });
 
 // Expose protected methods that allow the renderer process to use

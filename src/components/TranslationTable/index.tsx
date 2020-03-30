@@ -8,7 +8,6 @@ import React from "react";
 import TranslationTableHead from "./TranslationTableHead";
 import TranslationTableBody from "./TranslationTableBody";
 import { LoadedExtension } from "../../shared";
-import { TranslationSearch } from "./TranslationSearch";
 
 interface TranslationTableProps {
     extension: LoadedExtension;
@@ -19,6 +18,5 @@ export function TranslationTable({ extension, showPlus }: TranslationTableProps)
     return <React.Fragment>
         <TranslationTableHead extension={extension} />
         <TranslationTableBody extension={extension} showPlus={showPlus} />
-        <TranslationSearch />
     </React.Fragment>;
 }

@@ -27,7 +27,7 @@
   "scripts": {
     "build": "npm run clean && tsc && npm run copy",
     "clean": "rimraf dist && rimraf README.md",
-    "copy": "cpx ../docs/**/*.* ./dist/docs && cpx ../README.md .",
+    "copy": "cpx ../docs/**/*.* ./dist/docs && cpx ../README.md . && cpx src/*.html ./dist",
     "lint:package": "sort-package-json --check",
     "lint:package:fix": "sort-package-json",
     "start": "electron ."
@@ -35,6 +35,7 @@
   "dependencies": {
     "electron": "^8.2.0",
     "file-url": "^3.0.0",
+    "ts-keycode-enum": "^1.0.6",
     "web-ext-translator-shared": "^3.0.0"
   },
   "devDependencies": {
