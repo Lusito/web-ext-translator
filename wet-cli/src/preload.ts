@@ -18,19 +18,15 @@ window.addEventListener('beforeunload', evt => {
     }
 });
 
-window.addEventListener('keyup', e => {
-    if (e.ctrlKey && e.keyCode == Key.F) ipcRenderer.send("show-search");
-});
-
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld(
     "electronBridge", {
         loadFiles() {
-            return ipcRenderer.sendSync('loadFiles', extDir);
+            return ipcRenderer.sendSync('load-files', extDir);
         },
         saveFiles(files: WetSaveFilesEntry[]) {
-            const error = ipcRenderer.sendSync('saveFiles', extDir, files);
+            const error = ipcRenderer.sendSync('save-files', extDir, files);
             if (!error)
                 isDirty = false;
             return error;
@@ -39,7 +35,7 @@ contextBridge.exposeInMainWorld(
             isDirty = dirty;
         },
         openDirectory() {
-            ipcRenderer.send('openDirectory');
+            ipcRenderer.send('open-directory');
         },
         openBrowser(url: string) {
             shell.openExternal(url);

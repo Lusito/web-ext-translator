@@ -9,6 +9,15 @@ contextBridge.exposeInMainWorld(
             const prev = document.getElementById("prev");
             const next = document.getElementById("next");
             const close = document.getElementById("close");
+            
+            search.focus();
+            if (document.location.hash.length > 1)
+                search.value = document.location.hash.substr(1);
+            else {
+                prev.setAttribute("disabled", "disabled");
+                next.setAttribute("disabled", "disabled");
+            }
+
             // fixme:
             // matchCase?: boolean;
             // wordStart?: boolean;
@@ -18,9 +27,13 @@ contextBridge.exposeInMainWorld(
                 if (search.value) {
                     ipcRenderer.sendSync("find-in-page", search.value);
                     search.focus();
+                    prev.removeAttribute("disabled");
+                    next.removeAttribute("disabled");
                 } else {
                     ipcRenderer.sendSync("stop-find-in-page", "clearSelection");
                     label.innerText = "";
+                    prev.setAttribute("disabled", "disabled");
+                    next.setAttribute("disabled", "disabled");
                 }
             });
             on(search, "keyup", (e: KeyboardEvent) => {

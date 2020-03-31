@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-import { app, BrowserWindow, ipcMain, dialog, IpcMainEvent, BrowserView, FindInPageOptions } from "electron";
+import { app, BrowserWindow, ipcMain, dialog, IpcMainEvent, BrowserView, FindInPageOptions, globalShortcut } from "electron";
 import path from "path";
 import fs from "fs";
 import fileUrl from "file-url";
@@ -18,6 +18,8 @@ class SearchView {
 
     private window: BrowserWindow;
     private view: BrowserView | null = null;
+    private lastSearch = "";
+    private allowFindNext = false;
     public constructor(window: BrowserWindow) {
         this.window = window;
         SearchView.list.push(this);
@@ -52,6 +54,7 @@ class SearchView {
             });
             this.window.setBrowserView(this.view);
             this.view.webContents.loadFile(path.join(__dirname, "search.html"));
+            this.view.webContents.loadURL(fileUrl(path.join(__dirname, "search.html")) + "#" + this.lastSearch);
             this.reposition();
             this.view.webContents.focus();
         }
@@ -67,17 +70,28 @@ class SearchView {
 
     public findInPage(text: string, options?: FindInPageOptions) {
         if (this.window) {
+            this.lastSearch = text;
             this.window.webContents.findInPage(text, options);
+            this.allowFindNext = true;
         }
     }
     public stopFindInPage(action: 'clearSelection' | 'keepSelection' | 'activateSelection') {
-        this.window && this.window.webContents.stopFindInPage(action);
+        if (this.window) {
+            this.window.webContents.stopFindInPage(action);
+            this.allowFindNext = false;
+        }
+    }
+
+    public findNext(forward: boolean) {
+        if (this.lastSearch)
+            this.findInPage(this.lastSearch, { findNext: this.allowFindNext, forward });
+        else
+            this.show();
     }
 
     private found = (event: Electron.Event, result: Electron.Result) => {
-        if (this.window && this.view) {
+        if (this.window && this.view)
             this.view.webContents.send("update", result.activeMatchOrdinal, result.matches);
-        }
     };
 }
 
@@ -93,12 +107,21 @@ function createWindow(workingDirectory: string) {
             preload: path.join(__dirname, "preload.js")
         }
     });
-    if (!app.commandLine.hasSwitch("debug")) win.setMenu(null);
+    if (!app.commandLine.hasSwitch("debug")) win.setMenuBarVisibility(false);
     win.loadURL(fileUrl(path.join(__dirname, "docs", "index.html")) + "#" + workingDirectory);
 
     const searchView = new SearchView(win);
     win.on("closed", () => {
         win = null;
+    });
+    win.on("focus", () => {
+        globalShortcut.register('CommandOrControl+F', searchView.show);
+        globalShortcut.register('F3', () => searchView.findNext(true));
+        globalShortcut.register('Shift+F3', () => searchView.findNext(false));
+        // fixme: shortcut for saving (ctrl + s)
+    });
+    win.on("blur", () => {
+        globalShortcut.unregisterAll();
     });
 }
 
@@ -106,6 +129,7 @@ app.whenReady().then(() => createWindow(process.cwd()));
 
 app.on("window-all-closed", function() {
     process.platform !== "darwin" && app.quit();
+        globalShortcut.unregisterAll();
 });
 
 app.on("activate", function() {
@@ -128,7 +152,6 @@ function onSearch(channel: string, listener: (search: SearchView, event: IpcMain
 
 onSearch("find-in-page", (search, event, text, options) => search.findInPage(text, options));
 onSearch("stop-find-in-page", (search, event, action) => search.stopFindInPage(action));
-onSearch("show-search", (search, event) => search.show());
 onSearch("hide-search", (search, event) => search.hide());
 
 on("close", event => {
@@ -144,7 +167,7 @@ on("close", event => {
     );
 });
 
-on("openDirectory", event => {
+on("open-directory", event => {
     dialog
         .showOpenDialog(BrowserWindow.fromWebContents(event.sender), {
             properties: ["openDirectory"],
@@ -160,7 +183,7 @@ const isFile = (file: string) => fs.existsSync(file) && !fs.lstatSync(file).isDi
 const readFile = (file: string) => fs.readFileSync(file, "utf-8");
 
 on(
-    "loadFiles",
+    "load-files",
     (event, extDir): WetLoadFilesResult => {
         const localesDir = path.join(extDir, "_locales");
         const manifestFile = path.join(extDir, "manifest.json");
@@ -209,7 +232,7 @@ on(
     }
 );
 
-on("saveFiles", (event, extDir: string, files: WetSaveFilesEntry[]) => {
+on("save-files", (event, extDir: string, files: WetSaveFilesEntry[]) => {
     const localesDir = path.join(extDir, "_locales");
     if (isDirectory(localesDir)) {
         try {
