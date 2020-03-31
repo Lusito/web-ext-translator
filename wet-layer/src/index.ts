@@ -1,5 +1,5 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { browser } from "webextension-polyfill-ts";
-
 import { WetMessage, WetLanguage, WetPlaceholder } from "web-ext-translator-shared";
 
 const CONTENT_INDEX = /^\$[0-9]*$/;
@@ -9,13 +9,14 @@ export type UpdateListener = () => void;
 
 export class WetLayer {
     private updateListeners: UpdateListener[] = [];
-    private locale: string = "";
+
+    private locale = "";
+
     private map: { [s: string]: WetMessage } = {};
 
     constructor() {
-        browser.runtime.onMessage.addListener((request, sender) => {
-            if (request && request.action === "WetApplyLanguage")
-                this.applyLanguage(request.language);
+        browser.runtime.onMessage.addListener((request) => {
+            if (request && request.action === "WetApplyLanguage") this.applyLanguage(request.language);
         });
     }
 
@@ -28,8 +29,7 @@ export class WetLayer {
     }
 
     public addListener(listener: UpdateListener) {
-        if (this.updateListeners.indexOf(listener) === -1)
-            this.updateListeners.push(listener);
+        if (!this.updateListeners.includes(listener)) this.updateListeners.push(listener);
     }
 
     public removeListener(listener: UpdateListener) {
@@ -56,21 +56,22 @@ export class WetLayer {
 
     public getMessage(messageName: string, substitutions?: string | string[]) {
         const message = this.map[messageName];
-        const messageText = message && message.message;
+        const messageText = message?.message;
         if (messageText) {
-            const normalizedSubstitutions = typeof (substitutions) === "string" ? [substitutions] : substitutions;
-            const placeholders = message.placeholders;
+            const normalizedSubstitutions = typeof substitutions === "string" ? [substitutions] : substitutions;
+            const { placeholders } = message;
             if (placeholders && normalizedSubstitutions) {
                 const normalizedPlaceholders: { [s: string]: WetPlaceholder } = {};
-                placeholders.forEach((ph) => normalizedPlaceholders[ph.name.toLowerCase()] = ph);
+                placeholders.forEach((ph) => {
+                    normalizedPlaceholders[ph.name.toLowerCase()] = ph;
+                });
 
                 return messageText.replace(PLACEHOLDER, (match, token) => {
                     const placeholder = normalizedPlaceholders[token.toLowerCase()];
-                    if (placeholder && placeholder.content) {
+                    if (placeholder?.content) {
                         if (CONTENT_INDEX.test(placeholder.content)) {
                             const index = parseInt(placeholder.content.substr(1)) - 1;
-                            if (index < normalizedSubstitutions.length)
-                                return normalizedSubstitutions[index];
+                            if (index < normalizedSubstitutions.length) return normalizedSubstitutions[index];
                         }
                         return placeholder.content;
                     }

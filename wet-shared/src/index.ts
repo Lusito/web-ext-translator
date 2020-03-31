@@ -29,7 +29,7 @@ export interface WetLoaderData {
 export enum WetMessageType {
     GROUP,
     COMMENT,
-    MESSAGE
+    MESSAGE,
 }
 
 export interface WetMessage {

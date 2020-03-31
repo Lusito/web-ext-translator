@@ -6,9 +6,9 @@ import path from "path";
 
 const child = proc.spawn(electron as any, [path.join(__dirname, "..")], {
     stdio: "inherit",
-    windowsHide: false
+    windowsHide: false,
 });
-child.on("close", function(code) {
+child.on("close", (code) => {
     process.exit(code);
 });
 

@@ -1,5 +1,14 @@
 // Modules to control application life and create native browser window
-import { app, BrowserWindow, ipcMain, dialog, IpcMainEvent, BrowserView, FindInPageOptions, globalShortcut } from "electron";
+import {
+    app,
+    BrowserWindow,
+    ipcMain,
+    dialog,
+    IpcMainEvent,
+    BrowserView,
+    FindInPageOptions,
+    globalShortcut,
+} from "electron";
 import path from "path";
 import fs from "fs";
 import fileUrl from "file-url";
@@ -9,17 +18,21 @@ class SearchView {
     private static list: SearchView[] = [];
 
     public static fromBrowserWindow(window: BrowserWindow) {
-        return SearchView.list.find(e => e.window === window) || null;
+        return SearchView.list.find((e) => e.window === window) || null;
     }
 
     public static fromBrowserView(view: BrowserView) {
-        return SearchView.list.find(e => e.view === view) || null;
+        return SearchView.list.find((e) => e.view === view) || null;
     }
 
     private window: BrowserWindow;
+
     private view: BrowserView | null = null;
+
     private lastSearch = "";
+
     private allowFindNext = false;
+
     public constructor(window: BrowserWindow) {
         this.window = window;
         SearchView.list.push(this);
@@ -31,7 +44,7 @@ class SearchView {
     private onWindowClosed = () => {
         this.window = null;
         this.view = null;
-        SearchView.list = SearchView.list.filter(e => e !== this);
+        SearchView.list = SearchView.list.filter((e) => e !== this);
     };
 
     private reposition = () => {
@@ -49,12 +62,12 @@ class SearchView {
                 webPreferences: {
                     contextIsolation: true,
                     enableRemoteModule: false,
-                    preload: path.join(__dirname, "searchPreload.js")
-                }
+                    preload: path.join(__dirname, "searchPreload.js"),
+                },
             });
             this.window.setBrowserView(this.view);
             this.view.webContents.loadFile(path.join(__dirname, "search.html"));
-            this.view.webContents.loadURL(fileUrl(path.join(__dirname, "search.html")) + "#" + this.lastSearch);
+            this.view.webContents.loadURL(`${fileUrl(path.join(__dirname, "search.html"))}#${this.lastSearch}`);
             this.reposition();
             this.view.webContents.focus();
         }
@@ -64,7 +77,7 @@ class SearchView {
         if (this.window && this.view) {
             this.window.removeBrowserView(this.view);
             this.view = null;
-            this.stopFindInPage('keepSelection');
+            this.stopFindInPage("keepSelection");
         }
     };
 
@@ -75,7 +88,8 @@ class SearchView {
             this.allowFindNext = true;
         }
     }
-    public stopFindInPage(action: 'clearSelection' | 'keepSelection' | 'activateSelection') {
+
+    public stopFindInPage(action: "clearSelection" | "keepSelection" | "activateSelection") {
         if (this.window) {
             this.window.webContents.stopFindInPage(action);
             this.allowFindNext = false;
@@ -83,15 +97,12 @@ class SearchView {
     }
 
     public findNext(forward: boolean) {
-        if (this.lastSearch)
-            this.findInPage(this.lastSearch, { findNext: this.allowFindNext, forward });
-        else
-            this.show();
+        if (this.lastSearch) this.findInPage(this.lastSearch, { findNext: this.allowFindNext, forward });
+        else this.show();
     }
 
     private found = (event: Electron.Event, result: Electron.Result) => {
-        if (this.window && this.view)
-            this.view.webContents.send("update", result.activeMatchOrdinal, result.matches);
+        if (this.window && this.view) this.view.webContents.send("update", result.activeMatchOrdinal, result.matches);
     };
 }
 
@@ -104,20 +115,20 @@ function createWindow(workingDirectory: string) {
         webPreferences: {
             contextIsolation: true,
             enableRemoteModule: false,
-            preload: path.join(__dirname, "preload.js")
-        }
+            preload: path.join(__dirname, "preload.js"),
+        },
     });
     if (!app.commandLine.hasSwitch("debug")) win.setMenuBarVisibility(false);
-    win.loadURL(fileUrl(path.join(__dirname, "docs", "index.html")) + "#" + workingDirectory);
+    win.loadURL(`${fileUrl(path.join(__dirname, "docs", "index.html"))}#${workingDirectory}`);
 
     const searchView = new SearchView(win);
     win.on("closed", () => {
         win = null;
     });
     win.on("focus", () => {
-        globalShortcut.register('CommandOrControl+F', searchView.show);
-        globalShortcut.register('F3', () => searchView.findNext(true));
-        globalShortcut.register('Shift+F3', () => searchView.findNext(false));
+        globalShortcut.register("CommandOrControl+F", searchView.show);
+        globalShortcut.register("F3", () => searchView.findNext(true));
+        globalShortcut.register("Shift+F3", () => searchView.findNext(false));
         // fixme: shortcut for saving (ctrl + s)
     });
     win.on("blur", () => {
@@ -127,12 +138,12 @@ function createWindow(workingDirectory: string) {
 
 app.whenReady().then(() => createWindow(process.cwd()));
 
-app.on("window-all-closed", function() {
+app.on("window-all-closed", () => {
     process.platform !== "darwin" && app.quit();
-        globalShortcut.unregisterAll();
+    globalShortcut.unregisterAll();
 });
 
-app.on("activate", function() {
+app.on("activate", () => {
     BrowserWindow.getAllWindows().length === 0 && createWindow(process.cwd());
 });
 
@@ -147,14 +158,14 @@ function onSearch(channel: string, listener: (search: SearchView, event: IpcMain
         const view = BrowserView.fromWebContents(event.sender);
         const search = SearchView.fromBrowserView(view);
         search && listener(search, event, ...args);
-    })
+    });
 }
 
-onSearch("find-in-page", (search, event, text, options) => search.findInPage(text, options));
-onSearch("stop-find-in-page", (search, event, action) => search.stopFindInPage(action));
-onSearch("hide-search", (search, event) => search.hide());
+onSearch("find-in-page", (search, _event, text, options) => search.findInPage(text, options));
+onSearch("stop-find-in-page", (search, _event, action) => search.stopFindInPage(action));
+onSearch("hide-search", (search) => search.hide());
 
-on("close", event => {
+on("close", () => {
     return (
         dialog.showMessageBoxSync({
             type: "question",
@@ -162,18 +173,18 @@ on("close", event => {
             message: "There are unsaved changes. Discard these changes?",
             buttons: ["OK", "Cancel"],
             defaultId: 1,
-            cancelId: 1
+            cancelId: 1,
         }) === 0
     );
 });
 
-on("open-directory", event => {
+on("open-directory", (event) => {
     dialog
         .showOpenDialog(BrowserWindow.fromWebContents(event.sender), {
             properties: ["openDirectory"],
-            title: "Select your Web Extension root directory"
+            title: "Select your Web Extension root directory",
         })
-        .then(result => {
+        .then((result) => {
             if (!result.canceled && result.filePaths.length) createWindow(result.filePaths[0]);
         });
 });
@@ -199,30 +210,30 @@ on(
                         const editorConfigPaths = [
                             [".editorconfig"],
                             ["..", ".editorconfig"],
-                            ["..", "..", ".editorconfig"]
+                            ["..", "..", ".editorconfig"],
                         ]
-                            .map(paths => path.join(localePath, ...paths))
+                            .map((paths) => path.join(localePath, ...paths))
                             .filter(isFile);
-                        editorConfigPaths.forEach(p => editorConfigsToLoad.add(p));
+                        editorConfigPaths.forEach((p) => editorConfigsToLoad.add(p));
                         locales.push({
                             path: messagesPath,
                             data: readFile(messagesPath),
                             locale: localeDir.replace("_", "-"),
-                            editorConfigs: editorConfigPaths
+                            editorConfigs: editorConfigPaths,
                         });
                     }
                 }
-                const editorConfigs = [...editorConfigsToLoad.values()].map(path => ({
-                    path,
-                    data: readFile(path)
+                const editorConfigs = [...editorConfigsToLoad.values()].map((editorConfigPath) => ({
+                    path: editorConfigPath,
+                    data: readFile(editorConfigPath),
                 }));
                 return {
                     locales,
                     manifest: {
                         path: manifestFile,
-                        data: readFile(manifestFile)
+                        data: readFile(manifestFile),
                     },
-                    editorConfigs
+                    editorConfigs,
                 };
             } catch (e) {
                 return e.message;
