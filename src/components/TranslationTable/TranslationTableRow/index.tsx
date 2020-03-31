@@ -6,6 +6,7 @@
 
 import React from "react";
 import { WetMessage, WetLanguage } from "web-ext-translator-shared";
+
 import TranslationEditor from "../TranslationEditor";
 import { hashFor } from "../../../utils/getHashFor";
 import { TranslationTablePlus } from "../TranslationTablePlus";
@@ -20,25 +21,52 @@ interface TranslationTableRowProps {
 }
 
 function getData(mainLanguage: WetLanguage, mainHash: string, lang: WetLanguage | null, key: string) {
-    const message = lang && lang.messagesByKey[key];
+    const message = lang?.messagesByKey[key];
     return {
-        value: message && message.message || "",
-        modified: mainLanguage !== lang && (!message || !message.hash || message.hash !== mainHash)
+        value: message?.message || "",
+        modified: mainLanguage !== lang && (!message || !message.hash || message.hash !== mainHash),
     };
 }
 
-export function TranslationTableRow({ className, message, firstLanguage, secondLanguage, mainLanguage, showPlus }: TranslationTableRowProps) {
+export function TranslationTableRow({
+    className,
+    message,
+    firstLanguage,
+    secondLanguage,
+    mainLanguage,
+    showPlus,
+}: TranslationTableRowProps) {
     const mainHash = hashFor(message.message);
     const first = getData(mainLanguage, mainHash, firstLanguage, message.name);
     const second = getData(mainLanguage, mainHash, secondLanguage, message.name);
-    return <tr className={`translation-table-body__row ${className}`} title={message.description}>
-        <td className="translation-table-body__td" data-searchable={message.name}>{message.name}</td>
-        <td className="translation-table-body__td">
-            <TranslationEditor value={first.value} messageKey={message.name} placeholders={message.placeholders} locale={firstLanguage && firstLanguage.locale} modified={first.modified} />
-        </td>
-        <td className="translation-table-body__td">
-            <TranslationEditor value={second.value} messageKey={message.name} placeholders={message.placeholders} locale={secondLanguage && secondLanguage.locale} modified={second.modified} />
-        </td>
-        { showPlus ? <td className="translation-table-body__td"><TranslationTablePlus messageName={message.name} /></td> : null }
-    </tr>;
+    return (
+        <tr className={`translation-table-body__row ${className}`} title={message.description}>
+            <td className="translation-table-body__td" data-searchable={message.name}>
+                {message.name}
+            </td>
+            <td className="translation-table-body__td">
+                <TranslationEditor
+                    value={first.value}
+                    messageKey={message.name}
+                    placeholders={message.placeholders}
+                    locale={firstLanguage?.locale}
+                    modified={first.modified}
+                />
+            </td>
+            <td className="translation-table-body__td">
+                <TranslationEditor
+                    value={second.value}
+                    messageKey={message.name}
+                    placeholders={message.placeholders}
+                    locale={secondLanguage?.locale}
+                    modified={second.modified}
+                />
+            </td>
+            {showPlus ? (
+                <td className="translation-table-body__td">
+                    <TranslationTablePlus messageName={message.name} />
+                </td>
+            ) : null}
+        </tr>
+    );
 }

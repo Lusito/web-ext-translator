@@ -4,10 +4,11 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
+import { WetLoaderData, WetLocaleFile, WetLoaderFile } from "web-ext-translator-shared";
+
 import { VcsInfo, VcsBaseProvider } from "./VcsBaseProvider";
 import { parseJsonFile } from "../utils/parseJsonFile";
 import { getEditorConfigPaths } from "../utils/editorConfig";
-import { WetLoaderData, WetLocaleFile, WetLoaderFile } from "web-ext-translator-shared";
 
 function responseToJSON(response: Response) {
     return response.text().then((text) => parseJsonFile(response.url, text));
@@ -18,7 +19,6 @@ function responseToText(response: Response) {
 }
 
 export class GithubProvider extends VcsBaseProvider {
-
     protected getName() {
         return "Github";
     }
@@ -51,40 +51,43 @@ export class GithubProvider extends VcsBaseProvider {
         const manifestPath = this.getShortestPathForName(paths, "manifest.json");
 
         const manifestResult = await fetch(`${repoPrefixRaw}/${manifestPath}`).then(responseToText);
-        const localesResult = await fetch(`${repoPrefixApi}/contents/${localesPath}?ref=${info.branch}`).then(responseToJSON) as Array<{ type: string, name: string }>;
+        const localesResult = (await fetch(`${repoPrefixApi}/contents/${localesPath}?ref=${info.branch}`).then(
+            responseToJSON
+        )) as Array<{ type: string; name: string }>;
 
         const locales = localesResult.filter((v) => v.type === "dir").map((v) => v.name);
 
         const editorConfigsToLoad = new Set<string>();
-        const fetches = locales.map(async (locale): Promise<WetLocaleFile> => {
-            const localePath = `${localesPath}/${locale}`;
-            const messagesPath = `${localePath}/messages.json`;
-            const editorConfigPaths = getEditorConfigPaths(paths, localePath);
-            editorConfigPaths.forEach((path) => editorConfigsToLoad.add(path));
+        const fetches = locales.map(
+            async (locale): Promise<WetLocaleFile> => {
+                const localePath = `${localesPath}/${locale}`;
+                const messagesPath = `${localePath}/messages.json`;
+                const editorConfigPaths = getEditorConfigPaths(paths, localePath);
+                editorConfigPaths.forEach((path) => editorConfigsToLoad.add(path));
 
-            return {
-                path: messagesPath,
-                data: await fetch(`${repoPrefixRaw}/${messagesPath}`).then(responseToText),
-                locale,
-                editorConfigs: editorConfigPaths
-            };
-        });
+                return {
+                    path: messagesPath,
+                    data: await fetch(`${repoPrefixRaw}/${messagesPath}`).then(responseToText),
+                    locale,
+                    editorConfigs: editorConfigPaths,
+                };
+            }
+        );
 
-        const editorConfigs: WetLoaderFile[] = [];
-        for (const path of editorConfigsToLoad.values()) {
-            editorConfigs.push({
+        const editorConfigs: WetLoaderFile[] = await Promise.all(
+            [...editorConfigsToLoad.values()].map(async (path) => ({
                 path,
-                data: await fetch(`${repoPrefixRaw}/${path}`).then(responseToText)
-            });
-        }
+                data: await fetch(`${repoPrefixRaw}/${path}`).then(responseToText),
+            }))
+        );
 
         return {
             locales: await Promise.all(fetches),
             manifest: {
                 path: manifestPath,
-                data: manifestResult
+                data: manifestResult,
             },
-            editorConfigs
+            editorConfigs,
         };
     }
 }

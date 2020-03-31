@@ -4,11 +4,12 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import React, { useRef, useEffect, useCallback, useMemo } from "react";
+import React, { useRef, useEffect, useMemo } from "react";
 import "./style.css";
 import { useDispatch } from "react-redux";
 import { WetPlaceholder } from "web-ext-translator-shared";
 import { throttle } from "throttle-debounce";
+
 import { isLocaleRTL } from "../../../lib/rtl";
 
 const UNICODE_REGEX = /(\\u[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])/g;
@@ -22,12 +23,10 @@ interface TranslationEditorProps {
 }
 
 function getPlaceholderValue(key: string, placeholders?: WetPlaceholder[]) {
-    if (!placeholders)
-        return null;
+    if (!placeholders) return null;
     const validPlaceholders = placeholders.filter((p) => !!p.example);
     const exactMatch = validPlaceholders.find((p) => p.name === key);
-    if (exactMatch)
-        return exactMatch.example;
+    if (exactMatch) return exactMatch.example;
     const lowerKey = key.toLowerCase();
     const match = placeholders.find((e) => e.name.toLowerCase() === lowerKey);
     return match ? match.example : null;
@@ -38,13 +37,10 @@ export default ({ messageKey, locale, modified, value, placeholders }: Translati
     const dispatch = useDispatch();
     const disabled = !messageKey || !locale;
     let className = "translation-editor";
-    if (modified)
-        className += " translation-editor--is-modified";
+    if (modified) className += " translation-editor--is-modified";
     const rtl = locale && isLocaleRTL(locale);
-    if (rtl)
-        className += " translation-editor--is-rtl";
-    if (!value)
-        className += " translation-editor--is-empty";
+    if (rtl) className += " translation-editor--is-rtl";
+    if (!value) className += " translation-editor--is-empty";
 
     useEffect(() => {
         if (inputRef.current.textContent !== value || inputRef.current.querySelector("*"))
@@ -52,26 +48,39 @@ export default ({ messageKey, locale, modified, value, placeholders }: Translati
     }, [value]);
 
     const removeFormatting = () => {
-        if (inputRef.current.querySelector("*"))
-            inputRef.current.textContent = inputRef.current.textContent;
-    }
-    const updateMarkdown = useMemo(() => throttle(200, () => {
-        if (inputRef.current) {
-            const newValue = inputRef.current.textContent.replace(UNICODE_REGEX, (a, b) => JSON.parse(`"${b}"`));
-            const markdown = newValue.replace(/\$\w+\$/g, (s) => getPlaceholderValue(s.substr(1, s.length - 2), placeholders) || s);
-            dispatch({ type: "SET_MARKDOWN", payload: { markdown, rtl } });
-        }
-    }), [placeholders, rtl]);
-    const onChange = useMemo(() => throttle(200, () => {
-        if (inputRef.current) {
-            if (locale && messageKey) {
-                const newValue = inputRef.current.textContent;
-                removeFormatting();
-                dispatch({ type: "SET_MESSAGE_VALUE", payload: { key: messageKey, value: newValue, locale } });
-            }
-            updateMarkdown();
-        }
-    }), [updateMarkdown, locale, messageKey]);
+        // eslint-disable-next-line no-self-assign
+        if (inputRef.current.querySelector("*")) inputRef.current.textContent = inputRef.current.textContent;
+    };
+    const updateMarkdown = useMemo(
+        () =>
+            throttle(200, () => {
+                if (inputRef.current) {
+                    const newValue = inputRef.current.textContent.replace(UNICODE_REGEX, (a, b) =>
+                        JSON.parse(`"${b}"`)
+                    );
+                    const markdown = newValue.replace(
+                        /\$\w+\$/g,
+                        (s) => getPlaceholderValue(s.substr(1, s.length - 2), placeholders) || s
+                    );
+                    dispatch({ type: "SET_MARKDOWN", payload: { markdown, rtl } });
+                }
+            }),
+        [placeholders, rtl]
+    );
+    const onChange = useMemo(
+        () =>
+            throttle(200, () => {
+                if (inputRef.current) {
+                    if (locale && messageKey) {
+                        const newValue = inputRef.current.textContent;
+                        removeFormatting();
+                        dispatch({ type: "SET_MESSAGE_VALUE", payload: { key: messageKey, value: newValue, locale } });
+                    }
+                    updateMarkdown();
+                }
+            }),
+        [updateMarkdown, locale, messageKey]
+    );
     const onFocus = () => {
         removeFormatting();
         updateMarkdown();
@@ -84,7 +93,7 @@ export default ({ messageKey, locale, modified, value, placeholders }: Translati
     }, []);
 
     return (
-        <React.Fragment>
+        <>
             <div
                 className={className}
                 ref={inputRef}
@@ -94,6 +103,6 @@ export default ({ messageKey, locale, modified, value, placeholders }: Translati
                 data-searchable={value}
             />
             <div className="translation-editor-outline" />
-        </React.Fragment>
+        </>
     );
-}
+};

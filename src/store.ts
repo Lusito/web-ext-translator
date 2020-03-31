@@ -5,6 +5,7 @@
  */
 
 import { createStore } from "redux";
+
 import { State } from "./shared";
 import { WetAction, reducer } from "./actions";
 
@@ -17,7 +18,7 @@ function getDefaultState(): State {
         loading: "",
         extension: null,
         webExtensionMode: false,
-        appBridge: (window as any).electronBridge || null
+        appBridge: (window as any).electronBridge || null,
     };
 }
 

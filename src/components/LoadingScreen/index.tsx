@@ -12,10 +12,12 @@ export interface LoadingScreenProps {
 }
 
 export function LoadingScreen({ label }: LoadingScreenProps) {
-    return <div className="LoadingScreen">
-        <div className="LoadingScreen__center">
-            <i className="fa fa-spinner fa-pulse fa-4x fa-fw"></i>
-            <span className="LoadingScreen__label">{label}</span>
+    return (
+        <div className="LoadingScreen">
+            <div className="LoadingScreen__center">
+                <i className="fa fa-spinner fa-pulse fa-4x fa-fw" />
+                <span className="LoadingScreen__label">{label}</span>
+            </div>
         </div>
-    </div>;
+    );
 }

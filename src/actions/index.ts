@@ -19,33 +19,45 @@ import { WetActionEnableWebExtensionMode, handleEnableWebExtensionMode } from ".
 import { handleAddMessage, WetActionAddMessage } from "./addMessage";
 
 export type WetAction =
-    WetActionAddLanguage |
-    WetActionAddMessage |
-    WetActionSelectLanguage |
-    WetActionRemoveLanguage |
-    WetActionSetMessageValue |
-    WetActionPreviewToggle |
-    WetActionSetMarkdown |
-    WetActionShowDialog |
-    WetActionHideDialog |
-    WetActionLoad |
-    WetActionSetLoading |
-    WetActionEnableWebExtensionMode;
+    | WetActionAddLanguage
+    | WetActionAddMessage
+    | WetActionSelectLanguage
+    | WetActionRemoveLanguage
+    | WetActionSetMessageValue
+    | WetActionPreviewToggle
+    | WetActionSetMarkdown
+    | WetActionShowDialog
+    | WetActionHideDialog
+    | WetActionLoad
+    | WetActionSetLoading
+    | WetActionEnableWebExtensionMode;
 
 export function reducer(state: State, action: WetAction) {
     switch (action.type) {
-        case "ADD_LANGUAGE": return handleAddLanguage(state, action.payload);
-        case "ADD_MESSAGE": return handleAddMessage(state, action.payload);
-        case "SELECT_LANGUAGE": return handleSelectLanguage(state, action.payload);
-        case "REMOVE_LANGUAGE": return handleRemoveLanguage(state, action.payload);
-        case "SET_MESSAGE_VALUE": return handleSetMessageValue(state, action.payload);
-        case "PREVIEW_TOGGLE": return handlePreviewToggle(state, action.payload);
-        case "SHOW_DIALOG": return handleShowDialog(state, action.payload);
-        case "HIDE_DIALOG": return handleHideDialog(state, action.payload);
-        case "SET_MARKDOWN": return handleSetMarkdown(state, action.payload);
-        case "LOAD": return handleLoad(state, action.payload);
-        case "SET_LOADING": return handleSetLoading(state, action.payload);
-        case "ENABLE_WEB_EXTENSION_MODE": return handleEnableWebExtensionMode(state);
+        case "ADD_LANGUAGE":
+            return handleAddLanguage(state, action.payload);
+        case "ADD_MESSAGE":
+            return handleAddMessage(state, action.payload);
+        case "SELECT_LANGUAGE":
+            return handleSelectLanguage(state, action.payload);
+        case "REMOVE_LANGUAGE":
+            return handleRemoveLanguage(state, action.payload);
+        case "SET_MESSAGE_VALUE":
+            return handleSetMessageValue(state, action.payload);
+        case "PREVIEW_TOGGLE":
+            return handlePreviewToggle(state);
+        case "SHOW_DIALOG":
+            return handleShowDialog(state, action.payload);
+        case "HIDE_DIALOG":
+            return handleHideDialog(state, action.payload);
+        case "SET_MARKDOWN":
+            return handleSetMarkdown(state, action.payload);
+        case "LOAD":
+            return handleLoad(state, action.payload);
+        case "SET_LOADING":
+            return handleSetLoading(state, action.payload);
+        case "ENABLE_WEB_EXTENSION_MODE":
+            return handleEnableWebExtensionMode(state);
     }
 
     return state;

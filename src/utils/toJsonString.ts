@@ -10,7 +10,7 @@ const escapeChars: { [s: string]: string } = {
     "\r": "\\r",
     "\n": "\\n",
     "\t": "\\t",
-    "\"": "\\\""
+    '"': '\\"',
 };
 
 export function toJsonString(value: string) {
@@ -18,8 +18,7 @@ export function toJsonString(value: string) {
     for (let i = 0; i < value.length; i++) {
         const c = value[i];
         if (c === "\\") {
-            if (value[i + 1] !== "u")
-                result.push("\\\\");
+            if (value[i + 1] !== "u") result.push("\\\\");
             else {
                 result.push("\\u");
                 i++;

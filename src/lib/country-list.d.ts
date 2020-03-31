@@ -1,4 +1,4 @@
-declare module 'country-list' {
+declare module "country-list" {
     interface CountryListInterface {
         /**
          * Expects a two-digit country code. Returns the name for that country. If not found, it returns undefined.
@@ -33,7 +33,7 @@ declare module 'country-list' {
         /**
          * Returns an array of all country information, in the same format as it gets imported.
          */
-        getData(): Array<{ code: string, name: string }>;
+        getData(): Array<{ code: string; name: string }>;
     }
     const countryList: CountryListInterface;
     export default countryList;

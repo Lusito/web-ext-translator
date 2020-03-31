@@ -6,9 +6,10 @@
 
 import React from "react";
 import { connect } from "react-redux";
-import { State } from "../../shared";
 import MarkdownIt from "markdown-it";
 import { WetAppBridge } from "web-ext-translator-shared";
+
+import { State } from "../../shared";
 
 const md = new MarkdownIt();
 
@@ -37,7 +38,13 @@ class Markdown extends React.Component<MarkdownMergedProps> {
 
     public render() {
         const { className, markdown } = this.props;
-        return <div ref={this.onRef} className={className} dangerouslySetInnerHTML={{ __html: (markdown ? renderMarkdown(markdown) : "") }} />;
+        return (
+            <div
+                ref={this.onRef}
+                className={className}
+                dangerouslySetInnerHTML={{ __html: markdown ? renderMarkdown(markdown) : "" }}
+            />
+        );
     }
 
     private onRef(e: HTMLDivElement) {
@@ -51,13 +58,14 @@ class Markdown extends React.Component<MarkdownMergedProps> {
     public componentDidUpdate() {
         if (this.ref) {
             const links = this.ref.querySelectorAll("a");
-            links.forEach((link) => link.target = "_blank");
+            links.forEach((link) => {
+                link.target = "_blank";
+            });
             const { appBridge } = this.props;
             if (appBridge) {
                 const onClick = (e: MouseEvent) => {
                     e.preventDefault();
-                    if (e.target)
-                        appBridge.openBrowser((e.currentTarget as HTMLAnchorElement).href);
+                    if (e.target) appBridge.openBrowser((e.currentTarget as HTMLAnchorElement).href);
                 };
                 links.forEach((link) => link.addEventListener("click", onClick));
             }

@@ -5,13 +5,14 @@
  */
 
 import React from "react";
-import "./style.css";
-import Dialog from "../Dialog";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+
+import Dialog from "../Dialog";
 import { WetAction } from "../../../actions";
-import { getNewDialogIndex } from "../../Dialogs";
+import { getNewDialogIndex } from "..";
 import Markdown from "../../Markdown";
+import "./style.css";
 
 interface PromptDialogDispatchProps {
     closeDialog?: (key: string) => void;
@@ -35,7 +36,17 @@ interface PromptDialogProps {
 
 type PromptDialogMergedProps = PromptDialogProps & PromptDialogDispatchProps;
 
-function PromptDialog({ title, text, initialValue, placeholder, validate, onAccept, onCancel, closeDialog, index }: PromptDialogMergedProps) {
+function PromptDialog({
+    title,
+    text,
+    initialValue,
+    placeholder,
+    validate,
+    onAccept,
+    onCancel,
+    closeDialog,
+    index,
+}: PromptDialogMergedProps) {
     let inputRef: HTMLInputElement | null = null;
     let hintRef: HTMLDivElement | null = null;
     let value = initialValue;
@@ -44,10 +55,8 @@ function PromptDialog({ title, text, initialValue, placeholder, validate, onAcce
             value = inputRef.value;
             if (hintRef && validate) {
                 const result = validate(value);
-                if (result.valid)
-                    hintRef.classList.remove("prompt-dialog__hint--is-invalid");
-                else
-                    hintRef.classList.add("prompt-dialog__hint--is-invalid");
+                if (result.valid) hintRef.classList.remove("prompt-dialog__hint--is-invalid");
+                else hintRef.classList.add("prompt-dialog__hint--is-invalid");
                 hintRef.textContent = result.message;
             }
         }
@@ -55,14 +64,14 @@ function PromptDialog({ title, text, initialValue, placeholder, validate, onAcce
 
     function accept() {
         if (!validate || validate(value).valid) {
-            closeDialog && closeDialog(index);
-            onAccept && onAccept(value);
+            closeDialog?.(index);
+            onAccept?.(value);
         }
     }
 
     function cancel() {
-        closeDialog && closeDialog(index);
-        onCancel && onCancel();
+        closeDialog?.(index);
+        onCancel?.();
     }
 
     function onInputRef(e: HTMLInputElement | null) {
@@ -89,24 +98,58 @@ function PromptDialog({ title, text, initialValue, placeholder, validate, onAcce
         }
     }
 
-    const buttons = [{ label: "OK", focus: false, onClick: accept }, { label: "Cancel", focus: false, onClick: cancel }];
-    return <Dialog className="prompt-dialog" title={title || ""} buttons={buttons}>
-        {text ? <Markdown className="prompt-dialog__text" markdown={text} /> : ""}
-        <input ref={onInputRef} onChange={onChange} onKeyDown={onKeyDown} className="prompt-dialog__input" placeholder={placeholder} />
-        <div ref={onHintRef} className="prompt-dialog__hint"></div>
-    </Dialog>;
+    const buttons = [
+        { label: "OK", focus: false, onClick: accept },
+        { label: "Cancel", focus: false, onClick: cancel },
+    ];
+    return (
+        <Dialog className="prompt-dialog" title={title || ""} buttons={buttons}>
+            {text ? <Markdown className="prompt-dialog__text" markdown={text} /> : ""}
+            <input
+                ref={onInputRef}
+                onChange={onChange}
+                onKeyDown={onKeyDown}
+                className="prompt-dialog__input"
+                placeholder={placeholder}
+            />
+            <div ref={onHintRef} className="prompt-dialog__hint" />
+        </Dialog>
+    );
 }
 
 function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
     return {
-        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key })
+        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key }),
     };
 }
 
-const ConnectedPromptDialog = connect<{}, PromptDialogDispatchProps, PromptDialogProps>(null, mapDispatchToProps)(PromptDialog);
+const ConnectedPromptDialog = connect<{}, PromptDialogDispatchProps, PromptDialogProps>(
+    null,
+    mapDispatchToProps
+)(PromptDialog);
 export default ConnectedPromptDialog;
 
-export function createPromptDialog(title: string, text: string, initialValue: string, placeholder: string, onAccept: (value: string) => void, validate?: (value: string) => PromptValidationResult, onCancel?: () => void) {
+export function createPromptDialog(
+    title: string,
+    text: string,
+    initialValue: string,
+    placeholder: string,
+    onAccept: (value: string) => void,
+    validate?: (value: string) => PromptValidationResult,
+    onCancel?: () => void
+) {
     const index = getNewDialogIndex().toString();
-    return <ConnectedPromptDialog key={index} index={index} title={title} text={text} initialValue={initialValue} placeholder={placeholder} onAccept={onAccept} validate={validate} onCancel={onCancel} />;
+    return (
+        <ConnectedPromptDialog
+            key={index}
+            index={index}
+            title={title}
+            text={text}
+            initialValue={initialValue}
+            placeholder={placeholder}
+            onAccept={onAccept}
+            validate={validate}
+            onCancel={onCancel}
+        />
+    );
 }

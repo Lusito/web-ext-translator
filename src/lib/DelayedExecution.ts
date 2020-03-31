@@ -6,6 +6,7 @@
 
 export default class DelayedExecution {
     private callback: () => void;
+
     private instance: number | null = null;
 
     constructor(callback: () => void) {

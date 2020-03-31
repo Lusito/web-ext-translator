@@ -5,13 +5,14 @@
  */
 
 import React from "react";
-import "./style.css";
-import Dialog from "../Dialog";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+
+import Dialog from "../Dialog";
 import { WetAction } from "../../../actions";
-import { getNewDialogIndex } from "../../Dialogs";
+import { getNewDialogIndex } from "..";
 import store from "../../../store";
+import "./style.css";
 
 const VALID_NAME = /^[A-Za-z0-9_@]+$/;
 
@@ -38,12 +39,15 @@ function AddMessageDialog({ messageName, closeDialog, index }: AddMessageDialogM
     function validate() {
         if (!value.length) {
             return { valid: false, message: "Please enter a name" };
-        } else if (!asGroupRef || !asGroupRef.checked) {
-            if (existingNames.indexOf(value) >= 0) {
+        }
+        if (!asGroupRef || !asGroupRef.checked) {
+            if (existingNames.includes(value)) {
                 return { valid: false, message: "Key already exists" };
-            } else if (value.startsWith("@@")) {
+            }
+            if (value.startsWith("@@")) {
                 return { error: true, message: "Keys starting with @@ are reserved!" };
-            } else if (!VALID_NAME.test(value)) {
+            }
+            if (!VALID_NAME.test(value)) {
                 return { error: true, message: "Allowed characters: A-Z,a-z,0-9,_ (underscore) or @" };
             }
         }
@@ -54,10 +58,8 @@ function AddMessageDialog({ messageName, closeDialog, index }: AddMessageDialogM
             value = inputRef.value;
             if (hintRef) {
                 const result = validate();
-                if (result.valid)
-                    hintRef.classList.remove("add-message-dialog__hint--is-invalid");
-                else
-                    hintRef.classList.add("add-message-dialog__hint--is-invalid");
+                if (result.valid) hintRef.classList.remove("add-message-dialog__hint--is-invalid");
+                else hintRef.classList.add("add-message-dialog__hint--is-invalid");
                 hintRef.textContent = result.message;
             }
         }
@@ -65,21 +67,21 @@ function AddMessageDialog({ messageName, closeDialog, index }: AddMessageDialogM
 
     function accept() {
         if (validate().valid) {
-            closeDialog && closeDialog(index);
+            closeDialog?.(index);
             store.dispatch({
                 type: "ADD_MESSAGE",
                 payload: {
                     asGroup: !!asGroupRef && asGroupRef.checked,
                     insertBefore: !!insertBeforeRef && insertBeforeRef.checked,
                     referenceMessageName: messageName,
-                    newMessageName: value
-                }
+                    newMessageName: value,
+                },
             });
         }
     }
 
     function cancel() {
-        closeDialog && closeDialog(index);
+        closeDialog?.(index);
     }
 
     function onInputRef(e: HTMLInputElement | null) {
@@ -117,22 +119,44 @@ function AddMessageDialog({ messageName, closeDialog, index }: AddMessageDialogM
         }
     }
 
-    const buttons = [{ label: "OK", focus: false, onClick: accept }, { label: "Cancel", focus: false, onClick: cancel }];
-    return <Dialog className="add-message-dialog" title="Insert a new Message" buttons={buttons}>
-        <div><label><input type="checkbox" ref={onAsGroupRef} onClick={onChange} /> As group/comment</label></div>
-        <div><label><input type="checkbox" ref={onInsertBeforeRef} /> Insert before current element</label></div>
-        <input ref={onInputRef} onChange={onChange} onKeyDown={onKeyDown} className="add-message-dialog__input" placeholder="Name.." />
-        <div ref={onHintRef} className="add-message-dialog__hint"></div>
-    </Dialog>;
+    const buttons = [
+        { label: "OK", focus: false, onClick: accept },
+        { label: "Cancel", focus: false, onClick: cancel },
+    ];
+    return (
+        <Dialog className="add-message-dialog" title="Insert a new Message" buttons={buttons}>
+            <div>
+                <label>
+                    <input type="checkbox" ref={onAsGroupRef} onClick={onChange} /> As group/comment
+                </label>
+            </div>
+            <div>
+                <label>
+                    <input type="checkbox" ref={onInsertBeforeRef} /> Insert before current element
+                </label>
+            </div>
+            <input
+                ref={onInputRef}
+                onChange={onChange}
+                onKeyDown={onKeyDown}
+                className="add-message-dialog__input"
+                placeholder="Name.."
+            />
+            <div ref={onHintRef} className="add-message-dialog__hint" />
+        </Dialog>
+    );
 }
 
 function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
     return {
-        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key })
+        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key }),
     };
 }
 
-const ConnectedAddMessageDialog = connect<{}, AddMessageDialogDispatchProps, AddMessageDialogProps>(null, mapDispatchToProps)(AddMessageDialog);
+const ConnectedAddMessageDialog = connect<{}, AddMessageDialogDispatchProps, AddMessageDialogProps>(
+    null,
+    mapDispatchToProps
+)(AddMessageDialog);
 export default ConnectedAddMessageDialog;
 
 export function createAddMessageDialog(messageName: string) {

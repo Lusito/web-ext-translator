@@ -6,6 +6,7 @@
 
 import React from "react";
 import { connect } from "react-redux";
+
 import { State, LoadedExtension } from "../../shared";
 import Toolbar from "../Toolbar";
 import MarkdownPreview from "../MarkdownPreview";
@@ -32,15 +33,23 @@ interface WetAppProps {
 }
 
 function WetApp({ loading, extension, showPlus }: WetAppProps) {
-    return <React.Fragment>
-        {loading && <LoadingScreen label={loading} />}
-        {!loading && <main>
-            <Toolbar />
-            {extension ? <TranslationTable extension={extension} showPlus={showPlus} /> : <MarkdownScreen markdown={welcomeScreenMarkdown} />}
-        </main>}
-        {!loading && <MarkdownPreview />}
-        <Dialogs />
-    </React.Fragment>;
+    return (
+        <>
+            {loading && <LoadingScreen label={loading} />}
+            {!loading && (
+                <main>
+                    <Toolbar />
+                    {extension ? (
+                        <TranslationTable extension={extension} showPlus={showPlus} />
+                    ) : (
+                        <MarkdownScreen markdown={welcomeScreenMarkdown} />
+                    )}
+                </main>
+            )}
+            {!loading && <MarkdownPreview />}
+            <Dialogs />
+        </>
+    );
 }
 
 function mapStateToProps({ loading, extension, appBridge }: State) {

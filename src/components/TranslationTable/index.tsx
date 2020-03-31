@@ -5,6 +5,7 @@
  */
 
 import React from "react";
+
 import TranslationTableHead from "./TranslationTableHead";
 import TranslationTableBody from "./TranslationTableBody";
 import { LoadedExtension } from "../../shared";
@@ -15,8 +16,10 @@ interface TranslationTableProps {
 }
 
 export function TranslationTable({ extension, showPlus }: TranslationTableProps) {
-    return <React.Fragment>
-        <TranslationTableHead extension={extension} />
-        <TranslationTableBody extension={extension} showPlus={showPlus} />
-    </React.Fragment>;
+    return (
+        <>
+            <TranslationTableHead extension={extension} />
+            <TranslationTableBody extension={extension} showPlus={showPlus} />
+        </>
+    );
 }

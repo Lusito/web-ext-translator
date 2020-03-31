@@ -5,21 +5,21 @@
  */
 
 const ALLOWED_ESCAPE_CHARS: { [s: string]: string } = {
-    "b": "\b",
-    "f": "\f",
-    "r": "\r",
-    "n": "\n",
-    "t": "\t",
-    "u": "\\u", // special case for allowing editors to see \uXXXX unicode declarations
-    "\"": "\"",
-    "\\": "\\"
+    b: "\b",
+    f: "\f",
+    r: "\r",
+    n: "\n",
+    t: "\t",
+    u: "\\u", // special case for allowing editors to see \uXXXX unicode declarations
+    '"': '"',
+    "\\": "\\",
 };
 
 const WHITE_SPACE = /\s/;
-const SINGLE_CHAR_TOKENS = /[\[|\]|\{|\}|,|\:]/;
+const SINGLE_CHAR_TOKENS = /[[|\]|{|}|,|:]/;
 const NUMERIC = /[0-9]/;
 const NUMERIC_OR_MINUS = /[0-9|-]/;
-const NUMERIC_END = /[\s|\]|\}|,\/]/;
+const NUMERIC_END = /[\s|\]|}|,/]/;
 const IDENTIFIER_CHARS = /[a-z]/;
 
 interface MessageToken {
@@ -31,12 +31,19 @@ interface MessageToken {
 
 export class JsonTokenizer {
     private readonly resource: string;
+
     private lines: string[] = [];
-    private line: number = 0;
-    private lineContent: string = "";
-    private column: number = 0;
+
+    private line = 0;
+
+    private lineContent = "";
+
+    private column = 0;
+
     private lastChar: string | null = null;
+
     private lastToken: MessageToken | null = null;
+
     private currentToken: MessageToken;
 
     public constructor(resource: string, data: string) {
@@ -51,18 +58,18 @@ export class JsonTokenizer {
     }
 
     private createNewToken(): MessageToken {
-        return this.currentToken = {
+        this.currentToken = {
             line: this.line,
             column: this.column,
             content: null,
-            type: "null"
+            type: "null",
         };
+        return this.currentToken;
     }
 
     public skipComments() {
         let token = this.next();
-        while (token.type === "comment")
-            token = this.next();
+        while (token.type === "comment") token = this.next();
         return token;
     }
 
@@ -70,30 +77,41 @@ export class JsonTokenizer {
         // skip comments if a token is expected
         const token = this.skipComments();
         const invalid = token.content !== value || token.type !== "char";
-        if (invalid)
-            this.lastToken = token;
+        if (invalid) this.lastToken = token;
         return !invalid;
     }
 
     public expectCharToken(value: string) {
         if (!this.testCharToken(value))
-            throw new Error(`Expected token '${value}', but got '${this.lastToken && this.lastToken.content}' at ${this.getTokenPosition()}`);
+            throw new Error(
+                `Expected token '${value}', but got '${
+                    this.lastToken && this.lastToken.content
+                }' at ${this.getTokenPosition()}`
+            );
     }
 
     public expectValueToken(type: "number"): number;
+
     public expectValueToken(type: "string"): string;
+
     public expectValueToken(type: "boolean"): boolean;
+
     public expectValueToken(type: "number" | "string" | "boolean") {
         // skip comments if a token is expected
         const token = this.skipComments();
         if (token.type !== type)
-            throw new Error(`Expected token of type '${type}', but got a '${token.type}' at ${this.getTokenPosition()}`);
+            throw new Error(
+                `Expected token of type '${type}', but got a '${token.type}' at ${this.getTokenPosition()}`
+            );
         return token.content;
     }
 
     public tryValueToken(type: "number"): number | undefined;
+
     public tryValueToken(type: "string"): string | undefined;
+
     public tryValueToken(type: "boolean"): boolean | undefined;
+
     public tryValueToken(type: "number" | "string" | "boolean") {
         // skip comments if a token is expected
         const token = this.skipComments();
@@ -114,7 +132,7 @@ export class JsonTokenizer {
         this.skipWhiteSpaces();
         const token = this.createNewToken();
         const c = this.readChar(true) as string;
-        if (c === "\"") {
+        if (c === '"') {
             this.lastChar = c;
             token.content = this.readQuotedString();
             token.type = "string";
@@ -152,14 +170,12 @@ export class JsonTokenizer {
         }
 
         if (this.column >= this.lineContent.length) {
-            if (required)
-                throw new Error(`Unexpected end of line at ${this.getPosition()}`);
+            if (required) throw new Error(`Unexpected end of line at ${this.getPosition()}`);
             this.prepareNextLine();
             return null;
         }
         const c = this.lineContent[this.column++];
-        if (WHITE_SPACE.test(c) && required)
-            throw new Error(`Unexpected end of token at ${this.getPosition()}`);
+        if (WHITE_SPACE.test(c) && required) throw new Error(`Unexpected end of token at ${this.getPosition()}`);
         return c;
     }
 
@@ -169,8 +185,7 @@ export class JsonTokenizer {
 
     private readNumberChar(required: boolean) {
         const c = this.readChar(required);
-        if (c === null)
-            return null;
+        if (c === null) return null;
 
         if (NUMERIC_END.test(c)) {
             this.lastChar = c;
@@ -183,8 +198,7 @@ export class JsonTokenizer {
         let c;
         do {
             c = this.readNumberChar(false);
-            if (c === null)
-                return null;
+            if (c === null) return null;
             chars.push(c);
         } while (NUMERIC.test(c));
         return c;
@@ -193,16 +207,14 @@ export class JsonTokenizer {
     private readDigitsRequired(chars: string[]): string | null {
         const lengthBefore = chars.length;
         const c = this.readDigits(chars);
-        if (lengthBefore === chars.length)
-            throw new Error(`Expected a digit at ${this.getPosition()}`);
+        if (lengthBefore === chars.length) throw new Error(`Expected a digit at ${this.getPosition()}`);
         return c;
     }
 
     private charsToNumber(chars: string[]) {
         const str = chars.join("");
         const num = parseFloat(str);
-        if (isNaN(num))
-            throw new Error(`Invalid number token '${str}' at ${this.getPosition()}`);
+        if (Number.isNaN(num)) throw new Error(`Invalid number token '${str}' at ${this.getPosition()}`);
         return num;
     }
 
@@ -213,17 +225,18 @@ export class JsonTokenizer {
             chars.push(c);
             c = this.readNumberChar(true);
             if (c === null)
-                throw new Error(`Expected a digit, but got '${this.lastChar === null ? "<End Of Line>" : this.lastChar}' at ${this.getPosition()}`);
+                throw new Error(
+                    `Expected a digit, but got '${
+                        this.lastChar === null ? "<End Of Line>" : this.lastChar
+                    }' at ${this.getPosition()}`
+                );
         }
         if (c === "0") {
             c = this.readNumberChar(false);
-            if (c === null)
-                return 0;
-            if (NUMERIC.test(c as string))
-                throw new Error(`Unexpected digit '${c}' after 0 at ${this.getPosition()}`);
+            if (c === null) return 0;
+            if (NUMERIC.test(c as string)) throw new Error(`Unexpected digit '${c}' after 0 at ${this.getPosition()}`);
         } else {
-            if (!NUMERIC.test(c as string))
-                throw new Error(`Unexpected character '${c}' at ${this.getPosition()}`);
+            if (!NUMERIC.test(c as string)) throw new Error(`Unexpected character '${c}' at ${this.getPosition()}`);
 
             chars.push(c as string);
             c = this.readDigits(chars);
@@ -234,11 +247,9 @@ export class JsonTokenizer {
             c = this.readDigitsRequired(chars);
         }
 
-        if (c === null || NUMERIC_END.test(c))
-            return this.charsToNumber(chars);
+        if (c === null || NUMERIC_END.test(c)) return this.charsToNumber(chars);
 
-        if (c !== "e" && c !== "E")
-            throw new Error(`Expected a e or E, but got '${c}' at ${this.getPosition()}`);
+        if (c !== "e" && c !== "E") throw new Error(`Expected a e or E, but got '${c}' at ${this.getPosition()}`);
 
         chars.push(c);
         c = this.readNumberChar(true);
@@ -247,17 +258,19 @@ export class JsonTokenizer {
         chars.push(c as string);
         c = this.readDigitsRequired(chars);
 
-        if (c !== null)
-            this.lastChar = c;
+        if (c !== null) this.lastChar = c;
         return this.charsToNumber(chars);
     }
 
     private readIdentifier(firstChar: string): boolean | null {
         const id = this.readIdentifierChars(firstChar);
         switch (id) {
-            case "true": return true;
-            case "false": return false;
-            case "null": return null;
+            case "true":
+                return true;
+            case "false":
+                return false;
+            case "null":
+                return null;
         }
         throw new Error(`Unexpected identifier '${id}' at ${this.getTokenPosition()}`);
     }
@@ -266,8 +279,7 @@ export class JsonTokenizer {
         const chars = [firstChar];
         while (this.column < this.lineContent.length) {
             const c = this.lineContent[this.column];
-            if (!IDENTIFIER_CHARS.test(c))
-                break;
+            if (!IDENTIFIER_CHARS.test(c)) break;
             chars.push(c);
             this.column++;
         }
@@ -284,12 +296,11 @@ export class JsonTokenizer {
 
     private expectChar(expected: string) {
         const actual = this.readChar(true);
-        if (actual !== expected)
-            throw new Error(`Expected '${expected}', found '${actual}' at ${this.getPosition()}`);
+        if (actual !== expected) throw new Error(`Expected '${expected}', found '${actual}' at ${this.getPosition()}`);
     }
 
     private readQuotedString() {
-        this.expectChar("\"");
+        this.expectChar('"');
         let token = "";
         while (this.column < this.lineContent.length) {
             const c = this.lineContent[this.column];
@@ -302,7 +313,7 @@ export class JsonTokenizer {
                 continue;
             }
             // done?
-            else if (c === "\"") {
+            else if (c === '"') {
                 this.column++;
                 return token;
             }
@@ -325,12 +336,10 @@ export class JsonTokenizer {
         while (this.line < this.lines.length) {
             if (this.column >= this.lineContent.length) {
                 this.prepareNextLine();
-                if (this.line >= this.lines.length)
-                    return false;
+                if (this.line >= this.lines.length) return false;
             }
             while (this.column < this.lineContent.length) {
-                if (!WHITE_SPACE.test(this.lineContent[this.column]))
-                    return true;
+                if (!WHITE_SPACE.test(this.lineContent[this.column])) return true;
                 this.column++;
             }
         }

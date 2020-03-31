@@ -5,13 +5,14 @@
  */
 
 import React from "react";
-import "./style.css";
-import Dialog from "../Dialog";
-import { LoadedExtension } from "../../../shared";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+
+import Dialog from "../Dialog";
+import { LoadedExtension } from "../../../shared";
 import { WetAction } from "../../../actions";
-import { getNewDialogIndex } from "../../Dialogs";
+import { getNewDialogIndex } from "..";
+import "./style.css";
 
 interface ApplyDialogDispatchProps {
     closeDialog?: (key: string) => void;
@@ -28,25 +29,31 @@ function ApplyDialog({ closeDialog, extension, index }: ApplyDialogMergedProps) 
     let ref: HTMLSelectElement | null = null;
 
     function accept() {
-        closeDialog && closeDialog(index);
+        closeDialog?.(index);
         if (ref) {
             const language = extension.languages[ref.value];
             if (extension.vcsInfo) {
-                window.postMessage({
-                    action: "WetApplyLanguage",
-                    language,
-                    vcsHost: extension.vcsInfo.host,
-                    vcsUser: extension.vcsInfo.user,
-                    vcsRepository: extension.vcsInfo.repository
-                }, "*");
+                window.postMessage(
+                    {
+                        action: "WetApplyLanguage",
+                        language,
+                        vcsHost: extension.vcsInfo.host,
+                        vcsUser: extension.vcsInfo.user,
+                        vcsRepository: extension.vcsInfo.repository,
+                    },
+                    "*"
+                );
             }
         }
     }
-    const options = Object.getOwnPropertyNames(extension.languages).map((locale) =>
-        <option key={locale} value={locale}>{extension.languages[locale].label}</option>);
+    const options = Object.getOwnPropertyNames(extension.languages).map((locale) => (
+        <option key={locale} value={locale}>
+            {extension.languages[locale].label}
+        </option>
+    ));
 
     function cancel() {
-        closeDialog && closeDialog(index);
+        closeDialog?.(index);
     }
 
     function onRef(e: HTMLSelectElement | null) {
@@ -55,22 +62,30 @@ function ApplyDialog({ closeDialog, extension, index }: ApplyDialogMergedProps) 
 
     const buttons = [
         { label: "OK", focus: true, onClick: accept },
-        { label: "Cancel", focus: false, onClick: cancel }
+        { label: "Cancel", focus: false, onClick: cancel },
     ];
-    const defaultValue = extension.firstLocale === extension.mainLanguage.locale ? extension.secondLocale : extension.firstLocale;
+    const defaultValue =
+        extension.firstLocale === extension.mainLanguage.locale ? extension.secondLocale : extension.firstLocale;
 
-    return <Dialog className="apply-dialog" title={"Apply Translation"} buttons={buttons}>
-        <select ref={onRef} className="apply-dialog__select" defaultValue={defaultValue || undefined}>{options}</select>
-    </Dialog>;
+    return (
+        <Dialog className="apply-dialog" title="Apply Translation" buttons={buttons}>
+            <select ref={onRef} className="apply-dialog__select" defaultValue={defaultValue || undefined}>
+                {options}
+            </select>
+        </Dialog>
+    );
 }
 
 function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
     return {
-        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key })
+        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key }),
     };
 }
 
-const ConnectedApplyDialog = connect<{}, ApplyDialogDispatchProps, ApplyDialogProps>(null, mapDispatchToProps)(ApplyDialog);
+const ConnectedApplyDialog = connect<{}, ApplyDialogDispatchProps, ApplyDialogProps>(
+    null,
+    mapDispatchToProps
+)(ApplyDialog);
 export default ConnectedApplyDialog;
 
 export function createApplyDialog(extension: LoadedExtension) {

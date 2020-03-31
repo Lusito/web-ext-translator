@@ -5,12 +5,13 @@
  */
 
 import React from "react";
-import "./style.css";
-import Dialog from "../Dialog";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+
+import Dialog from "../Dialog";
 import { WetAction } from "../../../actions";
-import { getNewDialogIndex } from "../../Dialogs";
+import { getNewDialogIndex } from "..";
+import "./style.css";
 
 interface FileDialogDispatchProps {
     closeDialog?: (key: string) => void;
@@ -29,15 +30,15 @@ function FileDialog({ title, onAccept, onCancel, closeDialog, index }: FileDialo
     let inputRef: HTMLInputElement | null = null;
 
     function accept() {
-        if (inputRef && inputRef.files) {
-            closeDialog && closeDialog(index);
-            onAccept && onAccept(inputRef.files);
+        if (inputRef?.files) {
+            closeDialog?.(index);
+            onAccept?.(inputRef.files);
         }
     }
 
     function cancel() {
-        closeDialog && closeDialog(index);
-        onCancel && onCancel();
+        closeDialog?.(index);
+        onCancel?.();
     }
 
     function onInputRef(e: HTMLInputElement | null) {
@@ -47,15 +48,20 @@ function FileDialog({ title, onAccept, onCancel, closeDialog, index }: FileDialo
         }
     }
 
-    const buttons = [{ label: "OK", focus: false, onClick: accept }, { label: "Cancel", focus: false, onClick: cancel }];
-    return <Dialog className="file-dialog" title={title || ""} buttons={buttons}>
-        <input ref={onInputRef} type="file" className="file-dialog__input" />
-    </Dialog>;
+    const buttons = [
+        { label: "OK", focus: false, onClick: accept },
+        { label: "Cancel", focus: false, onClick: cancel },
+    ];
+    return (
+        <Dialog className="file-dialog" title={title || ""} buttons={buttons}>
+            <input ref={onInputRef} type="file" className="file-dialog__input" />
+        </Dialog>
+    );
 }
 
 function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
     return {
-        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key })
+        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key }),
     };
 }
 

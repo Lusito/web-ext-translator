@@ -5,6 +5,7 @@
  */
 
 import { WetLanguage, WetAppBridge } from "web-ext-translator-shared";
+
 import { VcsInfo } from "./vcs/VcsBaseProvider";
 
 export interface LoadedExtension {

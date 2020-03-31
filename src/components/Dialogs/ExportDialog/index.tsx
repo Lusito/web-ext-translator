@@ -5,15 +5,16 @@
  */
 
 import React from "react";
-import "./style.css";
-import Dialog from "../Dialog";
-import { LoadedExtension } from "../../../shared";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { WetAction } from "../../../actions";
-import { getNewDialogIndex } from "../../Dialogs";
 import { WetLanguage } from "web-ext-translator-shared";
+
+import Dialog from "../Dialog";
+import { LoadedExtension } from "../../../shared";
+import { WetAction } from "../../../actions";
+import { getNewDialogIndex } from "..";
 import { exportToZip } from "../../../utils/exportToZip";
+import "./style.css";
 
 interface ExportDialogDispatchProps {
     closeDialog?: (key: string) => void;
@@ -30,26 +31,26 @@ function ExportDialog({ closeDialog, extension, index }: ExportDialogMergedProps
     let ref: HTMLDivElement | null = null;
 
     function accept() {
-        closeDialog && closeDialog(index);
+        closeDialog?.(index);
         if (ref) {
             const exportedLanguages: WetLanguage[] = [];
             const inputs = ref.querySelectorAll("input");
             for (const input of inputs) {
                 const language = input.checked && extension.languages[input.value];
-                if (language)
-                    exportedLanguages.push(language);
+                if (language) exportedLanguages.push(language);
             }
-            if (exportedLanguages.length)
-                exportToZip(exportedLanguages, extension.mainLanguage);
+            if (exportedLanguages.length) exportToZip(exportedLanguages, extension.mainLanguage);
         }
     }
-    const checkboxes = Object.getOwnPropertyNames(extension.languages).map((locale) => <label key={locale} className="export-dialog__checkbox-label">
-        <input type="checkbox" value={locale} defaultChecked={true} />
-        {extension.languages[locale].label}
-    </label>);
+    const checkboxes = Object.getOwnPropertyNames(extension.languages).map((locale) => (
+        <label key={locale} className="export-dialog__checkbox-label">
+            <input type="checkbox" value={locale} defaultChecked />
+            {extension.languages[locale].label}
+        </label>
+    ));
 
     function cancel() {
-        closeDialog && closeDialog(index);
+        closeDialog?.(index);
     }
 
     function onRef(e: HTMLDivElement | null) {
@@ -58,20 +59,25 @@ function ExportDialog({ closeDialog, extension, index }: ExportDialogMergedProps
 
     const buttons = [
         { label: "OK", focus: true, onClick: accept },
-        { label: "Cancel", focus: false, onClick: cancel }
+        { label: "Cancel", focus: false, onClick: cancel },
     ];
-    return <Dialog className="export-dialog" title={"Export Translations"} buttons={buttons}>
-        <div ref={onRef}>{checkboxes}</div>
-    </Dialog>;
+    return (
+        <Dialog className="export-dialog" title="Export Translations" buttons={buttons}>
+            <div ref={onRef}>{checkboxes}</div>
+        </Dialog>
+    );
 }
 
 function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
     return {
-        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key })
+        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key }),
     };
 }
 
-const ConnectedExportDialog = connect<{}, ExportDialogDispatchProps, ExportDialogProps>(null, mapDispatchToProps)(ExportDialog);
+const ConnectedExportDialog = connect<{}, ExportDialogDispatchProps, ExportDialogProps>(
+    null,
+    mapDispatchToProps
+)(ExportDialog);
 export default ConnectedExportDialog;
 
 export function createExportDialog(extension: LoadedExtension) {

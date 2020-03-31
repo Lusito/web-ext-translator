@@ -3,10 +3,10 @@
     z-index: 10;
     overflow: hidden;
     line-height: 19px;
-    transition: top .2s linear;
+    transition: top 0.2s linear;
     box-shadow: 0 -2px 8px #000000;
     border: none;
-    background: #2D2D30;
+    background: #2d2d30;
     color: white;
     padding: 10px;
     box-sizing: border-box;
@@ -36,7 +36,7 @@
 .dialog__button:hover {
     background: #4ea2ff;
     color: white;
-    border-color: #bbb;
+    border-color: #bbbbbb;
 }
 
 .dialog__button:focus {

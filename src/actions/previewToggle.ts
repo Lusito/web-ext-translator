@@ -11,6 +11,6 @@ export interface WetActionPreviewToggle {
     payload: null;
 }
 
-export function handlePreviewToggle(state: State, payload: null): State {
+export function handlePreviewToggle(state: State): State {
     return { ...state, previewVisible: !state.previewVisible };
 }

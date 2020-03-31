@@ -5,6 +5,7 @@
  */
 
 import React from "react";
+
 import "./style.css";
 import Markdown from "../Markdown";
 
@@ -13,9 +14,11 @@ interface MarkdownScreenProps {
 }
 
 export function MarkdownScreen({ markdown }: MarkdownScreenProps) {
-    return <div className="MarkdownScreen">
-        <div className="MarkdownScreen__center">
-            <Markdown markdown={markdown} />
+    return (
+        <div className="MarkdownScreen">
+            <div className="MarkdownScreen__center">
+                <Markdown markdown={markdown} />
+            </div>
         </div>
-    </div>;
+    );
 }

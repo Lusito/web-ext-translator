@@ -4,8 +4,9 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import { State } from "../shared";
 import { WetLanguage, WetMessageType, WetMessage } from "web-ext-translator-shared";
+
+import { State } from "../shared";
 import { setDirty } from "../utils/setDirty";
 
 export interface WetActionAddMessagePayload {
@@ -22,8 +23,7 @@ export interface WetActionAddMessage {
 
 function getBestCommentType(messages: WetMessage[]) {
     for (const message of messages) {
-        if (message.type !== WetMessageType.MESSAGE)
-            return message.type;
+        if (message.type !== WetMessageType.MESSAGE) return message.type;
     }
     return WetMessageType.COMMENT;
 }
@@ -35,23 +35,21 @@ function getBestGroupName(messages: WetMessage[]) {
     let groupName = "";
     do {
         groupName = `__WET_GROUP__${groupIndex++}`;
-    } while (groupNames.indexOf(groupName) >= 0);
+    } while (groupNames.includes(groupName));
     return groupName;
 }
 
 export function handleAddMessage(state: State, payload: WetActionAddMessagePayload): State {
-    if (!state.extension)
-        return state;
+    if (!state.extension) return state;
     const extension = { ...state.extension };
     const mainLanguage = JSON.parse(JSON.stringify(extension.mainLanguage)) as WetLanguage;
     const index = mainLanguage.messages.findIndex((m) => m.name === payload.referenceMessageName);
-    if (index === -1)
-        return state;
+    if (index === -1) return state;
 
     const newMessage: WetMessage = {
         type: payload.asGroup ? getBestCommentType(mainLanguage.messages) : WetMessageType.MESSAGE,
         name: payload.asGroup ? getBestGroupName(mainLanguage.messages) : payload.newMessageName,
-        message: payload.asGroup ? payload.newMessageName : ""
+        message: payload.asGroup ? payload.newMessageName : "",
     };
     const insertIndex = payload.insertBefore ? index : index + 1;
     mainLanguage.messages.splice(insertIndex, 0, newMessage);

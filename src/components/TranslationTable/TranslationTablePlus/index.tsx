@@ -5,6 +5,7 @@
  */
 
 import React from "react";
+
 import store from "../../../store";
 import { createAddMessageDialog } from "../../Dialogs/AddMessageDialog";
 

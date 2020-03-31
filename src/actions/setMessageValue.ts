@@ -4,8 +4,9 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import { State } from "../shared";
 import { WetMessage, WetMessageType } from "web-ext-translator-shared";
+
+import { State } from "../shared";
 import { hashForLanguage } from "../utils/getHashFor";
 import { setDirty } from "../utils/setDirty";
 
@@ -21,12 +22,10 @@ export interface WetActionSetMessageValue {
 }
 
 export function handleSetMessageValue(state: State, payload: WetActionSetMessageValuePayload): State {
-    if (!state.extension)
-        return state;
+    if (!state.extension) return state;
     const extension = { ...state.extension };
     const language = extension.languages[payload.locale];
-    if (!language)
-        return state;
+    if (!language) return state;
 
     const mainLanguage = extension.languages[extension.mainLanguage.locale];
     let hash = "";
@@ -39,8 +38,7 @@ export function handleSetMessageValue(state: State, payload: WetActionSetMessage
     messages[messages.findIndex((m) => m.name === payload.key)] = newMessage;
     const newLanguage = { ...language, messagesByKey, messages };
     extension.languages = { ...extension.languages, [payload.locale]: newLanguage };
-    if (mainLanguage === language)
-        extension.mainLanguage = newLanguage;
+    if (mainLanguage === language) extension.mainLanguage = newLanguage;
     setDirty(state.appBridge, true);
     return { ...state, extension };
 }

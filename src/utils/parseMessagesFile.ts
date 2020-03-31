@@ -5,6 +5,7 @@
  */
 
 import { WetMessage, WetPlaceholder, WetLanguage, WetMessageType } from "web-ext-translator-shared";
+
 import { JsonTokenizer } from "./JsonTokenizer";
 
 function parsePlaceholder(tokenizer: JsonTokenizer) {
@@ -14,17 +15,14 @@ function parsePlaceholder(tokenizer: JsonTokenizer) {
     const result: WetPlaceholder = {
         name,
         content: "",
-        example: ""
+        example: "",
     };
     do {
         const key = tokenizer.expectValueToken("string");
         tokenizer.expectCharToken(":");
-        if (key === "content")
-            result.content = tokenizer.expectValueToken("string");
-        else if (key === "example")
-            result.example = tokenizer.expectValueToken("string");
-        else
-            console.warn(`Found unknown key '${key}' at ${tokenizer.getTokenPosition()}, will be ignored`);
+        if (key === "content") result.content = tokenizer.expectValueToken("string");
+        else if (key === "example") result.example = tokenizer.expectValueToken("string");
+        else console.warn(`Found unknown key '${key}' at ${tokenizer.getTokenPosition()}, will be ignored`);
     } while (tokenizer.testCharToken(","));
     tokenizer.expectCharToken("}");
     return result;
@@ -64,17 +62,13 @@ function parseMessage(tokenizer: JsonTokenizer, name: string) {
     do {
         const key = tokenizer.expectValueToken("string");
         tokenizer.expectCharToken(":");
-        if (key === "message")
-            result.message = tokenizer.expectValueToken("string");
-        else if (key === "description")
-            result.description = tokenizer.expectValueToken("string");
-        else if (key === "hash")
-            result.hash = tokenizer.expectValueToken("string");
+        if (key === "message") result.message = tokenizer.expectValueToken("string");
+        else if (key === "description") result.description = tokenizer.expectValueToken("string");
+        else if (key === "hash") result.hash = tokenizer.expectValueToken("string");
         else if (key === "placeholders") {
             tokenizer.expectCharToken("{");
             if (!tokenizer.testCharToken("}")) {
-                if (!result.placeholders)
-                    result.placeholders = [];
+                if (!result.placeholders) result.placeholders = [];
                 do {
                     result.placeholders.push(parsePlaceholder(tokenizer));
                 } while (tokenizer.testCharToken(","));
@@ -94,7 +88,7 @@ export function parseMessagesFile(path: string, locale: string, fileContent: str
         locale,
         label: locale,
         messages: [],
-        messagesByKey: {}
+        messagesByKey: {},
     };
 
     const tokenizer = new JsonTokenizer(path, fileContent);
@@ -105,17 +99,15 @@ export function parseMessagesFile(path: string, locale: string, fileContent: str
             language.messages.push({
                 type: WetMessageType.COMMENT,
                 name: `group_${language.messages.length}`,
-                message: token.content as string
+                message: token.content as string,
             });
         } else if (token.content === "}") {
             return language;
-        } else if (typeof (token.content) === "string") {
+        } else if (typeof token.content === "string") {
             const msg = parseMessage(tokenizer, token.content);
             language.messages.push(msg);
-            if (msg.type === WetMessageType.MESSAGE)
-                language.messagesByKey[msg.name] = msg;
-            if (!tokenizer.testCharToken(","))
-                break;
+            if (msg.type === WetMessageType.MESSAGE) language.messagesByKey[msg.name] = msg;
+            if (!tokenizer.testCharToken(",")) break;
         }
     }
     tokenizer.expectCharToken("}");

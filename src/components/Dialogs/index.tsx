@@ -7,6 +7,7 @@
 import React from "react";
 import "./style.css";
 import { connect } from "react-redux";
+
 import { State } from "../../shared";
 
 interface DialogsStateProps {
@@ -14,11 +15,16 @@ interface DialogsStateProps {
 }
 
 function Dialogs({ dialogs }: DialogsStateProps) {
-    if (dialogs.length === 0)
-        return null;
-    return <div className="dialog-overlay">
-        {dialogs.map((d, i) => <div key={i} className="dialog-wrapper">{d}</div>)}
-    </div>;
+    if (dialogs.length === 0) return null;
+    return (
+        <div className="dialog-overlay">
+            {dialogs.map((d, i) => (
+                <div key={i} className="dialog-wrapper">
+                    {d}
+                </div>
+            ))}
+        </div>
+    );
 }
 
 function mapStateToProps({ dialogs }: State) {

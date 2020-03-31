@@ -18,11 +18,10 @@ function parseArray(tokenizer: JsonTokenizer) {
 }
 
 function parseObject(tokenizer: JsonTokenizer) {
-    const result: {[s: string]: JsonValue} = {};
+    const result: { [s: string]: JsonValue } = {};
     do {
         const key = tokenizer.tryValueToken("string");
-        if (key === undefined)
-            break;
+        if (key === undefined) break;
         tokenizer.expectCharToken(":");
         result[key] = parseValue(tokenizer);
     } while (tokenizer.testCharToken(","));
@@ -39,12 +38,9 @@ function parseValue(tokenizer: JsonTokenizer): JsonValue {
         case "null":
             return token.content;
         case "char":
-            if (token.content === "[")
-                return parseArray(tokenizer);
-            else if (token.content === "{")
-                return parseObject(tokenizer);
-            else
-                throw new Error(`Unexpected token '${token.content}' at ${tokenizer.getTokenPosition()}`);
+            if (token.content === "[") return parseArray(tokenizer);
+            if (token.content === "{") return parseObject(tokenizer);
+            throw new Error(`Unexpected token '${token.content}' at ${tokenizer.getTokenPosition()}`);
     }
     throw new Error(`Unexpected token type '${token.type}' at ${tokenizer.getTokenPosition()}`);
 }

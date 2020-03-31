@@ -22,13 +22,12 @@ export function getEditorConfigPaths(paths: string[], startingPath: string) {
     while (pathComponents.length) {
         const parentEditorConfigPath = `${pathComponents.join("/")}/.editorconfig`;
 
-        if (paths.indexOf(parentEditorConfigPath) > -1)
-            editorConfigPaths.push(parentEditorConfigPath);
+        if (paths.includes(parentEditorConfigPath)) editorConfigPaths.push(parentEditorConfigPath);
 
         pathComponents.pop();
     }
 
-    if (paths.indexOf(".editorconfig") > -1) {
+    if (paths.includes(".editorconfig")) {
         editorConfigPaths.push(".editorconfig");
     }
 
@@ -39,11 +38,11 @@ export function getEditorConfigPaths(paths: string[], startingPath: string) {
 // https://editorconfig-specification.readthedocs.io/en/latest/
 export function parseEditorConfig(data: string) {
     const parsedConfig: EditorConfig = {
-        root: false
-      , sections: []
+        root: false,
+        sections: [],
     };
 
-    for (const [ pattern, props ] of parseString(data)) {
+    for (const [pattern, props] of parseString(data)) {
         // Preamble has null pattern
         if (pattern === null) {
             if (props.root === "true") {
@@ -64,7 +63,7 @@ export function parseEditorConfig(data: string) {
             parsedProps.indent_size = props.indent_size;
         } else if ("indent_size" in props) {
             const indentSize = Number(props.indent_size);
-            if (!isNaN(indentSize)) {
+            if (!Number.isNaN(indentSize)) {
                 parsedProps.indent_size = indentSize;
             }
         }
@@ -81,7 +80,7 @@ export function parseEditorConfig(data: string) {
 
         parsedConfig.sections.unshift({
             pattern,
-            props: parsedProps
+            props: parsedProps,
         });
     }
 
@@ -90,13 +89,12 @@ export function parseEditorConfig(data: string) {
 
 export function parseEditorConfigs(files: WetLoaderFile[]) {
     const editorConfigs: { [s: string]: EditorConfig } = {};
-    for (const file of files)
-        editorConfigs[file.path] = parseEditorConfig(file.data);
+    for (const file of files) editorConfigs[file.path] = parseEditorConfig(file.data);
     return editorConfigs;
 }
 
 export function getEditorConfigPropsForPath(editorConfigs: EditorConfig[], path: string) {
-    let matchedSection: (EditorConfigSectionProps | undefined);
+    let matchedSection: EditorConfigSectionProps | undefined;
 
     for (const nextConfig of editorConfigs) {
         for (const { pattern, props } of nextConfig.sections) {

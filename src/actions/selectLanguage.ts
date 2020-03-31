@@ -17,14 +17,10 @@ export interface WetActionSelectLanguage {
 }
 
 export function handleSelectLanguage(state: State, payload: WetActionSelectLanguagePayload): State {
-    if (!state.extension)
-        return state;
+    if (!state.extension) return state;
     const extension = { ...state.extension };
-    if (payload.locale && !extension.languages[payload.locale])
-        return state;
-    if (payload.first)
-        extension.firstLocale = payload.locale;
-    else
-        extension.secondLocale = payload.locale;
+    if (payload.locale && !extension.languages[payload.locale]) return state;
+    if (payload.first) extension.firstLocale = payload.locale;
+    else extension.secondLocale = payload.locale;
     return { ...state, extension };
 }

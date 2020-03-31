@@ -27,11 +27,11 @@
     border: 1px solid transparent;
     pointer-events: none;
 }
-.translation-editor:focus+.translation-editor-outline {
+.translation-editor:focus + .translation-editor-outline {
     border-color: #0075ad;
 }
 
-.translation-editor--is-modified+.translation-editor-outline {
+.translation-editor--is-modified + .translation-editor-outline {
     box-shadow: inset -3px 0px 0px 0px red;
 }
 
