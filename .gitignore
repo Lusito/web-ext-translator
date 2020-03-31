@@ -2,5 +2,4 @@ dist/
 .cache
 target/
 node_modules/
-jspm_packages/
 *.tgz
