@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux-nano";
 
-import { selectDialogs } from "../../selectors";
+import { selectDialogs } from "../../redux/selectors";
 import "./style.css";
 
 export default () => {

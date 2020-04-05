@@ -1,6 +1,6 @@
 import { createStore } from "redux";
 
-import { State } from "./shared";
+import { State } from "./State";
 import { WetAction, reducer } from "./actions";
 
 function getDefaultState(): State {

@@ -6,7 +6,7 @@ import Dialog from "../Dialog";
 import { getNewDialogIndex } from "..";
 import { exportToZip } from "../../../utils/exportToZip";
 import useCloseDialog from "../useCloseDialog";
-import { selectExtension } from "../../../selectors";
+import { selectExtension } from "../../../redux/selectors";
 import "./style.css";
 
 interface ExportDialogProps {

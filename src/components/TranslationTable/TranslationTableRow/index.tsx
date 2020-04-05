@@ -5,7 +5,7 @@ import { useSelector } from "react-redux-nano";
 import TranslationEditor from "../TranslationEditor";
 import { hashFor } from "../../../utils/getHashFor";
 import TranslationTablePlus from "../TranslationTablePlus";
-import { selectAppBridge } from "../../../selectors";
+import { selectAppBridge } from "../../../redux/selectors";
 
 interface TranslationTableRowProps {
     className?: string;

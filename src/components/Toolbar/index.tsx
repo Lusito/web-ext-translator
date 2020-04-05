@@ -8,12 +8,12 @@ import { createFileDialog } from "../Dialogs/FileDialog";
 import { importFromZip } from "../../utils/importFromZip";
 import { createAlertDialog } from "../Dialogs/AlertDialog";
 import { createPromptDialog } from "../Dialogs/PromptDialog";
-import store from "../../store";
-import { saveToAppBridge } from "../../actions/setAppBridge";
+import store from "../../redux/store";
+import { saveToAppBridge } from "../../redux/actions/setAppBridge";
 import { github } from "../../vcs";
 import { createSubmitDialog } from "../Dialogs/SubmitDialog";
 import { createApplyDialog } from "../Dialogs/ApplyDialog";
-import { selectExtension, selectAppBridge, selectWebExtensionMode } from "../../selectors";
+import { selectExtension, selectAppBridge, selectWebExtensionMode } from "../../redux/selectors";
 import "./style.css";
 
 const importGithubMarkdown = `You can import translations from a github project like this:  \

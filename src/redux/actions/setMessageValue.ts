@@ -1,8 +1,8 @@
 import { WetMessage, WetMessageType } from "web-ext-translator-shared";
 
-import { State } from "../shared";
-import { hashForLanguage } from "../utils/getHashFor";
-import { setDirty } from "../utils/setDirty";
+import { State } from "../State";
+import { hashForLanguage } from "../../utils/getHashFor";
+import { setDirty } from "../../utils/setDirty";
 
 export interface WetActionSetMessageValuePayload {
     key: string;

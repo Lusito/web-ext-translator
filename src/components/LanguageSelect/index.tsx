@@ -5,7 +5,7 @@ import { WetLanguage } from "web-ext-translator-shared";
 import { localeCodeToEnglish } from "../../lib/localeCodeToEnglish";
 import { createPromptDialog } from "../Dialogs/PromptDialog";
 import { isLocaleRTL } from "../../lib/rtl";
-import { selectExtension } from "../../selectors";
+import { selectExtension } from "../../redux/selectors";
 import "./style.css";
 
 function validateLocale(value: string) {

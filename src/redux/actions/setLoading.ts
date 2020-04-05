@@ -1,4 +1,4 @@
-import { State } from "../shared";
+import { State } from "../State";
 
 export interface WetActionSetLoading {
     type: "SET_LOADING";

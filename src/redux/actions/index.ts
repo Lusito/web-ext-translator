@@ -5,7 +5,7 @@ import { WetActionPreviewToggle, handlePreviewToggle } from "./previewToggle";
 import { WetActionShowDialog, handleShowDialog } from "./showDialog";
 import { WetActionHideDialog, handleHideDialog } from "./hideDialog";
 import { WetActionSetMarkdown, handleSetMarkdown } from "./setMarkdown";
-import { State } from "../shared";
+import { State } from "../State";
 import { WetActionSetMessageValue, handleSetMessageValue } from "./setMessageValue";
 import { WetActionLoad, handleLoad } from "./load";
 import { WetActionSetLoading, handleSetLoading } from "./setLoading";

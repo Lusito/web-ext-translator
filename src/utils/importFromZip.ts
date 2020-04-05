@@ -1,7 +1,7 @@
 import JSZip from "jszip";
 import { WetLocaleFile, WetLoaderFile } from "web-ext-translator-shared";
 
-import store from "../store";
+import store from "../redux/store";
 import { createAlertDialog } from "../components/Dialogs/AlertDialog";
 import { getEditorConfigPaths } from "./editorConfig";
 import { loadFiles } from "./loader";

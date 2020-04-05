@@ -3,9 +3,9 @@ import { useSelector } from "react-redux-nano";
 
 import Dialog from "../Dialog";
 import { getNewDialogIndex } from "..";
-import store from "../../../store";
+import store from "../../../redux/store";
 import useCloseDialog from "../useCloseDialog";
-import { selectExtension } from "../../../selectors";
+import { selectExtension } from "../../../redux/selectors";
 import "./style.css";
 
 const VALID_NAME = /^[A-Za-z0-9_@]+$/;

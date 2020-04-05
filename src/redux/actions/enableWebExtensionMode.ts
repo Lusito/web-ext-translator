@@ -1,4 +1,4 @@
-import { State } from "../shared";
+import { State } from "../State";
 
 export interface WetActionEnableWebExtensionMode {
     type: "ENABLE_WEB_EXTENSION_MODE";

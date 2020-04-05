@@ -1,5 +1,5 @@
-import { State } from "../shared";
-import { setDirty } from "../utils/setDirty";
+import { State } from "../State";
+import { setDirty } from "../../utils/setDirty";
 
 export interface WetActionRemoveLanguage {
     type: "REMOVE_LANGUAGE";

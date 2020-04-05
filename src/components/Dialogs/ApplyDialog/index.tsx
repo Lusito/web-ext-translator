@@ -4,7 +4,7 @@ import { useSelector } from "react-redux-nano";
 import Dialog from "../Dialog";
 import { getNewDialogIndex } from "..";
 import useCloseDialog from "../useCloseDialog";
-import { selectExtension } from "../../../selectors";
+import { selectExtension } from "../../../redux/selectors";
 import "./style.css";
 
 interface ApplyDialogProps {

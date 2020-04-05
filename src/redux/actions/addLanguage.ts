@@ -1,8 +1,8 @@
 import { WetLanguage } from "web-ext-translator-shared";
 
-import { State } from "../shared";
-import { localeCodeToEnglish } from "../lib/localeCodeToEnglish";
-import { setDirty } from "../utils/setDirty";
+import { State } from "../State";
+import { localeCodeToEnglish } from "../../lib/localeCodeToEnglish";
+import { setDirty } from "../../utils/setDirty";
 
 export interface WetActionAddLanguage {
     type: "ADD_LANGUAGE";

@@ -7,7 +7,7 @@ import { copyToClipboard } from "../../../utils/copyToClipboard";
 import { serializeMessages } from "../../../utils/exportToZip";
 import { setDirty } from "../../../utils/setDirty";
 import useCloseDialog from "../useCloseDialog";
-import { selectExtension } from "../../../selectors";
+import { selectExtension } from "../../../redux/selectors";
 import "./style.css";
 
 interface SubmitDialogProps {

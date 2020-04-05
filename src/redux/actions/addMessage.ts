@@ -1,7 +1,7 @@
 import { WetLanguage, WetMessageType, WetMessage } from "web-ext-translator-shared";
 
-import { State } from "../shared";
-import { setDirty } from "../utils/setDirty";
+import { State } from "../State";
+import { setDirty } from "../../utils/setDirty";
 
 export interface WetActionAddMessagePayload {
     asGroup: boolean;

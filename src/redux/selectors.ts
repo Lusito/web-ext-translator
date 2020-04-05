@@ -1,4 +1,4 @@
-import { State } from "./shared";
+import { State } from "./State";
 
 export const selectAppBridge = (state: State) => state.appBridge;
 export const selectDialogs = (state: State) => state.dialogs;

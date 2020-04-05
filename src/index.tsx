@@ -5,12 +5,12 @@ import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { Provider, useSelector } from "react-redux-nano";
 
-import store from "./store";
+import store from "./redux/store";
 import { getParameter } from "./utils/getParameter";
 import WetApp from "./components/WetApp";
 import { github } from "./vcs";
-import { loadFromAppBridge } from "./actions/setAppBridge";
-import { selectAppBridge } from "./selectors";
+import { loadFromAppBridge } from "./redux/actions/setAppBridge";
+import { selectAppBridge } from "./redux/selectors";
 import "./style.css";
 
 const AppBridgeLoader = (): null => {

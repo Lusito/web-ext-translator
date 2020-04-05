@@ -4,7 +4,7 @@ import { useSelector } from "react-redux-nano";
 
 import TranslationTableRow from "../TranslationTableRow";
 import TranslationTablePlus from "../TranslationTablePlus";
-import { selectExtension, selectAppBridge } from "../../../selectors";
+import { selectExtension, selectAppBridge } from "../../../redux/selectors";
 import "./style.css";
 
 export default () => {

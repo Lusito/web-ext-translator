@@ -3,7 +3,7 @@ import { WetMessageType } from "web-ext-translator-shared";
 import { useSelector } from "react-redux-nano";
 
 import LanguageSelect from "../../LanguageSelect";
-import { selectExtension } from "../../../selectors";
+import { selectExtension } from "../../../redux/selectors";
 import "./style.css";
 
 export default () => {

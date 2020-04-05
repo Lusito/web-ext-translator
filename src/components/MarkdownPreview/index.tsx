@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux-nano";
 
 import Markdown from "../Markdown";
-import { selectPreviewVisible, selectMarkdown, selectMarkdownRTL } from "../../selectors";
+import { selectPreviewVisible, selectMarkdown, selectMarkdownRTL } from "../../redux/selectors";
 import "./style.css";
 
 export default () => {

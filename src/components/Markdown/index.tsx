@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useMemo } from "react";
 import { useSelector } from "react-redux-nano";
 import MarkdownIt from "markdown-it";
 
-import { selectAppBridge } from "../../selectors";
+import { selectAppBridge } from "../../redux/selectors";
 
 const md = new MarkdownIt();
 

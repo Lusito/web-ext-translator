@@ -1,6 +1,6 @@
 import { WetLanguage, WetAppBridge } from "web-ext-translator-shared";
 
-import { VcsInfo } from "./vcs/VcsBaseProvider";
+import { VcsInfo } from "../vcs/VcsBaseProvider";
 
 export interface LoadedExtension {
     firstLocale: string | null;
@@ -20,9 +20,4 @@ export interface State {
     extension: LoadedExtension | null;
     webExtensionMode: boolean;
     appBridge: WetAppBridge | null;
-}
-
-let nextId = 1;
-export function generateId() {
-    return nextId++;
 }

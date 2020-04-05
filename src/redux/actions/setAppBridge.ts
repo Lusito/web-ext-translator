@@ -1,9 +1,9 @@
 import { WetAppBridge, WetSaveFilesEntry } from "web-ext-translator-shared";
 
 import store from "../store";
-import { serializeMessages } from "../utils/exportToZip";
-import { createAlertDialog } from "../components/Dialogs/AlertDialog";
-import { loadFiles } from "../utils/loader";
+import { serializeMessages } from "../../utils/exportToZip";
+import { createAlertDialog } from "../../components/Dialogs/AlertDialog";
+import { loadFiles } from "../../utils/loader";
 
 export function loadFromAppBridge(bridge: WetAppBridge) {
     const result = bridge.loadFiles();

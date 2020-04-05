@@ -7,7 +7,7 @@ import Dialogs from "../Dialogs";
 import TranslationTable from "../TranslationTable";
 import LoadingScreen from "../LoadingScreen";
 import MarkdownScreen from "../MarkdownScreen";
-import { selectLoading, selectExtension } from "../../selectors";
+import { selectLoading, selectExtension } from "../../redux/selectors";
 
 const welcomeScreenMarkdown = `\
 ## Welcome!
