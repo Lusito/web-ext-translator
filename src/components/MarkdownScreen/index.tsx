@@ -6,19 +6,17 @@
 
 import React from "react";
 
-import "./style.css";
 import Markdown from "../Markdown";
+import "./style.css";
 
 interface MarkdownScreenProps {
     markdown: string;
 }
 
-export function MarkdownScreen({ markdown }: MarkdownScreenProps) {
-    return (
-        <div className="MarkdownScreen">
-            <div className="MarkdownScreen__center">
-                <Markdown markdown={markdown} />
-            </div>
+export default ({ markdown }: MarkdownScreenProps) => (
+    <div className="MarkdownScreen">
+        <div className="MarkdownScreen__center">
+            <Markdown markdown={markdown} />
         </div>
-    );
-}
+    </div>
+);

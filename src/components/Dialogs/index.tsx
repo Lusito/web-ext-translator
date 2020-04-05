@@ -5,18 +5,14 @@
  */
 
 import React from "react";
+import { useSelector } from "react-redux-nano";
+
+import { selectDialogs } from "../../selectors";
 import "./style.css";
-import { connect } from "react-redux";
 
-import { State } from "../../shared";
-
-interface DialogsStateProps {
-    dialogs: JSX.Element[];
-}
-
-function Dialogs({ dialogs }: DialogsStateProps) {
-    if (dialogs.length === 0) return null;
-    return (
+export default () => {
+    const dialogs = useSelector(selectDialogs);
+    return dialogs.length === 0 ? null : (
         <div className="dialog-overlay">
             {dialogs.map((d, i) => (
                 <div key={i} className="dialog-wrapper">
@@ -25,13 +21,7 @@ function Dialogs({ dialogs }: DialogsStateProps) {
             ))}
         </div>
     );
-}
-
-function mapStateToProps({ dialogs }: State) {
-    return { dialogs };
-}
-
-export default connect<DialogsStateProps>(mapStateToProps)(Dialogs);
+};
 
 let nextDialogIndex = 1;
 export function getNewDialogIndex() {

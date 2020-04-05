@@ -14,10 +14,8 @@ export interface IconButtonProps {
     onClick?: () => void;
 }
 
-export function IconButton({ icon, tooltip, className, onClick }: IconButtonProps) {
-    return (
-        <div data-tooltip={tooltip} className={`icon-button ${className}`} onClick={onClick}>
-            <i className={`fa fa-fw fa-2x fa-${icon}`} />
-        </div>
-    );
-}
+export default ({ icon, tooltip, className, onClick }: IconButtonProps) => (
+    <div data-tooltip={tooltip} className={`icon-button ${className}`} onClick={onClick}>
+        <i className={`fa fa-fw fa-2x fa-${icon}`} />
+    </div>
+);

@@ -5,17 +5,16 @@
  */
 
 import React from "react";
+import { useDispatch } from "react-redux-nano";
 
-import store from "../../../store";
 import { createAddMessageDialog } from "../../Dialogs/AddMessageDialog";
 
 interface TranslationTablePlusProps {
     messageName: string;
 }
 
-export function TranslationTablePlus({ messageName }: TranslationTablePlusProps) {
-    function onClick() {
-        store.dispatch({ type: "SHOW_DIALOG", payload: createAddMessageDialog(messageName) });
-    }
+export default ({ messageName }: TranslationTablePlusProps) => {
+    const dispatch = useDispatch();
+    const onClick = () => dispatch({ type: "SHOW_DIALOG", payload: createAddMessageDialog(messageName) });
     return <button onClick={onClick}>+</button>;
-}
+};

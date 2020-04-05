@@ -4,43 +4,35 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import React, { useRef } from "react";
+import { useSelector } from "react-redux-nano";
 import { WetLanguage } from "web-ext-translator-shared";
 
 import Dialog from "../Dialog";
-import { LoadedExtension } from "../../../shared";
-import { WetAction } from "../../../actions";
 import { getNewDialogIndex } from "..";
 import { exportToZip } from "../../../utils/exportToZip";
+import useCloseDialog from "../useCloseDialog";
+import { selectExtension } from "../../../selectors";
 import "./style.css";
-
-interface ExportDialogDispatchProps {
-    closeDialog?: (key: string) => void;
-}
 
 interface ExportDialogProps {
     index: string;
-    extension: LoadedExtension;
 }
 
-type ExportDialogMergedProps = ExportDialogProps & ExportDialogDispatchProps;
-
-function ExportDialog({ closeDialog, extension, index }: ExportDialogMergedProps) {
-    let ref: HTMLDivElement | null = null;
+function ExportDialog({ index }: ExportDialogProps) {
+    const closeDialog = useCloseDialog();
+    const container = useRef<HTMLDivElement>();
+    const extension = useSelector(selectExtension);
 
     function accept() {
-        closeDialog?.(index);
-        if (ref) {
-            const exportedLanguages: WetLanguage[] = [];
-            const inputs = ref.querySelectorAll("input");
-            for (const input of inputs) {
-                const language = input.checked && extension.languages[input.value];
-                if (language) exportedLanguages.push(language);
-            }
-            if (exportedLanguages.length) exportToZip(exportedLanguages, extension.mainLanguage);
+        closeDialog(index);
+        const exportedLanguages: WetLanguage[] = [];
+        const inputs = container.current.querySelectorAll("input");
+        for (const input of inputs) {
+            const language = input.checked && extension.languages[input.value];
+            if (language) exportedLanguages.push(language);
         }
+        if (exportedLanguages.length) exportToZip(exportedLanguages, extension.mainLanguage);
     }
     const checkboxes = Object.getOwnPropertyNames(extension.languages).map((locale) => (
         <label key={locale} className="export-dialog__checkbox-label">
@@ -49,38 +41,20 @@ function ExportDialog({ closeDialog, extension, index }: ExportDialogMergedProps
         </label>
     ));
 
-    function cancel() {
-        closeDialog?.(index);
-    }
-
-    function onRef(e: HTMLDivElement | null) {
-        ref = e;
-    }
-
     const buttons = [
         { label: "OK", focus: true, onClick: accept },
-        { label: "Cancel", focus: false, onClick: cancel },
+        { label: "Cancel", focus: false, onClick: () => closeDialog(index) },
     ];
     return (
         <Dialog className="export-dialog" title="Export Translations" buttons={buttons}>
-            <div ref={onRef}>{checkboxes}</div>
+            <div ref={container}>{checkboxes}</div>
         </Dialog>
     );
 }
 
-function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
-    return {
-        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key }),
-    };
-}
+export default ExportDialog;
 
-const ConnectedExportDialog = connect<{}, ExportDialogDispatchProps, ExportDialogProps>(
-    null,
-    mapDispatchToProps
-)(ExportDialog);
-export default ConnectedExportDialog;
-
-export function createExportDialog(extension: LoadedExtension) {
+export function createExportDialog() {
     const index = getNewDialogIndex().toString();
-    return <ConnectedExportDialog key={index} index={index} extension={extension} />;
+    return <ExportDialog key={index} index={index} />;
 }

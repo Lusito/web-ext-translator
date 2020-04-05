@@ -6,18 +6,17 @@
 
 import React from "react";
 import { WetMessageType } from "web-ext-translator-shared";
+import { useSelector } from "react-redux-nano";
 
-import { LoadedExtension } from "../../../shared";
-import { TranslationTableRow } from "../TranslationTableRow";
-import { TranslationTablePlus } from "../TranslationTablePlus";
+import TranslationTableRow from "../TranslationTableRow";
+import TranslationTablePlus from "../TranslationTablePlus";
+import { selectExtension, selectAppBridge } from "../../../selectors";
 import "./style.css";
 
-interface TranslationTableBodyProps {
-    extension: LoadedExtension;
-    showPlus: boolean;
-}
+export default () => {
+    const extension = useSelector(selectExtension);
+    const appBridge = useSelector(selectAppBridge);
 
-export default function TranslationTableBody({ extension, showPlus }: TranslationTableBodyProps) {
     const firstLanguage = extension.firstLocale ? extension.languages[extension.firstLocale] : null;
     const secondLanguage = extension.secondLocale ? extension.languages[extension.secondLocale] : null;
     const rows = extension.mainLanguage.messages.map((message) => {
@@ -28,11 +27,11 @@ export default function TranslationTableBody({ extension, showPlus }: Translatio
                     <th colSpan={3} className="translation-table-body__th" data-searchable={message.message}>
                         {message.message}
                     </th>
-                    {showPlus ? (
+                    {appBridge && (
                         <th className="translation-table-body__th">
                             <TranslationTablePlus messageName={message.name} />
                         </th>
-                    ) : null}
+                    )}
                 </tr>
             );
         }
@@ -43,7 +42,6 @@ export default function TranslationTableBody({ extension, showPlus }: Translatio
                 firstLanguage={firstLanguage}
                 secondLanguage={secondLanguage}
                 mainLanguage={extension.mainLanguage}
-                showPlus={showPlus}
             />
         );
     });
@@ -54,4 +52,4 @@ export default function TranslationTableBody({ extension, showPlus }: Translatio
             </table>
         </div>
     );
-}
+};

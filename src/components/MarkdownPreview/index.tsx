@@ -5,19 +5,16 @@
  */
 
 import React from "react";
-import "./style.css";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux-nano";
 
-import { State } from "../../shared";
 import Markdown from "../Markdown";
+import { selectPreviewVisible, selectMarkdown, selectMarkdownRTL } from "../../selectors";
+import "./style.css";
 
-interface MarkdownPreviewStateProps {
-    previewVisible: boolean;
-    markdown: string;
-    markdownRTL: boolean;
-}
-
-function MarkdownPreview({ previewVisible, markdown, markdownRTL }: MarkdownPreviewStateProps) {
+export default () => {
+    const previewVisible = useSelector(selectPreviewVisible);
+    const markdown = useSelector(selectMarkdown);
+    const markdownRTL = useSelector(selectMarkdownRTL);
     let className = "markdown-preview";
     if (previewVisible) {
         className += " markdown-preview--is-visible";
@@ -29,14 +26,4 @@ function MarkdownPreview({ previewVisible, markdown, markdownRTL }: MarkdownPrev
             <Markdown className="markdown-preview__content" markdown={previewVisible ? markdown : ""} />
         </div>
     );
-}
-
-function mapStateToProps({ previewVisible, markdown, markdownRTL }: State) {
-    return {
-        previewVisible,
-        markdown,
-        markdownRTL,
-    };
-}
-
-export default connect<MarkdownPreviewStateProps>(mapStateToProps)(MarkdownPreview);
+};

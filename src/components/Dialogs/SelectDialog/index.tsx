@@ -4,18 +4,12 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import React, { useRef } from "react";
 
 import Dialog from "../Dialog";
-import { WetAction } from "../../../actions";
 import { getNewDialogIndex } from "..";
+import useCloseDialog from "../useCloseDialog";
 import "./style.css";
-
-interface SelectDialogDispatchProps {
-    closeDialog?: (key: string) => void;
-}
 
 interface SelectOption {
     value: string;
@@ -31,36 +25,20 @@ interface SelectDialogProps {
     onCancel?: () => void;
 }
 
-type SelectDialogMergedProps = SelectDialogProps & SelectDialogDispatchProps;
-
-function SelectDialog({
-    title,
-    options,
-    initialValue,
-    onAccept,
-    onCancel,
-    closeDialog,
-    index,
-}: SelectDialogMergedProps) {
-    let selectRef: HTMLSelectElement | null = null;
+function SelectDialog({ title, options, initialValue, onAccept, onCancel, index }: SelectDialogProps) {
+    const select = useRef<HTMLSelectElement>();
+    const closeDialog = useCloseDialog();
 
     function accept() {
-        if (selectRef) {
-            closeDialog?.(index);
-            onAccept?.(selectRef.value);
+        if (select) {
+            closeDialog(index);
+            onAccept?.(select.current.value);
         }
     }
 
     function cancel() {
-        closeDialog?.(index);
+        closeDialog(index);
         onCancel?.();
-    }
-
-    function onSelectRef(e: HTMLSelectElement | null) {
-        if (e) {
-            e.focus();
-            selectRef = e;
-        }
     }
 
     const buttons = [
@@ -69,7 +47,7 @@ function SelectDialog({
     ];
     return (
         <Dialog className="select-dialog" title={title || ""} buttons={buttons}>
-            <select ref={onSelectRef} className="select-dialog__select" value={initialValue}>
+            <select ref={select} className="select-dialog__select" value={initialValue} autoFocus>
                 {options.map((option) => (
                     <option value={option.value}>{option.label}</option>
                 ))}
@@ -78,17 +56,7 @@ function SelectDialog({
     );
 }
 
-function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
-    return {
-        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key }),
-    };
-}
-
-const ConnectedSelectDialog = connect<{}, SelectDialogDispatchProps, SelectDialogProps>(
-    null,
-    mapDispatchToProps
-)(SelectDialog);
-export default ConnectedSelectDialog;
+export default SelectDialog;
 
 export function createSelectDialog(
     title: string,
@@ -99,7 +67,7 @@ export function createSelectDialog(
 ) {
     const index = getNewDialogIndex().toString();
     return (
-        <ConnectedSelectDialog
+        <SelectDialog
             key={index}
             index={index}
             title={title}

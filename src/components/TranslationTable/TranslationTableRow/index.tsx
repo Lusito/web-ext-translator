@@ -6,10 +6,12 @@
 
 import React from "react";
 import { WetMessage, WetLanguage } from "web-ext-translator-shared";
+import { useSelector } from "react-redux-nano";
 
 import TranslationEditor from "../TranslationEditor";
 import { hashFor } from "../../../utils/getHashFor";
-import { TranslationTablePlus } from "../TranslationTablePlus";
+import TranslationTablePlus from "../TranslationTablePlus";
+import { selectAppBridge } from "../../../selectors";
 
 interface TranslationTableRowProps {
     className?: string;
@@ -17,7 +19,6 @@ interface TranslationTableRowProps {
     firstLanguage: WetLanguage | null;
     secondLanguage: WetLanguage | null;
     message: WetMessage;
-    showPlus: boolean;
 }
 
 function getData(mainLanguage: WetLanguage, mainHash: string, lang: WetLanguage | null, key: string) {
@@ -28,17 +29,12 @@ function getData(mainLanguage: WetLanguage, mainHash: string, lang: WetLanguage 
     };
 }
 
-export function TranslationTableRow({
-    className,
-    message,
-    firstLanguage,
-    secondLanguage,
-    mainLanguage,
-    showPlus,
-}: TranslationTableRowProps) {
+export default ({ className, message, firstLanguage, secondLanguage, mainLanguage }: TranslationTableRowProps) => {
+    const appBridge = useSelector(selectAppBridge);
     const mainHash = hashFor(message.message);
     const first = getData(mainLanguage, mainHash, firstLanguage, message.name);
     const second = getData(mainLanguage, mainHash, secondLanguage, message.name);
+
     return (
         <tr className={`translation-table-body__row ${className}`} title={message.description}>
             <td className="translation-table-body__td" data-searchable={message.name}>
@@ -62,11 +58,11 @@ export function TranslationTableRow({
                     modified={second.modified}
                 />
             </td>
-            {showPlus ? (
+            {appBridge && (
                 <td className="translation-table-body__td">
                     <TranslationTablePlus messageName={message.name} />
                 </td>
-            ) : null}
+            )}
         </tr>
     );
-}
+};

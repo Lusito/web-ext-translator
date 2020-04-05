@@ -4,29 +4,21 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import React, { useRef } from "react";
+import { useSelector } from "react-redux-nano";
 
 import Dialog from "../Dialog";
-import { LoadedExtension } from "../../../shared";
-import { WetAction } from "../../../actions";
 import { getNewDialogIndex } from "..";
 import { copyToClipboard } from "../../../utils/copyToClipboard";
 import { serializeMessages } from "../../../utils/exportToZip";
 import { setDirty } from "../../../utils/setDirty";
+import useCloseDialog from "../useCloseDialog";
+import { selectExtension } from "../../../selectors";
 import "./style.css";
-
-interface SubmitDialogDispatchProps {
-    closeDialog?: (key: string) => void;
-}
 
 interface SubmitDialogProps {
     index: string;
-    extension: LoadedExtension;
 }
-
-type SubmitDialogMergedProps = SubmitDialogProps & SubmitDialogDispatchProps;
 
 const COPY_TEMPLATE = `
 Updated translations for '{{LOCALE}}': {{LANGUAGE_LABEL}}:
@@ -42,13 +34,15 @@ function replaceAll(str: string, replacements: Array<[string, string]>) {
     return replacements.reduce((result, args) => result.replace(...args), str);
 }
 
-function SubmitDialog({ closeDialog, extension, index }: SubmitDialogMergedProps) {
-    let ref: HTMLSelectElement | null = null;
+function SubmitDialog({ index }: SubmitDialogProps) {
+    const select = useRef<HTMLSelectElement>();
+    const extension = useSelector(selectExtension);
+    const closeDialog = useCloseDialog();
 
     function accept() {
-        closeDialog?.(index);
-        if (ref) {
-            const language = extension.languages[ref.value];
+        closeDialog(index);
+        if (select) {
+            const language = extension.languages[select.current.value];
             const text = replaceAll(COPY_TEMPLATE, [
                 ["{{LOCALE}}", language.locale],
                 ["{{LANGUAGE_LABEL}}", language.label],
@@ -76,11 +70,7 @@ function SubmitDialog({ closeDialog, extension, index }: SubmitDialogMergedProps
     ));
 
     function cancel() {
-        closeDialog?.(index);
-    }
-
-    function onRef(e: HTMLSelectElement | null) {
-        ref = e;
+        closeDialog(index);
     }
 
     const buttons = [
@@ -92,26 +82,16 @@ function SubmitDialog({ closeDialog, extension, index }: SubmitDialogMergedProps
 
     return (
         <Dialog className="submit-dialog" title="Submit Translation" buttons={buttons}>
-            <select ref={onRef} className="submit-dialog__select" defaultValue={defaultValue || undefined}>
+            <select ref={select} className="submit-dialog__select" defaultValue={defaultValue || undefined}>
                 {options}
             </select>
         </Dialog>
     );
 }
 
-function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
-    return {
-        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key }),
-    };
-}
+export default SubmitDialog;
 
-const ConnectedSubmitDialog = connect<{}, SubmitDialogDispatchProps, SubmitDialogProps>(
-    null,
-    mapDispatchToProps
-)(SubmitDialog);
-export default ConnectedSubmitDialog;
-
-export function createSubmitDialog(extension: LoadedExtension) {
+export function createSubmitDialog() {
     const index = getNewDialogIndex().toString();
-    return <ConnectedSubmitDialog key={index} index={index} extension={extension} />;
+    return <SubmitDialog key={index} index={index} />;
 }

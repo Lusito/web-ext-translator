@@ -6,16 +6,15 @@
 
 import React from "react";
 import { WetMessageType } from "web-ext-translator-shared";
+import { useSelector } from "react-redux-nano";
 
 import LanguageSelect from "../../LanguageSelect";
-import { LoadedExtension } from "../../../shared";
+import { selectExtension } from "../../../selectors";
 import "./style.css";
 
-interface TranslationTableHeadProps {
-    extension: LoadedExtension;
-}
+export default () => {
+    const extension = useSelector(selectExtension);
 
-export default function TranslationTableHead({ extension }: TranslationTableHeadProps) {
     const longestKey = extension.mainLanguage.messages.reduce(
         (longest, msg) =>
             msg.type === WetMessageType.MESSAGE && longest.length < msg.name.length ? msg.name : longest,
@@ -28,10 +27,10 @@ export default function TranslationTableHead({ extension }: TranslationTableHead
                     <tr>
                         <th className="translation-table-head__th">Key</th>
                         <th className="translation-table-head__th">
-                            <LanguageSelect extension={extension} first tabIndex={1} />
+                            <LanguageSelect first tabIndex={1} />
                         </th>
                         <th className="translation-table-head__th">
-                            <LanguageSelect extension={extension} first={false} tabIndex={2} />
+                            <LanguageSelect first={false} tabIndex={2} />
                         </th>
                     </tr>
                 </thead>
@@ -45,4 +44,4 @@ export default function TranslationTableHead({ extension }: TranslationTableHead
             </table>
         </div>
     );
-}
+};

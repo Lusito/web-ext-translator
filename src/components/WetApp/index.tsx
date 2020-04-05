@@ -5,15 +5,15 @@
  */
 
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux-nano";
 
-import { State, LoadedExtension } from "../../shared";
 import Toolbar from "../Toolbar";
 import MarkdownPreview from "../MarkdownPreview";
 import Dialogs from "../Dialogs";
-import { TranslationTable } from "../TranslationTable";
-import { LoadingScreen } from "../LoadingScreen";
-import { MarkdownScreen } from "../MarkdownScreen";
+import TranslationTable from "../TranslationTable";
+import LoadingScreen from "../LoadingScreen";
+import MarkdownScreen from "../MarkdownScreen";
+import { selectLoading, selectExtension } from "../../selectors";
 
 const welcomeScreenMarkdown = `\
 ## Welcome!
@@ -26,34 +26,24 @@ This tool allows you to translate web-extensions. To get started, try:
 If you are an extension developer, check out the [Github page](https://github.com/Lusito/web-ext-translator) to see how you can enable special support for your extension.
 `;
 
-interface WetAppProps {
-    loading: string;
-    extension: LoadedExtension | null;
-    showPlus: boolean;
-}
+export default () => {
+    const loading = useSelector(selectLoading);
+    const extension = useSelector(selectExtension);
 
-function WetApp({ loading, extension, showPlus }: WetAppProps) {
     return (
         <>
-            {loading && <LoadingScreen label={loading} />}
-            {!loading && (
-                <main>
-                    <Toolbar />
-                    {extension ? (
-                        <TranslationTable extension={extension} showPlus={showPlus} />
-                    ) : (
-                        <MarkdownScreen markdown={welcomeScreenMarkdown} />
-                    )}
-                </main>
+            {loading ? (
+                <LoadingScreen label={loading} />
+            ) : (
+                <>
+                    <main>
+                        <Toolbar />
+                        {extension ? <TranslationTable /> : <MarkdownScreen markdown={welcomeScreenMarkdown} />}
+                    </main>
+                    <MarkdownPreview />
+                </>
             )}
-            {!loading && <MarkdownPreview />}
             <Dialogs />
         </>
     );
-}
-
-function mapStateToProps({ loading, extension, appBridge }: State) {
-    return { loading, extension, showPlus: !!appBridge };
-}
-
-export default connect<WetAppProps>(mapStateToProps)(WetApp);
+};

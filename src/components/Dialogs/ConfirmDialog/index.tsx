@@ -5,17 +5,11 @@
  */
 
 import React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 
 import Dialog from "../Dialog";
-import { WetAction } from "../../../actions";
 import { getNewDialogIndex } from "..";
+import useCloseDialog from "../useCloseDialog";
 import "./style.css";
-
-interface ConfirmDialogDispatchProps {
-    closeDialog?: (key: string) => void;
-}
 
 interface ConfirmDialogProps {
     index: string;
@@ -25,15 +19,14 @@ interface ConfirmDialogProps {
     onCancel?: () => void;
 }
 
-type ConfirmDialogMergedProps = ConfirmDialogProps & ConfirmDialogDispatchProps;
-
-function ConfirmDialog({ title, message, onAccept, onCancel, closeDialog, index }: ConfirmDialogMergedProps) {
+function ConfirmDialog({ title, message, onAccept, onCancel, index }: ConfirmDialogProps) {
+    const closeDialog = useCloseDialog();
     function accept() {
-        closeDialog?.(index);
+        closeDialog(index);
         onAccept?.();
     }
     function cancel() {
-        closeDialog?.(index);
+        closeDialog(index);
         onCancel?.();
     }
     const buttons = [
@@ -47,22 +40,12 @@ function ConfirmDialog({ title, message, onAccept, onCancel, closeDialog, index 
     );
 }
 
-function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
-    return {
-        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key }),
-    };
-}
-
-const ConnectedConfirmDialog = connect<{}, ConfirmDialogDispatchProps, ConfirmDialogProps>(
-    null,
-    mapDispatchToProps
-)(ConfirmDialog);
-export default ConnectedConfirmDialog;
+export default ConfirmDialog;
 
 export function createConfirmDialog(title: string, message: string, onAccept: () => void, onCancel?: () => void) {
     const index = getNewDialogIndex().toString();
     return (
-        <ConnectedConfirmDialog
+        <ConfirmDialog
             key={index}
             index={index}
             title={title}

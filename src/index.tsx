@@ -9,18 +9,18 @@ import "regenerator-runtime";
 import "font-awesome/css/font-awesome.min.css";
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
-import { Provider, useSelector } from "react-redux";
+import { Provider, useSelector } from "react-redux-nano";
 
 import store from "./store";
-import "./style.css";
 import { getParameter } from "./utils/getParameter";
 import WetApp from "./components/WetApp";
 import { github } from "./vcs";
-import { State } from "./shared";
 import { loadFromAppBridge } from "./actions/setAppBridge";
+import { selectAppBridge } from "./selectors";
+import "./style.css";
 
 const AppBridgeLoader = (): null => {
-    const bridge = useSelector((state: State) => state.appBridge);
+    const bridge = useSelector(selectAppBridge);
     useEffect(() => {
         if (bridge) loadFromAppBridge(bridge);
     }, [bridge]);

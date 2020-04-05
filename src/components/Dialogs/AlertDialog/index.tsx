@@ -5,17 +5,11 @@
  */
 
 import React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 
 import Dialog from "../Dialog";
-import { WetAction } from "../../../actions";
 import { getNewDialogIndex } from "..";
 import Markdown from "../../Markdown";
-
-interface AlertDialogDispatchProps {
-    closeDialog?: (key: string) => void;
-}
+import useCloseDialog from "../useCloseDialog";
 
 interface AlertDialogProps {
     index: string;
@@ -24,11 +18,10 @@ interface AlertDialogProps {
     onClose?: () => void;
 }
 
-type AlertDialogMergedProps = AlertDialogProps & AlertDialogDispatchProps;
-
-function AlertDialog({ title, message, onClose, closeDialog, index }: AlertDialogMergedProps) {
+function AlertDialog({ title, message, onClose, index }: AlertDialogProps) {
+    const closeDialog = useCloseDialog();
     function close() {
-        closeDialog?.(index);
+        closeDialog(index);
         onClose?.();
     }
     const buttons = [{ label: "OK", focus: true, onClick: close }];
@@ -39,19 +32,9 @@ function AlertDialog({ title, message, onClose, closeDialog, index }: AlertDialo
     );
 }
 
-function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
-    return {
-        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key }),
-    };
-}
-
-const ConnectedAlertDialog = connect<{}, AlertDialogDispatchProps, AlertDialogProps>(
-    null,
-    mapDispatchToProps
-)(AlertDialog);
-export default ConnectedAlertDialog;
+export default AlertDialog;
 
 export function createAlertDialog(title: string, message: string, onClose?: () => void) {
     const index = getNewDialogIndex().toString();
-    return <ConnectedAlertDialog key={index} index={index} title={title} message={message} onClose={onClose} />;
+    return <AlertDialog key={index} index={index} title={title} message={message} onClose={onClose} />;
 }

@@ -5,12 +5,12 @@
  */
 
 import React, { useRef, useEffect, useMemo } from "react";
-import "./style.css";
-import { useDispatch } from "react-redux";
+import { useDispatch } from "react-redux-nano";
 import { WetPlaceholder } from "web-ext-translator-shared";
 import { throttle } from "throttle-debounce";
 
 import { isLocaleRTL } from "../../../lib/rtl";
+import "./style.css";
 
 const UNICODE_REGEX = /(\\u[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])/g;
 

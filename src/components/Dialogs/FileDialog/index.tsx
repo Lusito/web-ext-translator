@@ -4,18 +4,12 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import React, { useRef } from "react";
 
 import Dialog from "../Dialog";
-import { WetAction } from "../../../actions";
 import { getNewDialogIndex } from "..";
+import useCloseDialog from "../useCloseDialog";
 import "./style.css";
-
-interface FileDialogDispatchProps {
-    closeDialog?: (key: string) => void;
-}
 
 interface FileDialogProps {
     index: string;
@@ -24,28 +18,20 @@ interface FileDialogProps {
     onCancel?: () => void;
 }
 
-type FileDialogMergedProps = FileDialogProps & FileDialogDispatchProps;
-
-function FileDialog({ title, onAccept, onCancel, closeDialog, index }: FileDialogMergedProps) {
-    let inputRef: HTMLInputElement | null = null;
+function FileDialog({ title, onAccept, onCancel, index }: FileDialogProps) {
+    const closeDialog = useCloseDialog();
+    const input = useRef<HTMLInputElement>();
 
     function accept() {
-        if (inputRef?.files) {
-            closeDialog?.(index);
-            onAccept?.(inputRef.files);
+        if (input.current.files) {
+            closeDialog(index);
+            onAccept?.(input.current.files);
         }
     }
 
     function cancel() {
-        closeDialog?.(index);
+        closeDialog(index);
         onCancel?.();
-    }
-
-    function onInputRef(e: HTMLInputElement | null) {
-        if (e) {
-            e.focus();
-            inputRef = e;
-        }
     }
 
     const buttons = [
@@ -54,21 +40,14 @@ function FileDialog({ title, onAccept, onCancel, closeDialog, index }: FileDialo
     ];
     return (
         <Dialog className="file-dialog" title={title || ""} buttons={buttons}>
-            <input ref={onInputRef} type="file" className="file-dialog__input" />
+            <input ref={input} type="file" className="file-dialog__input" autoFocus />
         </Dialog>
     );
 }
 
-function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
-    return {
-        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key }),
-    };
-}
-
-const ConnectedFileDialog = connect<{}, FileDialogDispatchProps, FileDialogProps>(null, mapDispatchToProps)(FileDialog);
-export default ConnectedFileDialog;
+export default FileDialog;
 
 export function createFileDialog(title: string, onAccept: (value: FileList) => void, onCancel?: () => void) {
     const index = getNewDialogIndex().toString();
-    return <ConnectedFileDialog key={index} index={index} title={title} onAccept={onAccept} onCancel={onCancel} />;
+    return <FileDialog key={index} index={index} title={title} onAccept={onAccept} onCancel={onCancel} />;
 }

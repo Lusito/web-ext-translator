@@ -4,43 +4,38 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import React, { useRef, useEffect } from "react";
+import { useSelector } from "react-redux-nano";
 
 import Dialog from "../Dialog";
-import { WetAction } from "../../../actions";
 import { getNewDialogIndex } from "..";
 import store from "../../../store";
+import useCloseDialog from "../useCloseDialog";
+import { selectExtension } from "../../../selectors";
 import "./style.css";
 
 const VALID_NAME = /^[A-Za-z0-9_@]+$/;
-
-interface AddMessageDialogDispatchProps {
-    closeDialog?: (key: string) => void;
-}
 
 interface AddMessageDialogProps {
     index: string;
     messageName: string;
 }
 
-type AddMessageDialogMergedProps = AddMessageDialogProps & AddMessageDialogDispatchProps;
-
-function AddMessageDialog({ messageName, closeDialog, index }: AddMessageDialogMergedProps) {
-    let inputRef: HTMLInputElement | null = null;
-    let asGroupRef: HTMLInputElement | null = null;
-    let insertBeforeRef: HTMLInputElement | null = null;
-    let hintRef: HTMLDivElement | null = null;
+function AddMessageDialog({ messageName, index }: AddMessageDialogProps) {
+    const extension = useSelector(selectExtension);
+    const closeDialog = useCloseDialog();
+    const input = useRef<HTMLInputElement>();
+    const asGroup = useRef<HTMLInputElement>();
+    const insertBefore = useRef<HTMLInputElement>();
+    const hint = useRef<HTMLDivElement>();
     let value = "";
-    const state = store.getState();
-    const existingNames = state.extension ? Object.getOwnPropertyNames(state.extension.mainLanguage.messagesByKey) : [];
+    const existingNames = extension ? Object.getOwnPropertyNames(extension.mainLanguage.messagesByKey) : [];
 
     function validate() {
         if (!value.length) {
             return { valid: false, message: "Please enter a name" };
         }
-        if (!asGroupRef || !asGroupRef.checked) {
+        if (!asGroup.current.checked) {
             if (existingNames.includes(value)) {
                 return { valid: false, message: "Key already exists" };
             }
@@ -54,25 +49,23 @@ function AddMessageDialog({ messageName, closeDialog, index }: AddMessageDialogM
         return { valid: true, message: "" };
     }
     function onChange() {
-        if (inputRef) {
-            value = inputRef.value;
-            if (hintRef) {
-                const result = validate();
-                if (result.valid) hintRef.classList.remove("add-message-dialog__hint--is-invalid");
-                else hintRef.classList.add("add-message-dialog__hint--is-invalid");
-                hintRef.textContent = result.message;
-            }
+        value = input.current.value;
+        if (hint) {
+            const result = validate();
+            if (result.valid) hint.current.classList.remove("add-message-dialog__hint--is-invalid");
+            else hint.current.classList.add("add-message-dialog__hint--is-invalid");
+            hint.current.textContent = result.message;
         }
     }
 
     function accept() {
         if (validate().valid) {
-            closeDialog?.(index);
+            closeDialog(index);
             store.dispatch({
                 type: "ADD_MESSAGE",
                 payload: {
-                    asGroup: !!asGroupRef && asGroupRef.checked,
-                    insertBefore: !!insertBeforeRef && insertBeforeRef.checked,
+                    asGroup: asGroup.current.checked,
+                    insertBefore: insertBefore.current.checked,
                     referenceMessageName: messageName,
                     newMessageName: value,
                 },
@@ -81,35 +74,12 @@ function AddMessageDialog({ messageName, closeDialog, index }: AddMessageDialogM
     }
 
     function cancel() {
-        closeDialog?.(index);
+        closeDialog(index);
     }
 
-    function onInputRef(e: HTMLInputElement | null) {
-        if (e) {
-            e.focus();
-            inputRef = e;
-            onChange();
-        }
-    }
-
-    function onAsGroupRef(e: HTMLInputElement | null) {
-        if (e) {
-            asGroupRef = e;
-        }
-    }
-
-    function onInsertBeforeRef(e: HTMLInputElement | null) {
-        if (e) {
-            insertBeforeRef = e;
-        }
-    }
-
-    function onHintRef(e: HTMLDivElement | null) {
-        if (e) {
-            hintRef = e;
-            onChange();
-        }
-    }
+    useEffect(() => {
+        onChange();
+    }, []);
 
     function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.key === "Enter") {
@@ -127,39 +97,30 @@ function AddMessageDialog({ messageName, closeDialog, index }: AddMessageDialogM
         <Dialog className="add-message-dialog" title="Insert a new Message" buttons={buttons}>
             <div>
                 <label>
-                    <input type="checkbox" ref={onAsGroupRef} onClick={onChange} /> As group/comment
+                    <input type="checkbox" ref={asGroup} onClick={onChange} /> As group/comment
                 </label>
             </div>
             <div>
                 <label>
-                    <input type="checkbox" ref={onInsertBeforeRef} /> Insert before current element
+                    <input type="checkbox" ref={insertBefore} /> Insert before current element
                 </label>
             </div>
             <input
-                ref={onInputRef}
+                ref={input}
                 onChange={onChange}
                 onKeyDown={onKeyDown}
                 className="add-message-dialog__input"
                 placeholder="Name.."
+                autoFocus
             />
-            <div ref={onHintRef} className="add-message-dialog__hint" />
+            <div ref={hint} className="add-message-dialog__hint" />
         </Dialog>
     );
 }
 
-function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
-    return {
-        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key }),
-    };
-}
-
-const ConnectedAddMessageDialog = connect<{}, AddMessageDialogDispatchProps, AddMessageDialogProps>(
-    null,
-    mapDispatchToProps
-)(AddMessageDialog);
-export default ConnectedAddMessageDialog;
+export default AddMessageDialog;
 
 export function createAddMessageDialog(messageName: string) {
     const index = getNewDialogIndex().toString();
-    return <ConnectedAddMessageDialog key={index} index={index} messageName={messageName} />;
+    return <AddMessageDialog key={index} index={index} messageName={messageName} />;
 }

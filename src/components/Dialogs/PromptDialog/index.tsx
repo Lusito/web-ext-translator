@@ -4,19 +4,13 @@
  * @see https://github.com/Lusito/web-ext-translator
  */
 
-import React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import React, { useRef } from "react";
 
 import Dialog from "../Dialog";
-import { WetAction } from "../../../actions";
 import { getNewDialogIndex } from "..";
 import Markdown from "../../Markdown";
+import useCloseDialog from "../useCloseDialog";
 import "./style.css";
-
-interface PromptDialogDispatchProps {
-    closeDialog?: (key: string) => void;
-}
 
 interface PromptValidationResult {
     valid: boolean;
@@ -34,8 +28,6 @@ interface PromptDialogProps {
     onCancel?: () => void;
 }
 
-type PromptDialogMergedProps = PromptDialogProps & PromptDialogDispatchProps;
-
 function PromptDialog({
     title,
     text,
@@ -44,50 +36,32 @@ function PromptDialog({
     validate,
     onAccept,
     onCancel,
-    closeDialog,
     index,
-}: PromptDialogMergedProps) {
-    let inputRef: HTMLInputElement | null = null;
-    let hintRef: HTMLDivElement | null = null;
+}: PromptDialogProps) {
+    const closeDialog = useCloseDialog();
+    const input = useRef<HTMLInputElement>();
+    const hint = useRef<HTMLDivElement>();
     let value = initialValue;
     function onChange() {
-        if (inputRef) {
-            value = inputRef.value;
-            if (hintRef && validate) {
-                const result = validate(value);
-                if (result.valid) hintRef.classList.remove("prompt-dialog__hint--is-invalid");
-                else hintRef.classList.add("prompt-dialog__hint--is-invalid");
-                hintRef.textContent = result.message;
-            }
+        value = input.current.value;
+        if (validate) {
+            const result = validate(value);
+            if (result.valid) hint.current.classList.remove("prompt-dialog__hint--is-invalid");
+            else hint.current.classList.add("prompt-dialog__hint--is-invalid");
+            hint.current.textContent = result.message;
         }
     }
 
     function accept() {
         if (!validate || validate(value).valid) {
-            closeDialog?.(index);
+            closeDialog(index);
             onAccept?.(value);
         }
     }
 
     function cancel() {
-        closeDialog?.(index);
+        closeDialog(index);
         onCancel?.();
-    }
-
-    function onInputRef(e: HTMLInputElement | null) {
-        if (e) {
-            e.value = initialValue;
-            e.focus();
-            inputRef = e;
-            onChange();
-        }
-    }
-
-    function onHintRef(e: HTMLDivElement | null) {
-        if (e) {
-            hintRef = e;
-            onChange();
-        }
     }
 
     function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -106,28 +80,20 @@ function PromptDialog({
         <Dialog className="prompt-dialog" title={title || ""} buttons={buttons}>
             {text ? <Markdown className="prompt-dialog__text" markdown={text} /> : ""}
             <input
-                ref={onInputRef}
+                ref={input}
+                defaultValue={initialValue}
                 onChange={onChange}
                 onKeyDown={onKeyDown}
                 className="prompt-dialog__input"
                 placeholder={placeholder}
+                autoFocus
             />
-            <div ref={onHintRef} className="prompt-dialog__hint" />
+            <div ref={hint} className="prompt-dialog__hint" />
         </Dialog>
     );
 }
 
-function mapDispatchToProps(dispatch: Dispatch<WetAction>) {
-    return {
-        closeDialog: (key: string) => dispatch({ type: "HIDE_DIALOG", payload: key }),
-    };
-}
-
-const ConnectedPromptDialog = connect<{}, PromptDialogDispatchProps, PromptDialogProps>(
-    null,
-    mapDispatchToProps
-)(PromptDialog);
-export default ConnectedPromptDialog;
+export default PromptDialog;
 
 export function createPromptDialog(
     title: string,
@@ -140,7 +106,7 @@ export function createPromptDialog(
 ) {
     const index = getNewDialogIndex().toString();
     return (
-        <ConnectedPromptDialog
+        <PromptDialog
             key={index}
             index={index}
             title={title}

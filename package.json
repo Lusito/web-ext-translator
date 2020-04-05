@@ -13,7 +13,7 @@
   "license": "Zlib",
   "author": "Santo Pfingsten",
   "scripts": {
-    "build": "rimraf docs .cache && tsc --noEmit && parcel build -d docs --public-url . src/index.html",
+    "build": "rimraf docs .cache && tsc --noEmit && parcel build -d docs --public-url . src/index.html --no-source-maps",
     "lint": "npm run lint:es && npm run lint:css && npm run lint:package && npm run lint:style",
     "lint:css": "stylelint --ignore-path .prettierignore src/**/*.css",
     "lint:css:fix": "stylelint --ignore-path .prettierignore --fix src/**/*.css",
@@ -40,11 +40,10 @@
     "murmurhash3js": "^3.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-redux": "^7.2.0",
+    "react-redux-nano": "^1.0.0",
     "redux": "^4.0.5",
     "regenerator-runtime": "^0.13.5",
     "throttle-debounce": "^2.1.0",
-    "ts-loader": "^6.2.2",
     "web-ext-translator-shared": "^3.0.0"
   },
   "devDependencies": {
