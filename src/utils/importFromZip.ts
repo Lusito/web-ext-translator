@@ -63,13 +63,16 @@ export function importFromZip(zipFile: File) {
                 }))
             );
 
-            loadFiles({
-                locales: await Promise.all(languages),
-                manifest: {
-                    path: "manifest.json",
-                    data: await manifestFile.async("text"),
-                },
-                editorConfigs,
+            store.dispatch({
+                type: "LOAD",
+                payload: loadFiles({
+                    locales: await Promise.all(languages),
+                    manifest: {
+                        path: "manifest.json",
+                        data: await manifestFile.async("text"),
+                    },
+                    editorConfigs,
+                }),
             });
         })
         .catch((e) => {
