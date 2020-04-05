@@ -39,12 +39,15 @@ const ShowAboutButton = () => {
 
 const ImportZipButton = () => {
     const dispatch = useDispatch();
+    const setLoading = useSetLoading();
+    const onError = useOnErrror();
+    const onSuccess = useLoad();
 
     const onClick = () =>
         dispatch({
             type: "SHOW_DIALOG",
             payload: createFileDialog("Select your web-extension zip file", (fileList: FileList) =>
-                importFromZip(fileList[0])
+                importFromZip(fileList[0], setLoading, onSuccess, onError)
             ),
         });
     return (

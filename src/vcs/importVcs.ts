@@ -1,18 +1,9 @@
-import { WetLanguage } from "web-ext-translator-shared";
-
 import { loadFiles } from "../utils/loader";
 import { github } from "./providers/github";
 import { VcsInfo, VcsProvider } from "./VcsProvider";
 import { WetActionLoadPayload } from "../redux/actions/load";
 
 const providers = [github];
-
-export interface VcsImportSuccess {
-    languages: WetLanguage[];
-    mainLanguage: WetLanguage;
-    submitUrl?: string;
-    vcsInfo?: VcsInfo;
-}
 
 async function importVcsAsync(
     provider: VcsProvider,
