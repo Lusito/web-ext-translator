@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux-nano";
+import { WetSaveFilesEntry } from "web-ext-translator-shared";
 
 import IconButton from "../IconButton";
 import { createExportDialog } from "../Dialogs/ExportDialog";
@@ -8,12 +9,11 @@ import { createFileDialog } from "../Dialogs/FileDialog";
 import { importFromZip } from "../../utils/importFromZip";
 import { createAlertDialog } from "../Dialogs/AlertDialog";
 import { createPromptDialog } from "../Dialogs/PromptDialog";
-import store from "../../redux/store";
-import { saveToAppBridge } from "../../redux/actions/setAppBridge";
 import { github } from "../../vcs";
 import { createSubmitDialog } from "../Dialogs/SubmitDialog";
 import { createApplyDialog } from "../Dialogs/ApplyDialog";
 import { selectExtension, selectAppBridge, selectWebExtensionMode } from "../../redux/selectors";
+import { serializeMessages } from "../../utils/exportToZip";
 import "./style.css";
 
 const importGithubMarkdown = `You can import translations from a github project like this:  \
@@ -81,9 +81,9 @@ const ZipExportButton = () => {
 
 const GithubSubmitButton = () => {
     const dispatch = useDispatch();
+    const extension = useSelector(selectExtension);
 
     const onClick = () => {
-        const { extension } = store.getState();
         const payload = extension?.submitUrl
             ? createSubmitDialog()
             : createAlertDialog(
@@ -133,6 +133,18 @@ const TogglePreviewButton = () => {
 
 const AppButtons = () => {
     const appBridge = useSelector(selectAppBridge);
+    const extension = useSelector(selectExtension);
+    const onClick = () => {
+        if (extension) {
+            const files: WetSaveFilesEntry[] = Object.keys(extension.languages)
+                .map((key) => extension.languages[key])
+                .map((lang) => ({
+                    locale: lang.locale,
+                    data: serializeMessages(lang, extension.mainLanguage),
+                }));
+            appBridge.saveFiles(files);
+        }
+    };
     return (
         <>
             <IconButton
@@ -141,12 +153,7 @@ const AppButtons = () => {
                 onClick={() => appBridge.openDirectory()}
                 className="icon-button--toolbar"
             />
-            <IconButton
-                icon="floppy-o"
-                tooltip="Save to Disk"
-                onClick={() => saveToAppBridge(appBridge)}
-                className="icon-button--toolbar"
-            />
+            <IconButton icon="floppy-o" tooltip="Save to Disk" onClick={onClick} className="icon-button--toolbar" />
         </>
     );
 };

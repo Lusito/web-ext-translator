@@ -1,9 +1,8 @@
 import React, { useRef, useEffect } from "react";
-import { useSelector } from "react-redux-nano";
+import { useSelector, useDispatch } from "react-redux-nano";
 
 import Dialog from "../Dialog";
 import { getNewDialogIndex } from "..";
-import store from "../../../redux/store";
 import useCloseDialog from "../useCloseDialog";
 import { selectExtension } from "../../../redux/selectors";
 import "./style.css";
@@ -16,6 +15,7 @@ interface AddMessageDialogProps {
 }
 
 function AddMessageDialog({ messageName, index }: AddMessageDialogProps) {
+    const dispatch = useDispatch();
     const extension = useSelector(selectExtension);
     const closeDialog = useCloseDialog();
     const input = useRef<HTMLInputElement>();
@@ -55,7 +55,7 @@ function AddMessageDialog({ messageName, index }: AddMessageDialogProps) {
     function accept() {
         if (validate().valid) {
             closeDialog(index);
-            store.dispatch({
+            dispatch({
                 type: "ADD_MESSAGE",
                 payload: {
                     asGroup: asGroup.current.checked,
