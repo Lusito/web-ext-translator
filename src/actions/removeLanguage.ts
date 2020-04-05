@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/web-ext-translator
- */
-
 import { State } from "../shared";
 import { setDirty } from "../utils/setDirty";
 

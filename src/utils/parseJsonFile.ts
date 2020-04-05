@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/web-ext-translator
- */
-
 import { JsonTokenizer } from "./JsonTokenizer";
 
 type JsonValue = string | number | null | boolean | object;

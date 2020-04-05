@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/web-ext-translator
- */
-
 const ALLOWED_ESCAPE_CHARS: { [s: string]: string } = {
     b: "\b",
     f: "\f",

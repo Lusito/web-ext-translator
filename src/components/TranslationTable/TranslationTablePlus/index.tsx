@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/web-ext-translator
- */
-
 import React from "react";
 import { useDispatch } from "react-redux-nano";
 

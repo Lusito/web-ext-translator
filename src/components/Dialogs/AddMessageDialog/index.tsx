@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/web-ext-translator
- */
-
 import React, { useRef, useEffect } from "react";
 import { useSelector } from "react-redux-nano";
 

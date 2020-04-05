@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/web-ext-translator
- */
-
 import { WetLanguage } from "web-ext-translator-shared";
 
 import { State } from "../shared";

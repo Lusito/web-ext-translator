@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/web-ext-translator
- */
-
 import { WetLanguage, WetAppBridge } from "web-ext-translator-shared";
 
 import { VcsInfo } from "./vcs/VcsBaseProvider";

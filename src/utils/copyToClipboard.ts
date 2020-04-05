@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/web-ext-translator
- */
-
 const TEXTAREA_STYLES = "width: 10px; height: 10px; overflow: hidden; opacity: 0; position: absolute; pointer-events: none;".replace(
     /;/g,
     " !important;"

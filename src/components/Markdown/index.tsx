@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/web-ext-translator
- */
-
 import React, { useRef, useEffect, useMemo } from "react";
 import { useSelector } from "react-redux-nano";
 import MarkdownIt from "markdown-it";

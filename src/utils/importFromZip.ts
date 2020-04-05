@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/web-ext-translator
- */
-
 import JSZip from "jszip";
 import { WetLocaleFile, WetLoaderFile } from "web-ext-translator-shared";
 

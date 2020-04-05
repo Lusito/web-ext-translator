@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/web-ext-translator
- */
-
 import React, { useRef } from "react";
 import { useSelector, useDispatch } from "react-redux-nano";
 import { WetLanguage } from "web-ext-translator-shared";

@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/web-ext-translator
- */
-
 import { iso_639_1, iso_639_2 } from "iso-639";
 import countryList from "country-list";
 

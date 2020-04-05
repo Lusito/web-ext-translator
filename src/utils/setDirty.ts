@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/web-ext-translator
- */
-
 import { WetAppBridge } from "web-ext-translator-shared";
 
 function onBeforeUnload() {

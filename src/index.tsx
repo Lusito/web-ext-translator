@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/web-ext-translator
- */
-
 // tslint:disable-next-line:no-submodule-imports
 import "regenerator-runtime";
 import "font-awesome/css/font-awesome.min.css";

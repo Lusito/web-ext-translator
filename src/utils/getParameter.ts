@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/web-ext-translator
- */
-
 export function getParameter(name: string) {
     const url = window.location.href;
     name = name.replace(/[[\]]/g, "\\$&");
