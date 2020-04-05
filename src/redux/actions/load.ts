@@ -1,7 +1,7 @@
 import { WetLanguage } from "web-ext-translator-shared";
 
 import { State } from "../State";
-import { VcsInfo } from "../../vcs/VcsBaseProvider";
+import { VcsInfo } from "../../vcs/VcsProvider";
 import { setDirty } from "../../utils/setDirty";
 
 export interface WetActionLoadPayload {

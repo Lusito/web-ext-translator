@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 
 import Dialog from "../Dialog";
 import { getNewDialogIndex } from "..";
-import useCloseDialog from "../useCloseDialog";
+import { useCloseDialog } from "../../../hooks";
 import "./style.css";
 
 interface FileDialogProps {

@@ -5,7 +5,7 @@ import { WetLanguage } from "web-ext-translator-shared";
 import Dialog from "../Dialog";
 import { getNewDialogIndex } from "..";
 import { exportToZip } from "../../../utils/exportToZip";
-import useCloseDialog from "../useCloseDialog";
+import { useCloseDialog } from "../../../hooks";
 import { selectExtension } from "../../../redux/selectors";
 import "./style.css";
 

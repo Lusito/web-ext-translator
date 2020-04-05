@@ -9,11 +9,12 @@ import { createFileDialog } from "../Dialogs/FileDialog";
 import { importFromZip } from "../../utils/importFromZip";
 import { createAlertDialog } from "../Dialogs/AlertDialog";
 import { createPromptDialog } from "../Dialogs/PromptDialog";
-import { github } from "../../vcs";
 import { createSubmitDialog } from "../Dialogs/SubmitDialog";
 import { createApplyDialog } from "../Dialogs/ApplyDialog";
 import { selectExtension, selectAppBridge, selectWebExtensionMode } from "../../redux/selectors";
 import { serializeMessages } from "../../utils/exportToZip";
+import { importVcs } from "../../vcs/importVcs";
+import { useSetLoading, useOnErrror, useLoad } from "../../hooks";
 import "./style.css";
 
 const importGithubMarkdown = `You can import translations from a github project like this:  \
@@ -58,6 +59,9 @@ const ImportZipButton = () => {
 
 const GithubButton = () => {
     const dispatch = useDispatch();
+    const setLoading = useSetLoading();
+    const onError = useOnErrror();
+    const onSuccess = useLoad();
 
     const onClick = () =>
         dispatch({
@@ -67,7 +71,7 @@ const GithubButton = () => {
                 importGithubMarkdown,
                 "",
                 "e.g. https://github.com/Lusito/forget-me-not",
-                (value: string) => github.import(value)
+                (value: string) => importVcs(value, setLoading, onSuccess, onError)
             ),
         });
     return <IconButton icon="github" tooltip="Load from Github" onClick={onClick} className="icon-button--toolbar" />;

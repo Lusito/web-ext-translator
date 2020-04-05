@@ -1,6 +1,6 @@
 import { WetLanguage, WetAppBridge } from "web-ext-translator-shared";
 
-import { VcsInfo } from "../vcs/VcsBaseProvider";
+import { VcsInfo } from "../vcs/VcsProvider";
 
 export interface LoadedExtension {
     firstLocale: string | null;

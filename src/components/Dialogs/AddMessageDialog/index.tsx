@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux-nano";
 
 import Dialog from "../Dialog";
 import { getNewDialogIndex } from "..";
-import useCloseDialog from "../useCloseDialog";
+import { useCloseDialog } from "../../../hooks";
 import { selectExtension } from "../../../redux/selectors";
 import "./style.css";
 

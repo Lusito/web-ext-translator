@@ -3,7 +3,7 @@ import React from "react";
 import Dialog from "../Dialog";
 import { getNewDialogIndex } from "..";
 import Markdown from "../../Markdown";
-import useCloseDialog from "../useCloseDialog";
+import { useCloseDialog } from "../../../hooks";
 
 interface AlertDialogProps {
     index: string;

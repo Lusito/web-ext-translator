@@ -6,7 +6,7 @@ import { getNewDialogIndex } from "..";
 import { copyToClipboard } from "../../../utils/copyToClipboard";
 import { serializeMessages } from "../../../utils/exportToZip";
 import { setDirty } from "../../../utils/setDirty";
-import useCloseDialog from "../useCloseDialog";
+import { useCloseDialog } from "../../../hooks";
 import { selectExtension } from "../../../redux/selectors";
 import "./style.css";
 
