@@ -5,6 +5,10 @@ import { throttle } from "throttle-debounce";
 
 import { isLocaleRTL } from "../../../lib/rtl";
 import "./style.css";
+import { setPreview } from "../../../redux/preview";
+import { setMessage } from "../../../redux/extension";
+import { setDirty } from "../../../utils/setDirty";
+import { useAppBridge } from "../../../AppBridge";
 
 const UNICODE_REGEX = /(\\u[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])/g;
 
@@ -29,6 +33,7 @@ function getPlaceholderValue(key: string, placeholders?: WetPlaceholder[]) {
 export default ({ messageKey, locale, modified, value, placeholders }: TranslationEditorProps) => {
     const inputRef = useRef<HTMLDivElement | null>(null);
     const dispatch = useDispatch();
+    const appBridge = useAppBridge();
     const disabled = !messageKey || !locale;
     let className = "translation-editor";
     if (modified) className += " translation-editor--is-modified";
@@ -56,7 +61,7 @@ export default ({ messageKey, locale, modified, value, placeholders }: Translati
                         /\$\w+\$/g,
                         (s) => getPlaceholderValue(s.substr(1, s.length - 2), placeholders) || s
                     );
-                    dispatch({ type: "SET_MARKDOWN", payload: { markdown, rtl } });
+                    dispatch(setPreview(markdown, rtl));
                 }
             }),
         [placeholders, rtl]
@@ -68,7 +73,8 @@ export default ({ messageKey, locale, modified, value, placeholders }: Translati
                     if (locale && messageKey) {
                         const newValue = inputRef.current.textContent;
                         removeFormatting();
-                        dispatch({ type: "SET_MESSAGE_VALUE", payload: { key: messageKey, value: newValue, locale } });
+                        dispatch(setMessage(locale, messageKey, newValue));
+                        setDirty(appBridge, true);
                     }
                     updateMarkdown();
                 }

@@ -1,8 +1,7 @@
 import React, { useRef, useEffect, useMemo } from "react";
-import { useSelector } from "react-redux-nano";
 import MarkdownIt from "markdown-it";
 
-import { selectAppBridge } from "../../redux/selectors";
+import { useAppBridge } from "../../AppBridge";
 
 const md = new MarkdownIt();
 
@@ -17,7 +16,7 @@ function renderMarkdown(markdown: string) {
 
 export default ({ className, markdown }: MarkdownProps) => {
     const ref = useRef<HTMLDivElement>();
-    const appBridge = useSelector(selectAppBridge);
+    const appBridge = useAppBridge();
     const content = useMemo(() => ({ __html: markdown ? renderMarkdown(markdown) : "" }), [markdown]);
 
     useEffect(() => {

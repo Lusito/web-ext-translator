@@ -1,4 +1,6 @@
 import React from "react";
+
+import DialogOverlay from "../DialogOverlay";
 import "./style.css";
 
 interface DialogButton {
@@ -14,20 +16,22 @@ interface DialogProps {
 }
 
 export default ({ title, className, buttons, children }: DialogProps & JSX.ElementChildrenAttribute) => (
-    <div className={`dialog ${className}`}>
-        <h2 className={`dialog__title ${className}__title`}>{title}</h2>
-        <div className={`dialog__content ${className}__content`}>{children}</div>
-        <div className={`dialog__buttons ${className}__buttons`}>
-            {buttons.map((b) => (
-                <button
-                    key={b.label}
-                    onClick={b.onClick}
-                    autoFocus={b.focus}
-                    className={`dialog__button ${className}__button`}
-                >
-                    {b.label}
-                </button>
-            ))}
+    <DialogOverlay>
+        <div className={`dialog ${className}`}>
+            <h2 className={`dialog__title ${className}__title`}>{title}</h2>
+            <div className={`dialog__content ${className}__content`}>{children}</div>
+            <div className={`dialog__buttons ${className}__buttons`}>
+                {buttons.map((b) => (
+                    <button
+                        key={b.label}
+                        onClick={b.onClick}
+                        autoFocus={b.focus}
+                        className={`dialog__button ${className}__button`}
+                    >
+                        {b.label}
+                    </button>
+                ))}
+            </div>
         </div>
-    </div>
+    </DialogOverlay>
 );

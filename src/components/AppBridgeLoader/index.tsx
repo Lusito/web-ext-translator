@@ -1,33 +1,35 @@
-import { useDispatch, useSelector } from "react-redux-nano";
-import { useEffect } from "react";
+import { useDispatch } from "react-redux-nano";
+import React, { useEffect, useState } from "react";
 
-import { selectAppBridge } from "../../redux/selectors";
-import { createAlertDialog } from "../Dialogs/AlertDialog";
+import { useAppBridge } from "../../AppBridge";
 import { loadFiles } from "../../utils/loader";
+import AlertDialog from "../Dialogs/AlertDialog";
+import { loadExtension } from "../../redux/extension";
+import { setDirty } from "../../utils/setDirty";
 
-export default (): null => {
+export default () => {
     const dispatch = useDispatch();
-    const bridge = useSelector(selectAppBridge);
+    const appBridge = useAppBridge();
+    const [alertMessage, setAlertMessage] = useState("");
+
     useEffect(() => {
-        if (bridge) {
-            const result = bridge.loadFiles();
+        if (appBridge) {
+            const result = appBridge.loadFiles();
             if (typeof result === "string") {
-                dispatch({ type: "SHOW_DIALOG", payload: createAlertDialog("Something went wrong!", result) });
+                setAlertMessage(result);
             } else {
                 try {
-                    dispatch({ type: "LOAD", payload: loadFiles(result) });
+                    dispatch(loadExtension(loadFiles(result)));
+                    setDirty(appBridge, false);
                 } catch (e) {
                     console.error("error loading files: ", e);
-                    dispatch({
-                        type: "SHOW_DIALOG",
-                        payload: createAlertDialog(
-                            "Something went wrong!",
-                            `Failed to load folder. Reason: ${e.message}`
-                        ),
-                    });
+                    setAlertMessage(`Failed to load folder. Reason: ${e.message}`);
                 }
             }
         }
-    }, [bridge]);
-    return null;
+    }, [appBridge]);
+
+    return !alertMessage ? null : (
+        <AlertDialog title="Something went wrong!" message={alertMessage} onClose={() => setAlertMessage("")} />
+    );
 };

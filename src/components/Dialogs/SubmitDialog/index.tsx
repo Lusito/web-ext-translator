@@ -2,16 +2,14 @@ import React, { useRef } from "react";
 import { useSelector } from "react-redux-nano";
 
 import Dialog from "../Dialog";
-import { getNewDialogIndex } from "..";
 import { copyToClipboard } from "../../../utils/copyToClipboard";
 import { serializeMessages } from "../../../utils/exportToZip";
 import { setDirty } from "../../../utils/setDirty";
-import { useCloseDialog } from "../../../hooks";
-import { selectExtension } from "../../../redux/selectors";
+import { selectExtension } from "../../../redux/extension";
 import "./style.css";
 
 interface SubmitDialogProps {
-    index: string;
+    onClose: () => void;
 }
 
 const COPY_TEMPLATE = `
@@ -28,13 +26,12 @@ function replaceAll(str: string, replacements: Array<[string, string]>) {
     return replacements.reduce((result, args) => result.replace(...args), str);
 }
 
-function SubmitDialog({ index }: SubmitDialogProps) {
+export default ({ onClose }: SubmitDialogProps) => {
     const select = useRef<HTMLSelectElement>();
     const extension = useSelector(selectExtension);
-    const closeDialog = useCloseDialog();
 
     function accept() {
-        closeDialog(index);
+        onClose();
         if (select) {
             const language = extension.languages[select.current.value];
             const text = replaceAll(COPY_TEMPLATE, [
@@ -63,13 +60,9 @@ function SubmitDialog({ index }: SubmitDialogProps) {
         </option>
     ));
 
-    function cancel() {
-        closeDialog(index);
-    }
-
     const buttons = [
         { label: "OK", focus: true, onClick: accept },
-        { label: "Cancel", focus: false, onClick: cancel },
+        { label: "Cancel", focus: false, onClick: onClose },
     ];
     const defaultValue =
         extension.firstLocale === extension.mainLanguage.locale ? extension.secondLocale : extension.firstLocale;
@@ -81,11 +74,4 @@ function SubmitDialog({ index }: SubmitDialogProps) {
             </select>
         </Dialog>
     );
-}
-
-export default SubmitDialog;
-
-export function createSubmitDialog() {
-    const index = getNewDialogIndex().toString();
-    return <SubmitDialog key={index} index={index} />;
-}
+};

@@ -1,9 +1,7 @@
 import React, { useRef } from "react";
 
 import Dialog from "../Dialog";
-import { getNewDialogIndex } from "..";
 import Markdown from "../../Markdown";
-import { useCloseDialog } from "../../../hooks";
 import "./style.css";
 
 interface PromptValidationResult {
@@ -12,34 +10,21 @@ interface PromptValidationResult {
 }
 
 interface PromptDialogProps {
-    index: string;
     title: string;
-    text: string;
-    initialValue: string;
+    text?: string;
+    initialValue?: string;
     placeholder?: string;
     validate?: (value: string) => PromptValidationResult;
-    onAccept?: (value: string) => void;
-    onCancel?: () => void;
+    onAccept: (value: string) => void;
+    onCancel: () => void;
 }
 
-function PromptDialog({
-    title,
-    text,
-    initialValue,
-    placeholder,
-    validate,
-    onAccept,
-    onCancel,
-    index,
-}: PromptDialogProps) {
-    const closeDialog = useCloseDialog();
+export default ({ title, text, initialValue, placeholder, validate, onAccept, onCancel }: PromptDialogProps) => {
     const input = useRef<HTMLInputElement>();
     const hint = useRef<HTMLDivElement>();
-    let value = initialValue;
     function onChange() {
-        value = input.current.value;
         if (validate) {
-            const result = validate(value);
+            const result = validate(input.current.value);
             if (result.valid) hint.current.classList.remove("prompt-dialog__hint--is-invalid");
             else hint.current.classList.add("prompt-dialog__hint--is-invalid");
             hint.current.textContent = result.message;
@@ -47,15 +32,7 @@ function PromptDialog({
     }
 
     function accept() {
-        if (!validate || validate(value).valid) {
-            closeDialog(index);
-            onAccept?.(value);
-        }
-    }
-
-    function cancel() {
-        closeDialog(index);
-        onCancel?.();
+        if (!validate || validate(input.current.value).valid) onAccept(input.current.value);
     }
 
     function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -68,7 +45,7 @@ function PromptDialog({
 
     const buttons = [
         { label: "OK", focus: false, onClick: accept },
-        { label: "Cancel", focus: false, onClick: cancel },
+        { label: "Cancel", focus: false, onClick: onCancel },
     ];
     return (
         <Dialog className="prompt-dialog" title={title || ""} buttons={buttons}>
@@ -85,31 +62,4 @@ function PromptDialog({
             <div ref={hint} className="prompt-dialog__hint" />
         </Dialog>
     );
-}
-
-export default PromptDialog;
-
-export function createPromptDialog(
-    title: string,
-    text: string,
-    initialValue: string,
-    placeholder: string,
-    onAccept: (value: string) => void,
-    validate?: (value: string) => PromptValidationResult,
-    onCancel?: () => void
-) {
-    const index = getNewDialogIndex().toString();
-    return (
-        <PromptDialog
-            key={index}
-            index={index}
-            title={title}
-            text={text}
-            initialValue={initialValue}
-            placeholder={placeholder}
-            onAccept={onAccept}
-            validate={validate}
-            onCancel={onCancel}
-        />
-    );
-}
+};

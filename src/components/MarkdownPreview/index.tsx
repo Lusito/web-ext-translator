@@ -2,17 +2,17 @@ import React from "react";
 import { useSelector } from "react-redux-nano";
 
 import Markdown from "../Markdown";
-import { selectPreviewVisible, selectMarkdown, selectMarkdownRTL } from "../../redux/selectors";
 import "./style.css";
+import { selectPreviewVisible, selectPreviewMarkdown, selectPreviewRTL } from "../../redux/preview";
 
 export default () => {
     const previewVisible = useSelector(selectPreviewVisible);
-    const markdown = useSelector(selectMarkdown);
-    const markdownRTL = useSelector(selectMarkdownRTL);
+    const markdown = useSelector(selectPreviewMarkdown);
+    const rtl = useSelector(selectPreviewRTL);
     let className = "markdown-preview";
     if (previewVisible) {
         className += " markdown-preview--is-visible";
-        if (markdownRTL) className += " markdown-preview--is-rtl";
+        if (rtl) className += " markdown-preview--is-rtl";
     }
     return (
         <div className={className}>

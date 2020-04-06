@@ -2,22 +2,22 @@ import React, { useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux-nano";
 
 import Dialog from "../Dialog";
-import { getNewDialogIndex } from "..";
-import { useCloseDialog } from "../../../hooks";
-import { selectExtension } from "../../../redux/selectors";
+import { selectExtension, addMessage } from "../../../redux/extension";
 import "./style.css";
+import { setDirty } from "../../../utils/setDirty";
+import { useAppBridge } from "../../../AppBridge";
 
 const VALID_NAME = /^[A-Za-z0-9_@]+$/;
 
 interface AddMessageDialogProps {
-    index: string;
     messageName: string;
+    onClose: () => void;
 }
 
-function AddMessageDialog({ messageName, index }: AddMessageDialogProps) {
+export default ({ messageName, onClose }: AddMessageDialogProps) => {
+    const appBridge = useAppBridge();
     const dispatch = useDispatch();
     const extension = useSelector(selectExtension);
-    const closeDialog = useCloseDialog();
     const input = useRef<HTMLInputElement>();
     const asGroup = useRef<HTMLInputElement>();
     const insertBefore = useRef<HTMLInputElement>();
@@ -54,21 +54,10 @@ function AddMessageDialog({ messageName, index }: AddMessageDialogProps) {
 
     function accept() {
         if (validate().valid) {
-            closeDialog(index);
-            dispatch({
-                type: "ADD_MESSAGE",
-                payload: {
-                    asGroup: asGroup.current.checked,
-                    insertBefore: insertBefore.current.checked,
-                    referenceMessageName: messageName,
-                    newMessageName: value,
-                },
-            });
+            onClose();
+            dispatch(addMessage(asGroup.current.checked, insertBefore.current.checked, messageName, value));
+            setDirty(appBridge, true);
         }
-    }
-
-    function cancel() {
-        closeDialog(index);
     }
 
     useEffect(() => {
@@ -85,7 +74,7 @@ function AddMessageDialog({ messageName, index }: AddMessageDialogProps) {
 
     const buttons = [
         { label: "OK", focus: false, onClick: accept },
-        { label: "Cancel", focus: false, onClick: cancel },
+        { label: "Cancel", focus: false, onClick: onClose },
     ];
     return (
         <Dialog className="add-message-dialog" title="Insert a new Message" buttons={buttons}>
@@ -110,11 +99,4 @@ function AddMessageDialog({ messageName, index }: AddMessageDialogProps) {
             <div ref={hint} className="add-message-dialog__hint" />
         </Dialog>
     );
-}
-
-export default AddMessageDialog;
-
-export function createAddMessageDialog(messageName: string) {
-    const index = getNewDialogIndex().toString();
-    return <AddMessageDialog key={index} index={index} messageName={messageName} />;
-}
+};

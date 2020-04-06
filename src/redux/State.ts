@@ -1,23 +1,9 @@
-import { WetLanguage, WetAppBridge } from "web-ext-translator-shared";
-
-import { VcsInfo } from "../vcs/VcsProvider";
-
-export interface LoadedExtension {
-    firstLocale: string | null;
-    secondLocale: string | null;
-    languages: { [s: string]: WetLanguage };
-    mainLanguage: WetLanguage;
-    submitUrl?: string;
-    vcsInfo?: VcsInfo;
-}
+import { PreviewState } from "./preview/reducer";
+import { ExtensionState } from "./extension/reducer";
+import { WebExtensionState } from "./webExtension/reducer";
 
 export interface State {
-    dialogs: JSX.Element[];
-    previewVisible: boolean;
-    markdown: string;
-    markdownRTL: boolean;
-    loading: string;
-    extension: LoadedExtension | null;
-    webExtensionMode: boolean;
-    appBridge: WetAppBridge | null;
+    preview: PreviewState;
+    extension: ExtensionState;
+    webExtension: WebExtensionState;
 }

@@ -4,12 +4,13 @@ import { useSelector } from "react-redux-nano";
 
 import TranslationTableRow from "../TranslationTableRow";
 import TranslationTablePlus from "../TranslationTablePlus";
-import { selectExtension, selectAppBridge } from "../../../redux/selectors";
+import { selectExtension } from "../../../redux/extension";
 import "./style.css";
+import { useAppBridge } from "../../../AppBridge";
 
 export default () => {
     const extension = useSelector(selectExtension);
-    const appBridge = useSelector(selectAppBridge);
+    const appBridge = useAppBridge;
 
     const firstLanguage = extension.firstLocale ? extension.languages[extension.firstLocale] : null;
     const secondLanguage = extension.secondLocale ? extension.languages[extension.secondLocale] : null;

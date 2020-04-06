@@ -1,8 +1,6 @@
 import React, { useRef } from "react";
 
 import Dialog from "../Dialog";
-import { getNewDialogIndex } from "..";
-import { useCloseDialog } from "../../../hooks";
 import "./style.css";
 
 interface SelectOption {
@@ -11,33 +9,19 @@ interface SelectOption {
 }
 
 interface SelectDialogProps {
-    index: string;
     title: string;
     options: SelectOption[];
     initialValue: string;
-    onAccept?: (value: string) => void;
-    onCancel?: () => void;
+    onAccept: (value: string) => void;
+    onCancel: () => void;
 }
 
-function SelectDialog({ title, options, initialValue, onAccept, onCancel, index }: SelectDialogProps) {
+export default ({ title, options, initialValue, onAccept, onCancel }: SelectDialogProps) => {
     const select = useRef<HTMLSelectElement>();
-    const closeDialog = useCloseDialog();
-
-    function accept() {
-        if (select) {
-            closeDialog(index);
-            onAccept?.(select.current.value);
-        }
-    }
-
-    function cancel() {
-        closeDialog(index);
-        onCancel?.();
-    }
 
     const buttons = [
-        { label: "OK", focus: false, onClick: accept },
-        { label: "Cancel", focus: false, onClick: cancel },
+        { label: "OK", focus: false, onClick: () => onAccept(select.current.value) },
+        { label: "Cancel", focus: false, onClick: onCancel },
     ];
     return (
         <Dialog className="select-dialog" title={title || ""} buttons={buttons}>
@@ -48,27 +32,4 @@ function SelectDialog({ title, options, initialValue, onAccept, onCancel, index 
             </select>
         </Dialog>
     );
-}
-
-export default SelectDialog;
-
-export function createSelectDialog(
-    title: string,
-    options: SelectOption[],
-    initialValue: string,
-    onAccept: (value: string) => void,
-    onCancel?: () => void
-) {
-    const index = getNewDialogIndex().toString();
-    return (
-        <SelectDialog
-            key={index}
-            index={index}
-            title={title}
-            options={options}
-            initialValue={initialValue}
-            onAccept={onAccept}
-            onCancel={onCancel}
-        />
-    );
-}
+};

@@ -1,11 +1,10 @@
 import React from "react";
 import { WetMessage, WetLanguage } from "web-ext-translator-shared";
-import { useSelector } from "react-redux-nano";
 
 import TranslationEditor from "../TranslationEditor";
 import { hashFor } from "../../../utils/getHashFor";
 import TranslationTablePlus from "../TranslationTablePlus";
-import { selectAppBridge } from "../../../redux/selectors";
+import { useAppBridge } from "../../../AppBridge";
 
 interface TranslationTableRowProps {
     className?: string;
@@ -24,7 +23,7 @@ function getData(mainLanguage: WetLanguage, mainHash: string, lang: WetLanguage 
 }
 
 export default ({ className, message, firstLanguage, secondLanguage, mainLanguage }: TranslationTableRowProps) => {
-    const appBridge = useSelector(selectAppBridge);
+    const appBridge = useAppBridge;
     const mainHash = hashFor(message.message);
     const first = getData(mainLanguage, mainHash, firstLanguage, message.name);
     const second = getData(mainLanguage, mainHash, secondLanguage, message.name);

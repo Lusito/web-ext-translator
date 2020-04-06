@@ -3,10 +3,13 @@ import { useSelector, useDispatch } from "react-redux-nano";
 import { WetLanguage } from "web-ext-translator-shared";
 
 import { localeCodeToEnglish } from "../../lib/localeCodeToEnglish";
-import { createPromptDialog } from "../Dialogs/PromptDialog";
 import { isLocaleRTL } from "../../lib/rtl";
-import { selectExtension } from "../../redux/selectors";
+import { selectExtension, addLanguage, selectLanguage } from "../../redux/extension";
 import "./style.css";
+import PromptDialog from "../Dialogs/PromptDialog";
+import { useOpen } from "../../hooks";
+import { setDirty } from "../../utils/setDirty";
+import { useAppBridge } from "../../AppBridge";
 
 function validateLocale(value: string) {
     const result = localeCodeToEnglish(value);
@@ -49,24 +52,21 @@ interface LanguageSelectProps {
 }
 
 export default ({ first, tabIndex }: LanguageSelectProps) => {
+    const appBridge = useAppBridge();
+    const [promptOpen, setPromptOpen, setPromptClosed] = useOpen();
     const dispatch = useDispatch();
     const extension = useSelector(selectExtension);
-    const addLanguage = () => {
-        function onAccept(value: string) {
-            const otherLocale = first ? extension.secondLocale : extension.firstLocale;
-            // fixme: normalize case of locale
-            if (value !== otherLocale) {
-                dispatch({ type: "ADD_LANGUAGE", payload: value });
-                dispatch({ type: "SELECT_LANGUAGE", payload: { first, locale: value } });
-            }
+
+    function onAccept(value: string) {
+        const otherLocale = first ? extension.secondLocale : extension.firstLocale;
+        // fixme: normalize case of locale
+        if (value !== otherLocale) {
+            dispatch(addLanguage(value));
+            dispatch(selectLanguage(value, first ? "firstLocale" : "secondLocale"));
+            setDirty(appBridge, true);
         }
-        const localeValidator = getLocaleValidator(extension.languages);
-        dispatch({
-            type: "SHOW_DIALOG",
-            payload: createPromptDialog("Enter a locale", "", "en", "", onAccept, localeValidator),
-        });
-    };
-    const selectLanguage = (locale: string | null) => dispatch({ type: "SELECT_LANGUAGE", payload: { first, locale } });
+    }
+    const localeValidator = promptOpen && getLocaleValidator(extension.languages);
 
     const ignoreLocale = first ? extension.secondLocale : extension.firstLocale;
     const languages = [];
@@ -83,24 +83,36 @@ export default ({ first, tabIndex }: LanguageSelectProps) => {
     const onChange = () => {
         let locale: string | null = select.current.value;
         if (locale === "+") {
-            addLanguage();
+            setPromptOpen();
         } else {
             if (locale === "") locale = null;
-            selectLanguage(locale);
+            dispatch(selectLanguage(locale, first ? "firstLocale" : "secondLocale"));
+            setDirty(appBridge, true);
         }
     };
     const value = selection?.locale || "";
     return (
-        <select className="language-select" value={value} onChange={onChange} ref={select} tabIndex={tabIndex}>
-            <option key="null" style={{ fontStyle: "italic" }} value="" className="language-select__list-item">
-                -- None --
-            </option>
-            <option key="+" style={{ fontStyle: "italic" }} value="+" className="language-select__list-item">
-                ++ New Language ++
-            </option>
-            {languages.map((language) => (
-                <LanguageSelectOption language={language} />
-            ))}
-        </select>
+        <>
+            <select className="language-select" value={value} onChange={onChange} ref={select} tabIndex={tabIndex}>
+                <option key="null" style={{ fontStyle: "italic" }} value="" className="language-select__list-item">
+                    -- None --
+                </option>
+                <option key="+" style={{ fontStyle: "italic" }} value="+" className="language-select__list-item">
+                    ++ New Language ++
+                </option>
+                {languages.map((language) => (
+                    <LanguageSelectOption language={language} />
+                ))}
+            </select>
+            {promptOpen && (
+                <PromptDialog
+                    title="Enter a locale"
+                    initialValue="en"
+                    onAccept={onAccept}
+                    validate={localeValidator}
+                    onCancel={setPromptClosed}
+                />
+            )}
+        </>
     );
 };

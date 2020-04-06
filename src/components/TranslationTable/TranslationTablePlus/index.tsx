@@ -1,14 +1,18 @@
 import React from "react";
-import { useDispatch } from "react-redux-nano";
 
-import { createAddMessageDialog } from "../../Dialogs/AddMessageDialog";
+import AddMessageDialog from "../../Dialogs/AddMessageDialog";
+import { useOpen } from "../../../hooks";
 
 interface TranslationTablePlusProps {
     messageName: string;
 }
 
 export default ({ messageName }: TranslationTablePlusProps) => {
-    const dispatch = useDispatch();
-    const onClick = () => dispatch({ type: "SHOW_DIALOG", payload: createAddMessageDialog(messageName) });
-    return <button onClick={onClick}>+</button>;
+    const [open, setOpen, setClosed] = useOpen(false);
+    return (
+        <>
+            <button onClick={setOpen}>+</button>
+            {open && <AddMessageDialog messageName={messageName} onClose={setClosed} />}
+        </>
+    );
 };

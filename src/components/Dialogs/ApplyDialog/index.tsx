@@ -2,22 +2,19 @@ import React, { useRef } from "react";
 import { useSelector } from "react-redux-nano";
 
 import Dialog from "../Dialog";
-import { getNewDialogIndex } from "..";
-import { useCloseDialog } from "../../../hooks";
-import { selectExtension } from "../../../redux/selectors";
+import { selectExtension } from "../../../redux/extension";
 import "./style.css";
 
 interface ApplyDialogProps {
-    index: string;
+    onClose: () => void;
 }
 
-function ApplyDialog({ index }: ApplyDialogProps) {
-    const closeDialog = useCloseDialog();
+export default ({ onClose }: ApplyDialogProps) => {
     const extension = useSelector(selectExtension);
     const select = useRef<HTMLSelectElement>();
 
     function accept() {
-        closeDialog(index);
+        onClose();
         const language = extension.languages[select.current.value];
         if (extension.vcsInfo) {
             window.postMessage(
@@ -40,7 +37,7 @@ function ApplyDialog({ index }: ApplyDialogProps) {
 
     const buttons = [
         { label: "OK", focus: true, onClick: accept },
-        { label: "Cancel", focus: false, onClick: () => closeDialog(index) },
+        { label: "Cancel", focus: false, onClick: onClose },
     ];
     const defaultValue =
         extension.firstLocale === extension.mainLanguage.locale ? extension.secondLocale : extension.firstLocale;
@@ -52,11 +49,4 @@ function ApplyDialog({ index }: ApplyDialogProps) {
             </select>
         </Dialog>
     );
-}
-
-export default ApplyDialog;
-
-export function createApplyDialog() {
-    const index = getNewDialogIndex().toString();
-    return <ApplyDialog key={index} index={index} />;
-}
+};

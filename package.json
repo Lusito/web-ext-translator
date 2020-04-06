@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "country-list": "^2.2.0",
+    "deox": "^3.2.1",
     "editorconfig": "^0.15.3",
     "file-saver": "^2.0.2",
     "font-awesome": "^4.7.0",

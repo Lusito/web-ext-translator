@@ -3,23 +3,20 @@ import { useSelector } from "react-redux-nano";
 import { WetLanguage } from "web-ext-translator-shared";
 
 import Dialog from "../Dialog";
-import { getNewDialogIndex } from "..";
 import { exportToZip } from "../../../utils/exportToZip";
-import { useCloseDialog } from "../../../hooks";
-import { selectExtension } from "../../../redux/selectors";
+import { selectExtension } from "../../../redux/extension";
 import "./style.css";
 
 interface ExportDialogProps {
-    index: string;
+    onClose: () => void;
 }
 
-function ExportDialog({ index }: ExportDialogProps) {
-    const closeDialog = useCloseDialog();
+export default ({ onClose }: ExportDialogProps) => {
     const container = useRef<HTMLDivElement>();
     const extension = useSelector(selectExtension);
 
     function accept() {
-        closeDialog(index);
+        onClose();
         const exportedLanguages: WetLanguage[] = [];
         const inputs = container.current.querySelectorAll("input");
         for (const input of inputs) {
@@ -37,18 +34,11 @@ function ExportDialog({ index }: ExportDialogProps) {
 
     const buttons = [
         { label: "OK", focus: true, onClick: accept },
-        { label: "Cancel", focus: false, onClick: () => closeDialog(index) },
+        { label: "Cancel", focus: false, onClick: onClose },
     ];
     return (
         <Dialog className="export-dialog" title="Export Translations" buttons={buttons}>
             <div ref={container}>{checkboxes}</div>
         </Dialog>
     );
-}
-
-export default ExportDialog;
-
-export function createExportDialog() {
-    const index = getNewDialogIndex().toString();
-    return <ExportDialog key={index} index={index} />;
-}
+};

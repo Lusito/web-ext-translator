@@ -3,12 +3,12 @@ import { WetLocaleFile, WetLoaderFile } from "web-ext-translator-shared";
 
 import { getEditorConfigPaths } from "./editorConfig";
 import { loadFiles } from "./loader";
-import { WetActionLoadPayload } from "../redux/actions/load";
+import { LoadExtensionData } from "../redux/extension";
 
 async function importFromZipAsync(
     zipFile: File,
     setLoading: (message: string) => void,
-    onSuccess: (data: WetActionLoadPayload) => void,
+    onSuccess: (data: LoadExtensionData) => void,
     onError: (message: string) => void
 ) {
     try {
@@ -38,7 +38,7 @@ async function importFromZipAsync(
                                 path: messagesPath,
                                 data: await messagesFile.async("text"),
                                 locale,
-                                editorConfigs: editorConfigPaths
+                                editorConfigs: editorConfigPaths,
                             };
                         })()
                     );
@@ -49,7 +49,7 @@ async function importFromZipAsync(
         const editorConfigs: WetLoaderFile[] = await Promise.all(
             [...editorConfigsToLoad.values()].map(async (path) => ({
                 path,
-                data: await zip.file(path).async("text")
+                data: await zip.file(path).async("text"),
             }))
         );
 
@@ -58,9 +58,9 @@ async function importFromZipAsync(
                 locales: await Promise.all(languages),
                 manifest: {
                     path: "manifest.json",
-                    data: await manifestFile.async("text")
+                    data: await manifestFile.async("text"),
                 },
-                editorConfigs
+                editorConfigs,
             })
         );
     } catch (e) {
@@ -73,7 +73,7 @@ async function importFromZipAsync(
 export function importFromZip(
     zipFile: File,
     setLoading: (message: string) => void,
-    onSuccess: (data: WetActionLoadPayload) => void,
+    onSuccess: (data: LoadExtensionData) => void,
     onError: (message: string) => void
 ) {
     if (!zipFile.name.toLowerCase().endsWith(".zip")) {

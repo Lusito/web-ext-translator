@@ -1,145 +1,181 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux-nano";
 import { WetSaveFilesEntry } from "web-ext-translator-shared";
 
 import IconButton from "../IconButton";
-import { createExportDialog } from "../Dialogs/ExportDialog";
 import packageJSON from "../../../package.json";
-import { createFileDialog } from "../Dialogs/FileDialog";
 import { importFromZip } from "../../utils/importFromZip";
-import { createAlertDialog } from "../Dialogs/AlertDialog";
-import { createPromptDialog } from "../Dialogs/PromptDialog";
-import { createSubmitDialog } from "../Dialogs/SubmitDialog";
-import { createApplyDialog } from "../Dialogs/ApplyDialog";
-import { selectExtension, selectAppBridge, selectWebExtensionMode } from "../../redux/selectors";
+import { selectExtension, LoadExtensionData, loadExtension, setLoading } from "../../redux/extension";
 import { serializeMessages } from "../../utils/exportToZip";
 import { importVcs } from "../../vcs/importVcs";
-import { useSetLoading, useOnErrror, useLoad } from "../../hooks";
+import { useOpen } from "../../hooks";
 import "./style.css";
+import { useAppBridge } from "../../AppBridge";
+import { selectWebExtensionActive } from "../../redux/webExtension";
+import AlertDialog from "../Dialogs/AlertDialog";
+import ApplyDialog from "../Dialogs/ApplyDialog";
+import ExportDialog from "../Dialogs/ExportDialog";
+import FileDialog from "../Dialogs/FileDialog";
+import PromptDialog from "../Dialogs/PromptDialog";
+import SubmitDialog from "../Dialogs/SubmitDialog";
+import { togglePreview } from "../../redux/preview";
+import { setDirty } from "../../utils/setDirty";
 
 const importGithubMarkdown = `You can import translations from a github project like this:  \
 
 - Go to the github page of your web-extension
 - Copy the URL and paste it here: (Branch URLs work as well!)`;
 
+const aboutMarkdown = `- Version: ${packageJSON.version}
+- Author: Santo Pfingsten
+- Support on Github: [web-ext-translator](https://github.com/Lusito/web-ext-translator/issues)`;
+
 const ShowAboutButton = () => {
-    const dispatch = useDispatch();
+    const [open, setOpen, setClosed] = useOpen();
 
-    const onClick = () =>
-        dispatch({
-            type: "SHOW_DIALOG",
-            payload: createAlertDialog(
-                "Web-Extension Translator",
-                `- Version: ${packageJSON.version}\n- Author: Santo Pfingsten\n- Support on Github: [web-ext-translator](https://github.com/Lusito/web-ext-translator/issues)`
-            ),
-        });
-
-    return <IconButton icon="question-circle" tooltip="About" onClick={onClick} className="icon-button--toolbar" />;
+    return (
+        <>
+            <IconButton icon="question-circle" tooltip="About" onClick={setOpen} className="icon-button--toolbar" />
+            {open && <AlertDialog title="Web-Extension Translator" message={aboutMarkdown} onClose={setClosed} />}
+        </>
+    );
 };
 
 const ImportZipButton = () => {
+    const appBridge = useAppBridge();
+    const [open, setOpen, setClosed] = useOpen();
+    const [alertMessage, setAlertMessage] = useState("");
     const dispatch = useDispatch();
-    const setLoading = useSetLoading();
-    const onError = useOnErrror();
-    const onSuccess = useLoad();
+    const setLoadingMessage = (message: string) => dispatch(setLoading(message));
+    const onSuccess = (data: LoadExtensionData) => {
+        dispatch(loadExtension(data));
+        setDirty(appBridge, false);
+    };
 
-    const onClick = () =>
-        dispatch({
-            type: "SHOW_DIALOG",
-            payload: createFileDialog("Select your web-extension zip file", (fileList: FileList) =>
-                importFromZip(fileList[0], setLoading, onSuccess, onError)
-            ),
-        });
+    const onAccept = (fileList: FileList) => {
+        if (fileList.length) {
+            importFromZip(fileList[0], setLoadingMessage, onSuccess, setAlertMessage);
+            setClosed();
+        }
+    };
+
     return (
-        <IconButton
-            icon="file-archive-o"
-            tooltip="Import an extension from a ZIP file"
-            onClick={onClick}
-            className="icon-button--toolbar"
-        />
+        <>
+            <IconButton
+                icon="file-archive-o"
+                tooltip="Import an extension from a ZIP file"
+                onClick={setOpen}
+                className="icon-button--toolbar"
+            />
+            {open && <FileDialog title="Select your web-extension zip file" onAccept={onAccept} onCancel={setClosed} />}
+            {alertMessage && (
+                <AlertDialog title="Something went wrong!" message={alertMessage} onClose={() => setAlertMessage("")} />
+            )}
+        </>
     );
 };
 
 const GithubButton = () => {
+    const appBridge = useAppBridge();
+    const [alertMessage, setAlertMessage] = useState("");
+    const [open, setOpen, setClosed] = useOpen();
     const dispatch = useDispatch();
-    const setLoading = useSetLoading();
-    const onError = useOnErrror();
-    const onSuccess = useLoad();
-
-    const onClick = () =>
-        dispatch({
-            type: "SHOW_DIALOG",
-            payload: createPromptDialog(
-                "Import from Github",
-                importGithubMarkdown,
-                "",
-                "e.g. https://github.com/Lusito/forget-me-not",
-                (value: string) => importVcs(value, setLoading, onSuccess, onError)
-            ),
-        });
-    return <IconButton icon="github" tooltip="Load from Github" onClick={onClick} className="icon-button--toolbar" />;
-};
-
-const ZipExportButton = () => {
-    const dispatch = useDispatch();
-    const onClick = () => dispatch({ type: "SHOW_DIALOG", payload: createExportDialog() });
-    return <IconButton icon="download" tooltip="Export to ZIP" onClick={onClick} className="icon-button--toolbar" />;
-};
-
-const GithubSubmitButton = () => {
-    const dispatch = useDispatch();
-    const extension = useSelector(selectExtension);
-
-    const onClick = () => {
-        const payload = extension?.submitUrl
-            ? createSubmitDialog()
-            : createAlertDialog(
-                  "Github projects only",
-                  "This action only works for github projects at this moment. Please export the translations as ZIP file and send it manually to the developers."
-              );
-
-        dispatch({ type: "SHOW_DIALOG", payload });
+    const setLoadingMessage = (message: string) => dispatch(setLoading(message));
+    const onSuccess = (data: LoadExtensionData) => {
+        dispatch(loadExtension(data));
+        setDirty(appBridge, false);
     };
 
     return (
-        <IconButton
-            icon="arrow-circle-right"
-            tooltip="Submit changes to the developers"
-            onClick={onClick}
-            className="icon-button--toolbar"
-        />
+        <>
+            <IconButton icon="github" tooltip="Load from Github" onClick={setOpen} className="icon-button--toolbar" />
+            {alertMessage && (
+                <AlertDialog title="Something went wrong!" message={alertMessage} onClose={() => setAlertMessage("")} />
+            )}
+            {open && (
+                <PromptDialog
+                    title="Import from Github"
+                    text={importGithubMarkdown}
+                    placeholder="e.g. https://github.com/Lusito/forget-me-not"
+                    onAccept={(value: string) => importVcs(value, setLoadingMessage, onSuccess, setAlertMessage)}
+                    onCancel={setClosed}
+                />
+            )}
+        </>
+    );
+};
+
+const ZipExportButton = () => {
+    const [open, setOpen, setClosed] = useOpen();
+
+    return (
+        <>
+            <IconButton icon="download" tooltip="Export to ZIP" onClick={setOpen} className="icon-button--toolbar" />
+            {open && <ExportDialog onClose={setClosed} />}
+        </>
+    );
+};
+
+const GithubSubmitButton = () => {
+    const extension = useSelector(selectExtension);
+    const [open, setOpen, setClosed] = useOpen();
+
+    return (
+        <>
+            <IconButton
+                icon="arrow-circle-right"
+                tooltip="Submit changes to the developers"
+                onClick={setOpen}
+                className="icon-button--toolbar"
+            />
+            {open &&
+                (extension?.submitUrl ? (
+                    <SubmitDialog onClose={setClosed} />
+                ) : (
+                    <AlertDialog
+                        title="Github projects only"
+                        message="This action only works for github projects at this moment. Please export the translations as ZIP file and send it manually to the developers."
+                        onClose={setClosed}
+                    />
+                ))}
+        </>
     );
 };
 
 const ApplyButton = () => {
-    const dispatch = useDispatch();
     const extension = useSelector(selectExtension);
+    const [open, setOpen, setClosed] = useOpen();
 
-    const onClick = () => {
-        const payload = extension?.vcsInfo
-            ? createApplyDialog()
-            : createAlertDialog("Github projects only", "This action only works for github projects at this moment.");
-
-        dispatch({ type: "SHOW_DIALOG", payload });
-    };
     return (
-        <IconButton
-            icon="share-square-o"
-            tooltip="Send to extension to preview"
-            onClick={onClick}
-            className="icon-button--toolbar"
-        />
+        <>
+            <IconButton
+                icon="share-square-o"
+                tooltip="Send to extension to preview"
+                onClick={setOpen}
+                className="icon-button--toolbar"
+            />
+            {open &&
+                (extension?.vcsInfo ? (
+                    <ApplyDialog onClose={setClosed} />
+                ) : (
+                    <AlertDialog
+                        title="Github projects only"
+                        message="This action only works for github projects at this moment."
+                        onClose={setClosed}
+                    />
+                ))}
+        </>
     );
 };
 
 const TogglePreviewButton = () => {
     const dispatch = useDispatch();
-    const onClick = () => dispatch({ type: "PREVIEW_TOGGLE", payload: null });
+    const onClick = () => dispatch(togglePreview());
     return <IconButton icon="eye" tooltip="Toggle Preview" onClick={onClick} className="icon-button--toolbar" />;
 };
 
 const AppButtons = () => {
-    const appBridge = useSelector(selectAppBridge);
+    const appBridge = useAppBridge();
     const extension = useSelector(selectExtension);
     const onClick = () => {
         if (extension) {
@@ -166,15 +202,20 @@ const AppButtons = () => {
 };
 
 const WebAppButtons = () => {
-    const webExtensionMode = useSelector(selectWebExtensionMode);
+    const extension = useSelector(selectExtension);
+    const webExtensionActive = useSelector(selectWebExtensionActive);
     return (
         <>
             <GithubButton />
             <ImportZipButton />
-            <div className="toolbar__separator" />
-            <ZipExportButton />
-            <GithubSubmitButton />
-            {webExtensionMode && (
+            {extension && (
+                <>
+                    <div className="toolbar__separator" />
+                    <ZipExportButton />
+                    <GithubSubmitButton />
+                </>
+            )}
+            {webExtensionActive && (
                 <>
                     <div className="toolbar__separator" />
                     <ApplyButton />
@@ -185,7 +226,7 @@ const WebAppButtons = () => {
 };
 
 export default () => {
-    const appBridge = useSelector(selectAppBridge);
+    const appBridge = useAppBridge();
 
     return (
         <div className="toolbar">

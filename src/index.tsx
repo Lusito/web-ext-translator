@@ -5,12 +5,14 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux-nano";
 
-import store from "./redux/store";
 import WetApp from "./components/WetApp";
 import WebExtensionLoader from "./components/WebExtensionLoader";
 import AppBridgeLoader from "./components/AppBridgeLoader";
 import "./style.css";
 import ParameterLoader from "./components/ParameterLoader";
+import createStore from "./redux/createStore";
+
+const store = createStore();
 
 ReactDOM.render(
     <Provider store={store}>

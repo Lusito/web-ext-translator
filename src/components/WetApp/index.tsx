@@ -3,11 +3,11 @@ import { useSelector } from "react-redux-nano";
 
 import Toolbar from "../Toolbar";
 import MarkdownPreview from "../MarkdownPreview";
-import Dialogs from "../Dialogs";
 import TranslationTable from "../TranslationTable";
 import LoadingScreen from "../LoadingScreen";
 import MarkdownScreen from "../MarkdownScreen";
-import { selectLoading, selectExtension } from "../../redux/selectors";
+import { selectExtension, selectLoading } from "../../redux/extension";
+import PortalGoal from "../Portal/PortalGoal";
 
 const welcomeScreenMarkdown = `\
 ## Welcome!
@@ -37,7 +37,7 @@ export default () => {
                     <MarkdownPreview />
                 </>
             )}
-            <Dialogs />
+            <PortalGoal id="overlays" />
         </>
     );
 };

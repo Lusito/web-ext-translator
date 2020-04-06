@@ -1,7 +1,7 @@
 import { loadFiles } from "../utils/loader";
 import { github } from "./providers/github";
 import { VcsInfo, VcsProvider } from "./VcsProvider";
-import { WetActionLoadPayload } from "../redux/actions/load";
+import { LoadExtensionData } from "../redux/extension";
 
 const providers = [github];
 
@@ -9,7 +9,7 @@ async function importVcsAsync(
     provider: VcsProvider,
     info: VcsInfo,
     setLoading: (message: string) => void,
-    onSuccess: (data: WetActionLoadPayload) => void,
+    onSuccess: (data: LoadExtensionData) => void,
     onError: (message: string) => void
 ) {
     try {
@@ -30,7 +30,7 @@ async function importVcsAsync(
 export function importVcs(
     url: string,
     setLoading: (message: string) => void,
-    onSuccess: (data: WetActionLoadPayload) => void,
+    onSuccess: (data: LoadExtensionData) => void,
     onError: (message: string) => void
 ) {
     for (const provider of providers) {
