@@ -52,7 +52,6 @@ interface LanguageSelectProps {
 }
 
 export default ({ first, tabIndex }: LanguageSelectProps) => {
-    const appBridge = useAppBridge();
     const [promptOpen, setPromptOpen, setPromptClosed] = useOpen();
     const dispatch = useDispatch();
     const extension = useSelector(selectExtension);
@@ -63,7 +62,6 @@ export default ({ first, tabIndex }: LanguageSelectProps) => {
         if (value !== otherLocale) {
             dispatch(addLanguage(value));
             dispatch(selectLanguage(value, first ? "firstLocale" : "secondLocale"));
-            setDirty(appBridge, true);
             setPromptClosed();
         }
     }
@@ -88,7 +86,6 @@ export default ({ first, tabIndex }: LanguageSelectProps) => {
         } else {
             if (locale === "") locale = null;
             dispatch(selectLanguage(locale, first ? "firstLocale" : "secondLocale"));
-            setDirty(appBridge, true);
         }
     };
     const value = selection?.locale || "";
