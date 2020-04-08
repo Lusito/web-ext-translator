@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 
 import Dialog from "../Dialog";
 import Markdown from "../../Markdown";
@@ -42,6 +42,8 @@ export default ({ title, text, initialValue, placeholder, validate, onAccept, on
             accept();
         }
     }
+
+    useEffect(onChange, []);
 
     const buttons = [
         { label: "OK", focus: false, onClick: accept },

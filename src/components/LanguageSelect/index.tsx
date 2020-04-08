@@ -64,6 +64,7 @@ export default ({ first, tabIndex }: LanguageSelectProps) => {
             dispatch(addLanguage(value));
             dispatch(selectLanguage(value, first ? "firstLocale" : "secondLocale"));
             setDirty(appBridge, true);
+            setPromptClosed();
         }
     }
     const localeValidator = promptOpen && getLocaleValidator(extension.languages);
@@ -94,14 +95,14 @@ export default ({ first, tabIndex }: LanguageSelectProps) => {
     return (
         <>
             <select className="language-select" value={value} onChange={onChange} ref={select} tabIndex={tabIndex}>
-                <option key="null" style={{ fontStyle: "italic" }} value="" className="language-select__list-item">
+                <option style={{ fontStyle: "italic" }} value="" className="language-select__list-item">
                     -- None --
                 </option>
-                <option key="+" style={{ fontStyle: "italic" }} value="+" className="language-select__list-item">
+                <option style={{ fontStyle: "italic" }} value="+" className="language-select__list-item">
                     ++ New Language ++
                 </option>
                 {languages.map((language) => (
-                    <LanguageSelectOption language={language} />
+                    <LanguageSelectOption language={language} key={language.locale} />
                 ))}
             </select>
             {promptOpen && (
