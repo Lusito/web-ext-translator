@@ -1,5 +1,5 @@
-import { createAction } from "deox";
+import { actionCreator } from "tsrux";
 
-export const setWebExtensionActive = createAction("WEB_EXTENSION/SET_ACTIVE", (resolve) => (active: boolean) =>
-    resolve({ active })
+export const setWebExtensionActive = actionCreator("WEB_EXTENSION/SET_ACTIVE", (active: boolean) =>
+    ({ active })
 );

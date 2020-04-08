@@ -1,29 +1,29 @@
-import { createAction } from "deox";
+import { actionCreator } from "tsrux";
 import { WetLanguage } from "web-ext-translator-shared";
 
 import { VcsInfo } from "../../vcs/VcsProvider";
 
-export const setMessage = createAction(
+export const setMessage = actionCreator(
     "EXTENSION/SET_MESSAGE",
-    (resolve) => (locale: string, key: string, value: string) => resolve({ locale, key, value })
+    (locale: string, key: string, value: string) => ({ locale, key, value })
 );
 
-export const addMessage = createAction(
+export const addMessage = actionCreator(
     "EXTENSION/ADD_MESSAGE",
-    (resolve) => (asGroup: boolean, insertBefore: boolean, referenceMessageName: string, newMessageName: string) =>
-        resolve({ asGroup, insertBefore, referenceMessageName, newMessageName })
+    (asGroup: boolean, insertBefore: boolean, referenceMessageName: string, newMessageName: string) =>
+        ({ asGroup, insertBefore, referenceMessageName, newMessageName })
 );
 
-export const removeLanguage = createAction("EXTENSION/REMOVE_LANGUAGE", (resolve) => (locale: string) =>
-    resolve({ locale })
+export const removeLanguage = actionCreator("EXTENSION/REMOVE_LANGUAGE", (locale: string) =>
+    ({ locale })
 );
 
-export const selectLanguage = createAction(
+export const selectLanguage = actionCreator(
     "EXTENSION/SELECT_LANGUAGE",
-    (resolve) => (locale: string, which: "firstLocale" | "secondLocale") => resolve({ locale, which })
+    (locale: string, which: "firstLocale" | "secondLocale") => ({ locale, which })
 );
 
-export const addLanguage = createAction("EXTENSION/ADD_LANGUAGE", (resolve) => (locale: string) => resolve({ locale }));
+export const addLanguage = actionCreator("EXTENSION/ADD_LANGUAGE", (locale: string) => ({ locale }));
 
 export interface LoadExtensionData {
     languages: WetLanguage[];
@@ -32,6 +32,6 @@ export interface LoadExtensionData {
     vcsInfo?: VcsInfo;
 }
 
-export const loadExtension = createAction("EXTENSION/LOAD", (resolve) => (data: LoadExtensionData) => resolve(data));
+export const loadExtension = actionCreator("EXTENSION/LOAD", (data: LoadExtensionData) => (data));
 
-export const setLoading = createAction("EXTENSION/SET_LOADING", (resolve) => (message: string) => resolve({ message }));
+export const setLoading = actionCreator("EXTENSION/SET_LOADING", (message: string) => ({ message }));

@@ -1,6 +1,6 @@
-import { createAction } from "deox";
+import { actionCreator } from "tsrux";
 
-export const setPreview = createAction("PREVIEW/SET", (resolve) => (markdown: string, rtl: boolean) =>
-    resolve({ markdown, rtl })
+export const setPreview = actionCreator("PREVIEW/SET", (markdown: string, rtl: boolean) =>
+    ({ markdown, rtl })
 );
-export const togglePreview = createAction("PREVIEW/TOGGLE");
+export const togglePreview = actionCreator("PREVIEW/TOGGLE");

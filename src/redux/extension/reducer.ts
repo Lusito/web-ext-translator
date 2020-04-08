@@ -1,4 +1,4 @@
-import { createReducer } from "deox";
+import { mapReducers } from "tsrux";
 import { WetMessageType, WetMessage, WetLanguage } from "web-ext-translator-shared";
 
 import {
@@ -48,7 +48,7 @@ const initialState = {
 
 export type ExtensionState = typeof initialState;
 
-export const extensionReducer = createReducer(initialState, (handleAction) => [
+export const extensionReducer = mapReducers(initialState, (handleAction) => [
     handleAction(setMessage, (state, { payload }) => {
         if (!state.extension) return state;
         const language = state.extension.languages[payload.locale];
