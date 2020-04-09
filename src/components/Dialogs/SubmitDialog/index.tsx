@@ -4,8 +4,8 @@ import { useSelector } from "react-redux-nano";
 import Dialog from "../Dialog";
 import { copyToClipboard } from "../../../utils/copyToClipboard";
 import { serializeMessages } from "../../../utils/exportToZip";
-import { setDirty } from "../../../utils/setDirty";
 import { selectExtension } from "../../../redux/extension";
+import { useSetDirty } from "../../../hooks";
 import "./style.css";
 
 interface SubmitDialogProps {
@@ -27,6 +27,7 @@ function replaceAll(str: string, replacements: Array<[string, string]>) {
 }
 
 export default ({ onClose }: SubmitDialogProps) => {
+    const setDirty = useSetDirty();
     const select = useRef<HTMLSelectElement>();
     const extension = useSelector(selectExtension);
 
@@ -50,7 +51,7 @@ export default ({ onClose }: SubmitDialogProps) => {
                     ["{{BODY}}", BODY_MESSAGE],
                 ]);
                 window.open(submitUrl);
-                setDirty(null, false);
+                setDirty(false);
             }
         }
     }

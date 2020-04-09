@@ -5,11 +5,12 @@ import { useAppBridge } from "../../AppBridge";
 import { loadFiles } from "../../utils/loader";
 import AlertDialog from "../Dialogs/AlertDialog";
 import { loadExtension } from "../../redux/extension";
-import { setDirty } from "../../utils/setDirty";
+import { useSetDirty } from "../../hooks";
 
 export default () => {
     const dispatch = useDispatch();
     const appBridge = useAppBridge();
+    const setDirty = useSetDirty();
     const [alertMessage, setAlertMessage] = useState("");
 
     useEffect(() => {
@@ -20,7 +21,7 @@ export default () => {
             } else {
                 try {
                     dispatch(loadExtension(loadFiles(result)));
-                    setDirty(appBridge, false);
+                    setDirty(false);
                 } catch (e) {
                     console.error("error loading files: ", e);
                     setAlertMessage(`Failed to load folder. Reason: ${e.message}`);

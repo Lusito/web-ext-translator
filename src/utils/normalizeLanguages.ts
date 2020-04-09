@@ -4,7 +4,7 @@ import { localeCodeToEnglish } from "../lib/localeCodeToEnglish";
 import { hashForLanguage } from "./getHashFor";
 
 /**
- * Updates both the the message hash if not set and the language label
+ * Updates both the message hash if not set and the language label
  */
 export function normalizeLanguages(languages: WetLanguage[], mainLanguage: WetLanguage) {
     languages.forEach((language) => {

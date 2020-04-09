@@ -5,17 +5,16 @@ import { getParameter } from "../../utils/getParameter";
 import { importVcs } from "../../vcs/importVcs";
 import AlertDialog from "../Dialogs/AlertDialog";
 import { setLoading, loadExtension, LoadExtensionData } from "../../redux/extension";
-import { setDirty } from "../../utils/setDirty";
-import { useAppBridge } from "../../AppBridge";
+import { useSetDirty } from "../../hooks";
 
 export default () => {
-    const appBridge = useAppBridge();
+    const setDirty = useSetDirty();
     const [alertMessage, setAlertMessage] = useState("");
     const dispatch = useDispatch();
     const setLoadingMessage = (message: string) => dispatch(setLoading(message));
     const onSuccess = (data: LoadExtensionData) => {
         dispatch(loadExtension(data));
-        setDirty(appBridge, false);
+        setDirty(false);
     };
 
     useEffect(() => {

@@ -3,20 +3,23 @@ import { WetLanguage } from "web-ext-translator-shared";
 
 import { VcsInfo } from "../../vcs/VcsProvider";
 
-export const setMessage = actionCreator(
-    "EXTENSION/SET_MESSAGE",
-    (locale: string, key: string, value: string) => ({ locale, key, value })
-);
+export const setMessage = actionCreator("EXTENSION/SET_MESSAGE", (locale: string, key: string, value: string) => ({
+    locale,
+    key,
+    value,
+}));
 
 export const addMessage = actionCreator(
     "EXTENSION/ADD_MESSAGE",
-    (asGroup: boolean, insertBefore: boolean, referenceMessageName: string, newMessageName: string) =>
-        ({ asGroup, insertBefore, referenceMessageName, newMessageName })
+    (asGroup: boolean, insertBefore: boolean, referenceMessageName: string, newMessageName: string) => ({
+        asGroup,
+        insertBefore,
+        referenceMessageName,
+        newMessageName,
+    })
 );
 
-export const removeLanguage = actionCreator("EXTENSION/REMOVE_LANGUAGE", (locale: string) =>
-    ({ locale })
-);
+export const removeLanguage = actionCreator("EXTENSION/REMOVE_LANGUAGE", (locale: string) => ({ locale }));
 
 export const selectLanguage = actionCreator(
     "EXTENSION/SELECT_LANGUAGE",
@@ -32,6 +35,6 @@ export interface LoadExtensionData {
     vcsInfo?: VcsInfo;
 }
 
-export const loadExtension = actionCreator("EXTENSION/LOAD", (data: LoadExtensionData) => (data));
+export const loadExtension = actionCreator("EXTENSION/LOAD", (data: LoadExtensionData) => data);
 
 export const setLoading = actionCreator("EXTENSION/SET_LOADING", (message: string) => ({ message }));

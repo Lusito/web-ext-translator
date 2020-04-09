@@ -8,7 +8,7 @@ import { importFromZip } from "../../utils/importFromZip";
 import { selectExtension, LoadExtensionData, loadExtension, setLoading } from "../../redux/extension";
 import { serializeMessages } from "../../utils/exportToZip";
 import { importVcs } from "../../vcs/importVcs";
-import { useOpen } from "../../hooks";
+import { useOpen, useSetDirty } from "../../hooks";
 import "./style.css";
 import { useAppBridge } from "../../AppBridge";
 import { selectWebExtensionActive } from "../../redux/webExtension";
@@ -19,7 +19,6 @@ import FileDialog from "../Dialogs/FileDialog";
 import PromptDialog from "../Dialogs/PromptDialog";
 import SubmitDialog from "../Dialogs/SubmitDialog";
 import { togglePreview } from "../../redux/preview";
-import { setDirty } from "../../utils/setDirty";
 
 const importGithubMarkdown = `You can import translations from a github project like this:  \
 
@@ -42,14 +41,14 @@ const ShowAboutButton = () => {
 };
 
 const ImportZipButton = () => {
-    const appBridge = useAppBridge();
+    const setDirty = useSetDirty();
     const [open, setOpen, setClosed] = useOpen();
     const [alertMessage, setAlertMessage] = useState("");
     const dispatch = useDispatch();
     const setLoadingMessage = (message: string) => dispatch(setLoading(message));
     const onSuccess = (data: LoadExtensionData) => {
         dispatch(loadExtension(data));
-        setDirty(appBridge, false);
+        setDirty(false);
     };
 
     const onAccept = (fileList: FileList) => {
@@ -76,14 +75,14 @@ const ImportZipButton = () => {
 };
 
 const GithubButton = () => {
-    const appBridge = useAppBridge();
+    const setDirty = useSetDirty();
     const [alertMessage, setAlertMessage] = useState("");
     const [open, setOpen, setClosed] = useOpen();
     const dispatch = useDispatch();
     const setLoadingMessage = (message: string) => dispatch(setLoading(message));
     const onSuccess = (data: LoadExtensionData) => {
         dispatch(loadExtension(data));
-        setDirty(appBridge, false);
+        setDirty(false);
     };
 
     return (

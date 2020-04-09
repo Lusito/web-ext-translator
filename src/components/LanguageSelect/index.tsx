@@ -8,8 +8,6 @@ import { selectExtension, addLanguage, selectLanguage } from "../../redux/extens
 import "./style.css";
 import PromptDialog from "../Dialogs/PromptDialog";
 import { useOpen } from "../../hooks";
-import { setDirty } from "../../utils/setDirty";
-import { useAppBridge } from "../../AppBridge";
 
 function validateLocale(value: string) {
     const result = localeCodeToEnglish(value);

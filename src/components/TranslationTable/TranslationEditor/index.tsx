@@ -7,8 +7,7 @@ import { isLocaleRTL } from "../../../lib/rtl";
 import "./style.css";
 import { setPreview } from "../../../redux/preview";
 import { setMessage } from "../../../redux/extension";
-import { setDirty } from "../../../utils/setDirty";
-import { useAppBridge } from "../../../AppBridge";
+import { useSetDirty } from "../../../hooks";
 
 const UNICODE_REGEX = /(\\u[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])/g;
 
@@ -33,7 +32,7 @@ function getPlaceholderValue(key: string, placeholders?: WetPlaceholder[]) {
 export default ({ messageKey, locale, modified, value, placeholders }: TranslationEditorProps) => {
     const inputRef = useRef<HTMLDivElement | null>(null);
     const dispatch = useDispatch();
-    const appBridge = useAppBridge();
+    const setDirty = useSetDirty();
     const disabled = !messageKey || !locale;
     let className = "translation-editor";
     if (modified) className += " translation-editor--is-modified";
@@ -74,7 +73,7 @@ export default ({ messageKey, locale, modified, value, placeholders }: Translati
                         const newValue = inputRef.current.textContent;
                         removeFormatting();
                         dispatch(setMessage(locale, messageKey, newValue));
-                        setDirty(appBridge, true);
+                        setDirty(true);
                     }
                     updateMarkdown();
                 }

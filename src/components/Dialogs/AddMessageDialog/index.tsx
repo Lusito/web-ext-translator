@@ -3,9 +3,8 @@ import { useSelector, useDispatch } from "react-redux-nano";
 
 import Dialog from "../Dialog";
 import { selectExtension, addMessage } from "../../../redux/extension";
+import { useSetDirty } from "../../../hooks";
 import "./style.css";
-import { setDirty } from "../../../utils/setDirty";
-import { useAppBridge } from "../../../AppBridge";
 
 const VALID_NAME = /^[A-Za-z0-9_@]+$/;
 
@@ -15,7 +14,7 @@ interface AddMessageDialogProps {
 }
 
 export default ({ messageName, onClose }: AddMessageDialogProps) => {
-    const appBridge = useAppBridge();
+    const setDirty = useSetDirty();
     const dispatch = useDispatch();
     const extension = useSelector(selectExtension);
     const input = useRef<HTMLInputElement>();
@@ -56,7 +55,7 @@ export default ({ messageName, onClose }: AddMessageDialogProps) => {
         if (validate().valid) {
             onClose();
             dispatch(addMessage(asGroup.current.checked, insertBefore.current.checked, messageName, value));
-            setDirty(appBridge, true);
+            setDirty(true);
         }
     }
 

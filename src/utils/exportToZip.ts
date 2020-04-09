@@ -4,7 +4,6 @@ import { saveAs } from "file-saver";
 
 import { CodeWriter } from "./CodeWriter";
 import { toJsonString } from "./toJsonString";
-import { setDirty } from "./setDirty";
 
 function serializeMessageMultiLine(
     mainMessage: WetMessage,
@@ -99,13 +98,15 @@ export function serializeMessages(language: WetLanguage, mainLanguage: WetLangua
     return codeWriter.toString();
 }
 
-export function exportToZip(languages: WetLanguage[], mainLanguage: WetLanguage) {
+export function exportToZip(languages: WetLanguage[], mainLanguage: WetLanguage, setDirty: (dirty: boolean) => void) {
     const zip = new JSZip();
     const localesFolder = zip.folder("_locales");
     languages.forEach((l) => {
         const folder = localesFolder.folder(l.locale.replace("-", "_"));
         folder.file("messages.json", serializeMessages(l, mainLanguage));
     });
-    zip.generateAsync({ type: "blob" }).then((content) => saveAs(content, "wet_export.zip"));
-    setDirty(null, false);
+    zip.generateAsync({ type: "blob" }).then((content) => {
+        saveAs(content, "wet_export.zip");
+        setDirty(false);
+    });
 }

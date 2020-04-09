@@ -6,12 +6,14 @@ import Dialog from "../Dialog";
 import { exportToZip } from "../../../utils/exportToZip";
 import { selectExtension } from "../../../redux/extension";
 import "./style.css";
+import { useSetDirty } from "../../../hooks";
 
 interface ExportDialogProps {
     onClose: () => void;
 }
 
 export default ({ onClose }: ExportDialogProps) => {
+    const setDirty = useSetDirty();
     const container = useRef<HTMLDivElement>();
     const extension = useSelector(selectExtension);
 
@@ -23,7 +25,7 @@ export default ({ onClose }: ExportDialogProps) => {
             const language = input.checked && extension.languages[input.value];
             if (language) exportedLanguages.push(language);
         }
-        if (exportedLanguages.length) exportToZip(exportedLanguages, extension.mainLanguage);
+        if (exportedLanguages.length) exportToZip(exportedLanguages, extension.mainLanguage, setDirty);
     }
     const checkboxes = Object.getOwnPropertyNames(extension.languages).map((locale) => (
         <label key={locale} className="export-dialog__checkbox-label">

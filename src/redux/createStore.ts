@@ -10,7 +10,7 @@ export default () =>
         combineReducers({
             preview: previewReducer,
             extension: extensionReducer,
-            webExtension: webExtensionReducer
+            webExtension: webExtensionReducer,
         }),
         composeWithDevTools()
     );
