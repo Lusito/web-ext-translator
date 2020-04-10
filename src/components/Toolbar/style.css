@@ -10,8 +10,6 @@
 
 .toolbar__title {
     margin: 2px 0 0 0;
-    text-align: right;
-    flex-grow: 1;
 }
 
 .icon-button.icon-button--toolbar {
@@ -19,6 +17,10 @@
     height: 30px;
     background-size: 24px;
     margin-right: 10px;
+}
+
+.icon-button.icon-button--toolbar:last-child {
+    margin-left: auto;
 }
 
 .icon-button.icon-button--toolbar:first-child:before {

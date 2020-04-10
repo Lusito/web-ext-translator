@@ -231,9 +231,9 @@ export default () => {
         <div className="toolbar">
             {appBridge ? <AppButtons /> : <WebAppButtons />}
             <div className="toolbar__separator" />
-            <TogglePreviewButton />
             <h2 className="toolbar__title">Web Extension Translator</h2>
             <ShowAboutButton />
+            <TogglePreviewButton />
         </div>
     );
 };
