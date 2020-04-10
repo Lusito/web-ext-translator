@@ -1,0 +1,33 @@
+.translation-table-row {
+    display: flex;
+}
+
+.translation-table-row__cell {
+    flex-grow: 1;
+    width: calc(100% / 3);
+    margin-left: 3px;
+    margin-top: 3px;
+    position: relative;
+}
+
+.translation-table-row__cell:first-child {
+    word-break: break-all;
+    margin-left: 0;
+}
+
+.translation-table-row__cell:nth-child(2),
+.translation-table-row__cell:nth-child(3) {
+    min-width: 100px;
+    padding: 5px;
+    background: #333333;
+    cursor: text;
+}
+
+.translation-table-row__cell:nth-child(4) {
+    width: auto;
+}
+
+.translation-table-row__cell:first-child {
+    border-bottom: 1px solid #313131;
+    font-family: monospace;
+}

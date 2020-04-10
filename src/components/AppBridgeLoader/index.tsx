@@ -18,7 +18,7 @@ export default () => {
             const result = appBridge.loadFiles();
             if (typeof result === "string") {
                 setAlertMessage(result);
-            } else {
+            } else if (result !== false) {
                 try {
                     dispatch(loadExtension(loadFiles(result)));
                     setDirty(false);

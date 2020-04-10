@@ -2,7 +2,7 @@
 
 An easy to use translation tool for web-extensions with markdown preview.
 It's mostly written in TypeScript, HTML & CSS using React and BEM.
-It is both an online web-app as well as a standalone tool using JavaFX WebKit as a container, which adds the interfaces for reading and writing files.
+It is both an online web-app as well as a standalone tool using [Electron](https://www.electronjs.org/) as a container.
 
 You can check out the online version here: https://lusito.github.io/web-ext-translator/
 
@@ -16,6 +16,7 @@ You can check out the online version here: https://lusito.github.io/web-ext-tran
   - The markdown preview even replaces placeholders with their respective example.
 - It allows users of the online editor to easily load translations from a ZIP file or a Github repository (even branches).
 - After changes have been done, translations can be exported to a ZIP file.
+- There's even a standalone, desktop application (see further below) you can install via npm!
 
 ### Advanced features for your web-extension
 
@@ -24,7 +25,7 @@ You can check out the online version here: https://lusito.github.io/web-ext-tran
   - It automatically formats your messages.json into a homogeneous format (see below for formatting options).
   - The order of the translations in the messages.json is kept.
 - You can define groups inside of your messages.json to keep translations organized.
-- You can apply changes to your extensions live from the online editor using [wet-layer](https://github.com/Lusito/wet-layer)
+- You can apply changes to your extensions live from the online editor using [wet-layer](https://www.npmjs.com/package/wet-layer)
 
 ### Working with groups
 
@@ -70,13 +71,9 @@ You can do so by adding this message to your `default` locales `messages.json` f
 
 This setting will be re-exported only on the default locale.
 
-### Installation via NPM
+### Standalone Desktop Application
 
 ```npm install -g web-ext-translator```
-
-You'll need Java 8 or higher installed.
-
-### Usage
 
 From the root of your web-extension directory (where your `_locales` directory is located), run `wet`
 

@@ -1,0 +1,23 @@
+.translation-table-section {
+    display: flex;
+}
+
+.translation-table-section__cell:first-child {
+    color: #ec7a30;
+    padding-top: 10px;
+    border-bottom: 1px solid #ec7a30;
+    font-family: monospace;
+    flex-grow: 1;
+    width: 100%;
+    margin-top: 3px;
+    vertical-align: top;
+    position: relative;
+    word-break: break-all;
+}
+
+.translation-table-section__cell:nth-child(2) {
+    width: auto;
+    padding-top: 10px;
+    padding-left: 3px;
+    border-bottom: 1px solid #ec7a30;
+}

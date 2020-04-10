@@ -1,0 +1,21 @@
+.translation-table-plus {
+    width: auto;
+    height: 24px;
+    text-align: center;
+    color: black;
+    background: #dddddd;
+    border: 1px solid rgb(41, 41, 41);
+    margin: 0 2px;
+    padding: 2px 15px;
+}
+
+.translation-table-plus:hover {
+    background: #4ea2ff;
+    color: white;
+    border-color: #bbbbbb;
+}
+
+.translation-table-plus:focus {
+    border: 1px solid #0075ad;
+    outline: none;
+}

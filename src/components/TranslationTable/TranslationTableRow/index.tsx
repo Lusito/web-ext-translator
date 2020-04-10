@@ -5,6 +5,7 @@ import TranslationEditor from "../TranslationEditor";
 import { hashFor } from "../../../utils/getHashFor";
 import TranslationTablePlus from "../TranslationTablePlus";
 import { useAppBridge } from "../../../AppBridge";
+import "./style.css";
 
 interface TranslationTableRowProps {
     className?: string;
@@ -29,11 +30,11 @@ export default ({ className, message, firstLanguage, secondLanguage, mainLanguag
     const second = getData(mainLanguage, mainHash, secondLanguage, message.name);
 
     return (
-        <tr className={`translation-table-body__row ${className}`} title={message.description}>
-            <td className="translation-table-body__td" data-searchable={message.name}>
+        <div className={`translation-table-row ${className}`} title={message.description}>
+            <div className="translation-table-row__cell" data-searchable={message.name}>
                 {message.name}
-            </td>
-            <td className="translation-table-body__td">
+            </div>
+            <div className="translation-table-row__cell">
                 <TranslationEditor
                     value={first.value}
                     messageKey={message.name}
@@ -41,8 +42,8 @@ export default ({ className, message, firstLanguage, secondLanguage, mainLanguag
                     locale={firstLanguage?.locale}
                     modified={first.modified}
                 />
-            </td>
-            <td className="translation-table-body__td">
+            </div>
+            <div className="translation-table-row__cell">
                 <TranslationEditor
                     value={second.value}
                     messageKey={message.name}
@@ -50,12 +51,12 @@ export default ({ className, message, firstLanguage, secondLanguage, mainLanguag
                     locale={secondLanguage?.locale}
                     modified={second.modified}
                 />
-            </td>
+            </div>
             {appBridge && (
-                <td className="translation-table-body__td">
+                <div className="translation-table-row__cell">
                     <TranslationTablePlus messageName={message.name} />
-                </td>
+                </div>
             )}
-        </tr>
+        </div>
     );
 };

@@ -1,6 +1,6 @@
 {
   "name": "wet-layer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A layer between web-extensions and i18n to allow for the live apply feature of the web-ext-translator.",
   "keywords": [
     "TypeScript",
@@ -20,9 +20,7 @@
   "main": "dist/index.js",
   "types": "src/index.ts",
   "files": [
-    "dist/",
-    "src/",
-    "tsconfig.json"
+    "dist/"
   ],
   "scripts": {
     "build": "tsc",
@@ -37,7 +35,7 @@
     "lint:style:fix": "npm run lint:style:base -- --write"
   },
   "dependencies": {
-    "web-ext-translator-shared": "^3.0.0"
+    "web-ext-translator-shared": "^3.0.1"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.26.0",

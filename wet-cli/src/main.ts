@@ -239,7 +239,7 @@ on(
                 return e.message;
             }
         }
-        return "manifest.json or _locales directory missing";
+        return false;
     }
 );
 

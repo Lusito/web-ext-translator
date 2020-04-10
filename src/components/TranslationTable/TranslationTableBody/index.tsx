@@ -28,11 +28,5 @@ export default () => {
             />
         )
     );
-    return (
-        <div className="translation-table-body">
-            <table className="translation-table-body__table">
-                <tbody>{rows}</tbody>
-            </table>
-        </div>
-    );
+    return <div className="translation-table-body">{rows}</div>;
 };

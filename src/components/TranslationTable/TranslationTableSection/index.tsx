@@ -3,6 +3,7 @@ import { WetMessage } from "web-ext-translator-shared";
 
 import TranslationTablePlus from "../TranslationTablePlus";
 import { useAppBridge } from "../../../AppBridge";
+import "./style.css";
 
 interface TranslationTableSectionProps {
     message: WetMessage;
@@ -11,15 +12,15 @@ interface TranslationTableSectionProps {
 export default ({ message }: TranslationTableSectionProps) => {
     const appBridge = useAppBridge();
     return (
-        <tr className="translation-table-body__section">
-            <th colSpan={3} className="translation-table-body__th" data-searchable={message.message}>
+        <div className="translation-table-section">
+            <div className="translation-table-section__cell" data-searchable={message.message}>
                 {message.message}
-            </th>
+            </div>
             {appBridge && (
-                <th className="translation-table-body__th">
+                <div className="translation-table-section__cell">
                     <TranslationTablePlus messageName={message.name} />
-                </th>
+                </div>
             )}
-        </tr>
+        </div>
     );
 };

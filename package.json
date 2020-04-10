@@ -46,7 +46,7 @@
     "regenerator-runtime": "^0.13.5",
     "throttle-debounce": "^2.1.0",
     "tsrux": "^1.0.0",
-    "web-ext-translator-shared": "^3.0.0"
+    "web-ext-translator-shared": "^3.0.1"
   },
   "devDependencies": {
     "@lusito/eslint-config-react": "^1.0.4",
