@@ -23,7 +23,7 @@ function getData(mainLanguage: WetLanguage, mainHash: string, lang: WetLanguage 
 }
 
 export default ({ className, message, firstLanguage, secondLanguage, mainLanguage }: TranslationTableRowProps) => {
-    const appBridge = useAppBridge;
+    const appBridge = useAppBridge();
     const mainHash = hashFor(message.message);
     const first = getData(mainLanguage, mainHash, firstLanguage, message.name);
     const second = getData(mainLanguage, mainHash, secondLanguage, message.name);

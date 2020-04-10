@@ -63,6 +63,8 @@ async function importFromZipAsync(
                 editorConfigs,
             })
         );
+        setLoading("");
+        window.history.replaceState({}, "", "/");
     } catch (e) {
         console.error(`Error reading ${zipFile.name}: ${e.message}`);
         onError(`Error reading ${zipFile.name}: ${e.message}`);

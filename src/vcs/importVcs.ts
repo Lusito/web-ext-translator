@@ -6,6 +6,7 @@ import { LoadExtensionData } from "../redux/extension";
 const providers = [github];
 
 async function importVcsAsync(
+    url: string,
     provider: VcsProvider,
     info: VcsInfo,
     setLoading: (message: string) => void,
@@ -19,6 +20,7 @@ async function importVcsAsync(
         const submitUrl = provider.getSubmitUrl(info);
         onSuccess({ ...loadFiles(result), submitUrl, vcsInfo: info });
         setLoading("");
+        window.history.replaceState({}, "", `/?gh=${url}`);
     } catch (e) {
         onError(`Failed to import ${provider.getName()} Project. Reason: ${e}`);
 
@@ -37,7 +39,7 @@ export function importVcs(
         const info = provider.parseUrl(url);
 
         if (info) {
-            importVcsAsync(provider, info, setLoading, onSuccess, onError);
+            importVcsAsync(url, provider, info, setLoading, onSuccess, onError);
             return;
         }
     }
