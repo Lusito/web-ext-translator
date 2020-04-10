@@ -1,6 +1,6 @@
 {
   "name": "web-ext-translator-shared",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Shared interfaces for the web-ext-translator project",
   "keywords": [
     "Web-Extensions",
@@ -30,6 +30,9 @@
     "lint:style:base": "prettier src/**/*.{ts,tsx,js,json} ./*.{ts,tsx,js,json} --ignore-path ../.prettierignore",
     "lint:style:fix": "npm run lint:style:base -- --write"
   },
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",

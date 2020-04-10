@@ -1,9 +1,3 @@
-/**
- * License: zlib/libpng
- * @author Santo Pfingsten
- * @see https://github.com/Lusito/web-ext-translator
- */
-
 export interface WetCodeWriterOptions {
     lineSeparator: string;
     indentationStep: string;
@@ -55,7 +49,7 @@ export interface WetPlaceholder {
     example?: string;
 }
 
-export type WetLoadFilesResult = string | WetLoaderData;
+export type WetLoadFilesResult = string | false | WetLoaderData;
 
 export interface WetSaveFilesEntry {
     locale: string;
