@@ -1,5 +1,4 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { Key } from "ts-keycode-enum";
 
 contextBridge.exposeInMainWorld("electronBridge", {
     init() {
@@ -35,8 +34,8 @@ contextBridge.exposeInMainWorld("electronBridge", {
             }
         });
         on(search, "keyup", (e: KeyboardEvent) => {
-            if (e.keyCode === Key.Escape) ipcRenderer.sendSync("hide-search", search.value);
-            else if (search.value && e.keyCode === Key.Enter) {
+            if (e.key === "Escape") ipcRenderer.sendSync("hide-search", search.value);
+            else if (search.value && e.key === "Enter") {
                 ipcRenderer.sendSync("find-in-page", search.value, { forward: !e.shiftKey, findNext: true });
                 search.focus();
             }

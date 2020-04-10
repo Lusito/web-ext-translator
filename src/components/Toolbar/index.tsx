@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux-nano";
 import { WetSaveFilesEntry } from "web-ext-translator-shared";
 
@@ -176,17 +176,28 @@ const TogglePreviewButton = () => {
 const AppButtons = () => {
     const appBridge = useAppBridge();
     const extension = useSelector(selectExtension);
-    const onClick = () => {
+    const onSave = useCallback(() => {
         if (extension) {
             const files: WetSaveFilesEntry[] = Object.keys(extension.languages)
                 .map((key) => extension.languages[key])
                 .map((lang) => ({
                     locale: lang.locale,
-                    data: serializeMessages(lang, extension.mainLanguage),
+                    data: serializeMessages(lang, extension.mainLanguage)
                 }));
             appBridge.saveFiles(files);
         }
-    };
+    }, [extension, appBridge]);
+
+    useEffect(() => {
+        if (appBridge && extension) {
+            const listener = (e: KeyboardEvent) => {
+                if (e.key.toUpperCase() === "S" && (e.ctrlKey || e.metaKey)) onSave();
+            };
+            window.addEventListener("keydown", listener);
+            return () => window.removeEventListener("keydown", listener);
+        }
+    }, [onSave]);
+
     return (
         <>
             <IconButton
@@ -195,7 +206,9 @@ const AppButtons = () => {
                 onClick={() => appBridge.openDirectory()}
                 className="icon-button--toolbar"
             />
-            <IconButton icon="floppy-o" tooltip="Save to Disk" onClick={onClick} className="icon-button--toolbar" />
+            {extension && (
+                <IconButton icon="floppy-o" tooltip="Save to Disk" onClick={onSave} className="icon-button--toolbar" />
+            )}
         </>
     );
 };

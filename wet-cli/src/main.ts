@@ -129,7 +129,6 @@ function createWindow(workingDirectory: string) {
         globalShortcut.register("CommandOrControl+F", searchView.show);
         globalShortcut.register("F3", () => searchView.findNext(true));
         globalShortcut.register("Shift+F3", () => searchView.findNext(false));
-        // fixme: shortcut for saving (ctrl + s)
     });
     win.on("blur", () => {
         globalShortcut.unregisterAll();
