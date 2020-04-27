@@ -20,10 +20,10 @@ interface PromptDialogProps {
 }
 
 export default ({ title, text, initialValue, placeholder, validate, onAccept, onCancel }: PromptDialogProps) => {
-    const input = useRef<HTMLInputElement>();
-    const hint = useRef<HTMLDivElement>();
+    const input = useRef<HTMLInputElement>(null);
+    const hint = useRef<HTMLDivElement>(null);
     function onChange() {
-        if (validate) {
+        if (validate && input.current && hint.current) {
             const result = validate(input.current.value);
             if (result.valid) hint.current.classList.remove("prompt-dialog__hint--is-invalid");
             else hint.current.classList.add("prompt-dialog__hint--is-invalid");
@@ -32,6 +32,7 @@ export default ({ title, text, initialValue, placeholder, validate, onAccept, on
     }
 
     function accept() {
+        if (!input.current) return;
         if (!validate || validate(input.current.value).valid) onAccept(input.current.value);
     }
 

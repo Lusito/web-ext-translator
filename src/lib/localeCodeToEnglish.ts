@@ -1,7 +1,7 @@
 import { iso_639_1, iso_639_2 } from "iso-639";
 import countryList from "country-list";
 
-type LocaleResult = { found?: false; error: string } | { found: true; name: string };
+type LocaleResult = { found: false; error: string } | { found: true; name: string };
 
 const names = ["en", "de", "fr"] as const;
 

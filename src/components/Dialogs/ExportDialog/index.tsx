@@ -14,10 +14,12 @@ interface ExportDialogProps {
 
 export default ({ onClose }: ExportDialogProps) => {
     const setDirty = useSetDirty();
-    const container = useRef<HTMLDivElement>();
-    const extension = useSelector(selectExtension);
+    const container = useRef<HTMLDivElement>(null);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const extension = useSelector(selectExtension)!;
 
     function accept() {
+        if (!container.current) return;
         onClose();
         const exportedLanguages: WetLanguage[] = [];
         const inputs = container.current.querySelectorAll("input");

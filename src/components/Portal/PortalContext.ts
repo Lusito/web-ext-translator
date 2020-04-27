@@ -32,7 +32,9 @@ export const usePortal = (id: string) => {
     useEffect(() => {
         const listener = () => setValue(Date.now());
         listeners.add(listener);
-        return () => listeners.delete(listener);
+        return () => {
+            listeners.delete(listener);
+        };
     }, []);
     return context.exists(id);
 };

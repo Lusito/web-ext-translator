@@ -17,10 +17,10 @@ interface SelectDialogProps {
 }
 
 export default ({ title, options, initialValue, onAccept, onCancel }: SelectDialogProps) => {
-    const select = useRef<HTMLSelectElement>();
+    const select = useRef<HTMLSelectElement>(null);
 
     const buttons = [
-        { label: "OK", focus: false, onClick: () => onAccept(select.current.value) },
+        { label: "OK", focus: false, onClick: () => select.current && onAccept(select.current.value) },
         { label: "Cancel", focus: false, onClick: onCancel },
     ];
     return (

@@ -16,7 +16,7 @@ interface TranslationEditorProps {
     value: string;
     messageKey: string;
     placeholders?: WetPlaceholder[];
-    locale: string | null;
+    locale?: string;
 }
 
 function getPlaceholderValue(key: string, placeholders?: WetPlaceholder[]) {
@@ -36,29 +36,28 @@ export default ({ messageKey, locale, modified, value, placeholders }: Translati
     const disabled = !messageKey || !locale;
     let className = "translation-editor";
     if (modified) className += " translation-editor--is-modified";
-    const rtl = locale && isLocaleRTL(locale);
+    const rtl = !!locale && isLocaleRTL(locale);
     if (rtl) className += " translation-editor--is-rtl";
     if (!value) className += " translation-editor--is-empty";
 
     useEffect(() => {
-        if (inputRef.current.textContent !== value || inputRef.current.querySelector("*"))
+        if (inputRef.current && (inputRef.current.textContent !== value || inputRef.current.querySelector("*")))
             inputRef.current.textContent = value;
     }, [value]);
 
     const removeFormatting = () => {
         // eslint-disable-next-line no-self-assign
-        if (inputRef.current.querySelector("*")) inputRef.current.textContent = inputRef.current.textContent;
+        if (inputRef.current?.querySelector("*")) inputRef.current.textContent = inputRef.current.textContent;
     };
     const updateMarkdown = useMemo(
         () =>
             throttle(200, () => {
                 if (inputRef.current) {
-                    const newValue = inputRef.current.textContent.replace(UNICODE_REGEX, (a, b) =>
-                        JSON.parse(`"${b}"`)
-                    );
+                    const newValue =
+                        inputRef.current?.textContent?.replace(UNICODE_REGEX, (a, b) => JSON.parse(`"${b}"`)) ?? "";
                     const markdown = newValue.replace(
                         /\$\w+\$/g,
-                        (s) => getPlaceholderValue(s.substr(1, s.length - 2), placeholders) || s
+                        (s) => getPlaceholderValue(s.substr(1, s.length - 2), placeholders) ?? s
                     );
                     dispatch(setPreview(markdown, rtl));
                 }
@@ -70,7 +69,7 @@ export default ({ messageKey, locale, modified, value, placeholders }: Translati
             throttle(200, () => {
                 if (inputRef.current) {
                     if (locale && messageKey) {
-                        const newValue = inputRef.current.textContent;
+                        const newValue = inputRef.current.textContent ?? "";
                         removeFormatting();
                         dispatch(setMessage(locale, messageKey, newValue));
                         setDirty(true);
@@ -85,10 +84,13 @@ export default ({ messageKey, locale, modified, value, placeholders }: Translati
         updateMarkdown();
     };
     useEffect(() => {
-        const parent = inputRef.current.parentElement;
-        const doFocus = () => inputRef.current.focus();
-        parent.addEventListener("click", doFocus);
-        return () => parent.removeEventListener("click", doFocus);
+        const input = inputRef.current;
+        if (input?.parentElement) {
+            const parent = input.parentElement;
+            const doFocus = () => input.focus();
+            parent.addEventListener("click", doFocus);
+            return () => parent.removeEventListener("click", doFocus);
+        }
     }, []);
 
     return (

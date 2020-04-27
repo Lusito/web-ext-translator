@@ -17,10 +17,10 @@ export default ({ messageName, onClose }: AddMessageDialogProps) => {
     const setDirty = useSetDirty();
     const dispatch = useDispatch();
     const extension = useSelector(selectExtension);
-    const input = useRef<HTMLInputElement>();
-    const asGroup = useRef<HTMLInputElement>();
-    const insertBefore = useRef<HTMLInputElement>();
-    const hint = useRef<HTMLDivElement>();
+    const input = useRef<HTMLInputElement>(null);
+    const asGroup = useRef<HTMLInputElement>(null);
+    const insertBefore = useRef<HTMLInputElement>(null);
+    const hint = useRef<HTMLDivElement>(null);
     let value = "";
     const existingNames = extension ? Object.getOwnPropertyNames(extension.mainLanguage.messagesByKey) : [];
 
@@ -28,7 +28,7 @@ export default ({ messageName, onClose }: AddMessageDialogProps) => {
         if (!value.length) {
             return { valid: false, message: "Please enter a name" };
         }
-        if (!asGroup.current.checked) {
+        if (!asGroup.current?.checked) {
             if (existingNames.includes(value)) {
                 return { valid: false, message: "Key already exists" };
             }
@@ -42,6 +42,7 @@ export default ({ messageName, onClose }: AddMessageDialogProps) => {
         return { valid: true, message: "" };
     }
     function onChange() {
+        if (!input.current || !hint.current) return;
         value = input.current.value;
         if (hint) {
             const result = validate();
@@ -52,7 +53,7 @@ export default ({ messageName, onClose }: AddMessageDialogProps) => {
     }
 
     function accept() {
-        if (validate().valid) {
+        if (asGroup.current && insertBefore.current && validate().valid) {
             onClose();
             dispatch(addMessage(asGroup.current.checked, insertBefore.current.checked, messageName, value));
             setDirty(true);

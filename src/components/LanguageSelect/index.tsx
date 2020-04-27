@@ -5,9 +5,9 @@ import { WetLanguage } from "web-ext-translator-shared";
 import { localeCodeToEnglish } from "../../lib/localeCodeToEnglish";
 import { isLocaleRTL } from "../../lib/rtl";
 import { selectExtension, addLanguage, selectLanguage } from "../../redux/extension";
-import "./style.css";
 import PromptDialog from "../Dialogs/PromptDialog";
 import { useOpen } from "../../hooks";
+import "./style.css";
 
 function validateLocale(value: string) {
     const result = localeCodeToEnglish(value);
@@ -52,7 +52,8 @@ interface LanguageSelectProps {
 export default ({ first, tabIndex }: LanguageSelectProps) => {
     const [promptOpen, setPromptOpen, setPromptClosed] = useOpen();
     const dispatch = useDispatch();
-    const extension = useSelector(selectExtension);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const extension = useSelector(selectExtension)!;
 
     function onAccept(value: string) {
         const otherLocale = first ? extension.secondLocale : extension.firstLocale;
@@ -76,17 +77,19 @@ export default ({ first, tabIndex }: LanguageSelectProps) => {
 
     const selection = selectionLocale ? extension.languages[selectionLocale] : null;
 
-    const select = useRef<HTMLSelectElement>();
+    const select = useRef<HTMLSelectElement>(null);
     const onChange = () => {
-        let locale: string | null = select.current.value;
-        if (locale === "+") {
-            setPromptOpen();
-        } else {
-            if (locale === "") locale = null;
-            dispatch(selectLanguage(locale, first ? "firstLocale" : "secondLocale"));
+        if (select.current) {
+            let locale: string | null = select.current.value;
+            if (locale === "+") {
+                setPromptOpen();
+            } else {
+                if (locale === "") locale = null;
+                dispatch(selectLanguage(locale, first ? "firstLocale" : "secondLocale"));
+            }
         }
     };
-    const value = selection?.locale || "";
+    const value = selection?.locale ?? "";
     return (
         <>
             <select className="language-select" value={value} onChange={onChange} ref={select} tabIndex={tabIndex}>
@@ -105,7 +108,7 @@ export default ({ first, tabIndex }: LanguageSelectProps) => {
                     title="Enter a locale"
                     initialValue="en"
                     onAccept={onAccept}
-                    validate={localeValidator}
+                    validate={localeValidator || undefined}
                     onCancel={setPromptClosed}
                 />
             )}

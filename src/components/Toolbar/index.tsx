@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux-nano";
-import { WetSaveFilesEntry } from "web-ext-translator-shared";
+import { WetSaveFilesEntry, WetAppBridge } from "web-ext-translator-shared";
 
 import IconButton from "../IconButton";
 import packageJSON from "../../../package.json";
@@ -173,8 +173,7 @@ const TogglePreviewButton = () => {
     return <IconButton icon="eye" tooltip="Toggle Preview" onClick={onClick} className="icon-button--toolbar" />;
 };
 
-const AppButtons = () => {
-    const appBridge = useAppBridge();
+const AppButtons = ({ appBridge }: { appBridge: WetAppBridge }) => {
     const extension = useSelector(selectExtension);
     const onSave = useCallback(() => {
         if (extension) {
@@ -182,7 +181,7 @@ const AppButtons = () => {
                 .map((key) => extension.languages[key])
                 .map((lang) => ({
                     locale: lang.locale,
-                    data: serializeMessages(lang, extension.mainLanguage)
+                    data: serializeMessages(lang, extension.mainLanguage),
                 }));
             appBridge.saveFiles(files);
         }
@@ -242,7 +241,7 @@ export default () => {
 
     return (
         <div className="toolbar">
-            {appBridge ? <AppButtons /> : <WebAppButtons />}
+            {appBridge ? <AppButtons appBridge={appBridge} /> : <WebAppButtons />}
             <div className="toolbar__separator" />
             <h2 className="toolbar__title">Web Extension Translator</h2>
             <ShowAboutButton />

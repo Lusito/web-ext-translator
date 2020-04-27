@@ -23,7 +23,7 @@ export const removeLanguage = actionCreator("EXTENSION/REMOVE_LANGUAGE", (locale
 
 export const selectLanguage = actionCreator(
     "EXTENSION/SELECT_LANGUAGE",
-    (locale: string, which: "firstLocale" | "secondLocale") => ({ locale, which })
+    (locale: string | null, which: "firstLocale" | "secondLocale") => ({ locale, which })
 );
 
 export const addLanguage = actionCreator("EXTENSION/ADD_LANGUAGE", (locale: string) => ({ locale }));

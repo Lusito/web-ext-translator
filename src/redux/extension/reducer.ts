@@ -156,7 +156,7 @@ export const extensionReducer = mapReducers(initialState, (handleAction) => [
             languages[lang.locale] = lang;
         });
         const firstLocale = payload.mainLanguage.locale;
-        const secondLocale = payload.languages.map((l) => l.locale).find((l) => l !== firstLocale) || null;
+        const secondLocale = payload.languages.map((l) => l.locale).find((l) => l !== firstLocale) ?? null;
         return {
             ...state,
             extension: {

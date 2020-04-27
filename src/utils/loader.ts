@@ -44,7 +44,7 @@ export function loadFiles({ locales, manifest, editorConfigs }: WetLoaderData) {
     const languages = locales.map((file) =>
         applyCodeWriterOptions(file, parsedEditorConfigs, parseMessagesFile(file.path, file.locale, file.data))
     );
-    const mainLanguage = languages.find((r) => r.locale === default_locale) || null;
+    const mainLanguage = languages.find((r) => r.locale === default_locale) ?? null;
     if (!mainLanguage)
         throw new Error(
             `Language files not found or default_locale manifest property not specified. ${default_locale}->${languages.length}`

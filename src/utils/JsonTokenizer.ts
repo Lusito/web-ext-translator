@@ -44,7 +44,7 @@ export class JsonTokenizer {
         this.resource = resource;
         this.lines = data.split(/\r\n|\r|\n/);
         this.lineContent = this.lines[0] || "";
-        this.createNewToken();
+        this.currentToken = this.createNewToken();
     }
 
     public isDone() {

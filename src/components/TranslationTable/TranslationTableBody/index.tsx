@@ -8,7 +8,8 @@ import TranslationTableSection from "../TranslationTableSection";
 import "./style.css";
 
 export default () => {
-    const extension = useSelector(selectExtension);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const extension = useSelector(selectExtension)!;
 
     const firstLanguage = extension.firstLocale ? extension.languages[extension.firstLocale] : null;
     const secondLanguage = extension.secondLocale ? extension.languages[extension.secondLocale] : null;

@@ -10,10 +10,10 @@ interface FileDialogProps {
 }
 
 export default ({ title, onAccept, onCancel }: FileDialogProps) => {
-    const input = useRef<HTMLInputElement>();
+    const input = useRef<HTMLInputElement>(null);
 
     function accept() {
-        if (input.current.files) {
+        if (input.current?.files) {
             onAccept(input.current.files);
         }
     }

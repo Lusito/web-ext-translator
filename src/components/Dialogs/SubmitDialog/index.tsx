@@ -28,12 +28,13 @@ function replaceAll(str: string, replacements: Array<[string, string]>) {
 
 export default ({ onClose }: SubmitDialogProps) => {
     const setDirty = useSetDirty();
-    const select = useRef<HTMLSelectElement>();
-    const extension = useSelector(selectExtension);
+    const select = useRef<HTMLSelectElement>(null);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const extension = useSelector(selectExtension)!;
 
     function accept() {
         onClose();
-        if (select) {
+        if (select.current) {
             const language = extension.languages[select.current.value];
             const text = replaceAll(COPY_TEMPLATE, [
                 ["{{LOCALE}}", language.locale],
@@ -70,7 +71,7 @@ export default ({ onClose }: SubmitDialogProps) => {
 
     return (
         <Dialog className="submit-dialog" title="Submit Translation" buttons={buttons}>
-            <select ref={select} className="submit-dialog__select" defaultValue={defaultValue || undefined}>
+            <select ref={select} className="submit-dialog__select" defaultValue={defaultValue ?? undefined}>
                 {options}
             </select>
         </Dialog>

@@ -10,10 +10,12 @@ interface ApplyDialogProps {
 }
 
 export default ({ onClose }: ApplyDialogProps) => {
-    const extension = useSelector(selectExtension);
-    const select = useRef<HTMLSelectElement>();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const extension = useSelector(selectExtension)!;
+    const select = useRef<HTMLSelectElement>(null);
 
     function accept() {
+        if (!select.current) return;
         onClose();
         const language = extension.languages[select.current.value];
         if (extension.vcsInfo) {
@@ -44,7 +46,7 @@ export default ({ onClose }: ApplyDialogProps) => {
 
     return (
         <Dialog className="apply-dialog" title="Apply Translation" buttons={buttons}>
-            <select ref={select} className="apply-dialog__select" defaultValue={defaultValue || undefined}>
+            <select ref={select} className="apply-dialog__select" defaultValue={defaultValue ?? undefined}>
                 {options}
             </select>
         </Dialog>

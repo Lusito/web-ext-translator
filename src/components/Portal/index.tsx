@@ -9,5 +9,7 @@ interface PortalProps {
 
 export default function ({ children, goal }: React.PropsWithChildren<PortalProps>) {
     const active = usePortal(goal);
-    return active ? ReactDOM.createPortal(children, document.querySelector(`[data-portal-id="${goal}"]`)) : null;
+    const portal = document.querySelector(`[data-portal-id="${goal}"]`);
+    if (!portal) throw new Error(`Portal with id "${goal}" does not exist in dom tree!`);
+    return active ? ReactDOM.createPortal(children, portal) : null;
 }

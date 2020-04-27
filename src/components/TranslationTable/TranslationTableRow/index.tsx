@@ -18,7 +18,7 @@ interface TranslationTableRowProps {
 function getData(mainLanguage: WetLanguage, mainHash: string, lang: WetLanguage | null, key: string) {
     const message = lang?.messagesByKey[key];
     return {
-        value: message?.message || "",
+        value: message?.message ?? "",
         modified: mainLanguage !== lang && (!message || !message.hash || message.hash !== mainHash),
     };
 }

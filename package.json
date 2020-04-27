@@ -45,7 +45,7 @@
     "redux-devtools-extension": "^2.13.8",
     "regenerator-runtime": "^0.13.5",
     "throttle-debounce": "^2.1.0",
-    "tsrux": "^1.0.0",
+    "tsrux": "^1.0.1",
     "web-ext-translator-shared": "^3.0.1"
   },
   "devDependencies": {
