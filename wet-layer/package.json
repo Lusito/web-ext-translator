@@ -1,19 +1,19 @@
 {
   "name": "wet-layer",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A layer between web-extensions and i18n to allow for the live apply feature of the web-ext-translator.",
   "keywords": [
     "TypeScript",
     "web-extension",
     "web-ext-translator"
   ],
-  "homepage": "https://github.com/Lusito/wet-layer",
+  "homepage": "https://github.com/Lusito/web-ext-translator",
   "bugs": {
-    "url": "https://github.com/Lusito/wet-layer/issues"
+    "url": "https://github.com/Lusito/web-ext-translator/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Lusito/wet-layer.git"
+    "url": "https://github.com/Lusito/web-ext-translator.git"
   },
   "license": "Zlib",
   "author": "Santo Pfingsten",
