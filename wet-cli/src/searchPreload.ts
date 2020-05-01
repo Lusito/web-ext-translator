@@ -3,10 +3,10 @@ import { contextBridge, ipcRenderer } from "electron";
 contextBridge.exposeInMainWorld("electronBridge", {
     init() {
         const search = document.getElementById("search") as HTMLInputElement;
-        const label = document.getElementById("label");
-        const prev = document.getElementById("prev");
-        const next = document.getElementById("next");
-        const close = document.getElementById("close");
+        const label = document.getElementById("label")!;
+        const prev = document.getElementById("prev")!;
+        const next = document.getElementById("next")!;
+        const close = document.getElementById("close")!;
 
         search.focus();
         if (document.location.hash.length > 1) search.value = document.location.hash.substr(1);
@@ -18,7 +18,9 @@ contextBridge.exposeInMainWorld("electronBridge", {
         // fixme:
         // matchCase?: boolean;
         // wordStart?: boolean;
-        const on = (target: EventTarget, ev: string, cb: (e: Event) => void) => target.addEventListener(ev, cb);
+        function on<TEvent extends Event>(target: EventTarget, ev: string, cb: (e: TEvent) => void) {
+            target.addEventListener(ev, cb as any);
+        }
 
         on(search, "input", () => {
             if (search.value) {

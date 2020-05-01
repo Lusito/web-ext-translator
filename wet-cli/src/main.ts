@@ -25,7 +25,7 @@ class SearchView {
         return SearchView.list.find((e) => e.view === view) || null;
     }
 
-    private window: BrowserWindow;
+    private window: BrowserWindow | null;
 
     private view: BrowserView | null = null;
 
@@ -107,7 +107,7 @@ class SearchView {
 }
 
 function createWindow(workingDirectory: string) {
-    let win = new BrowserWindow({
+    let win: BrowserWindow | null = new BrowserWindow({
         width: 800,
         height: 600,
         minWidth: 800,
@@ -155,8 +155,10 @@ function on(channel: string, listener: (event: IpcMainEvent, ...args: any[]) => 
 function onSearch(channel: string, listener: (search: SearchView, event: IpcMainEvent, ...args: any[]) => void) {
     on(channel, (event, ...args) => {
         const view = BrowserView.fromWebContents(event.sender);
-        const search = SearchView.fromBrowserView(view);
-        search && listener(search, event, ...args);
+        if (view) {
+            const search = SearchView.fromBrowserView(view);
+            search && listener(search, event, ...args);
+        }
     });
 }
 
@@ -178,14 +180,17 @@ on("close", () => {
 });
 
 on("open-directory", (event) => {
-    dialog
-        .showOpenDialog(BrowserWindow.fromWebContents(event.sender), {
-            properties: ["openDirectory"],
-            title: "Select your Web Extension root directory",
-        })
-        .then((result) => {
-            if (!result.canceled && result.filePaths.length) createWindow(result.filePaths[0]);
-        });
+    const window = BrowserWindow.fromWebContents(event.sender);
+    if (window) {
+        dialog
+            .showOpenDialog(window, {
+                properties: ["openDirectory"],
+                title: "Select your Web Extension root directory",
+            })
+            .then((result) => {
+                if (!result.canceled && result.filePaths.length) createWindow(result.filePaths[0]);
+            });
+    }
 });
 
 const isDirectory = (file: string) => fs.existsSync(file) && fs.lstatSync(file).isDirectory();
