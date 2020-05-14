@@ -1,6 +1,6 @@
 {
   "name": "wet-layer",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A layer between web-extensions and i18n to allow for the live apply feature of the web-ext-translator.",
   "keywords": [
     "TypeScript",
@@ -18,7 +18,7 @@
   "license": "Zlib",
   "author": "Santo Pfingsten",
   "main": "dist/index.js",
-  "types": "src/index.ts",
+  "types": "dist/index.d.ts",
   "files": [
     "dist/"
   ],
