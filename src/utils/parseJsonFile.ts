@@ -1,6 +1,6 @@
 import { JsonTokenizer } from "./JsonTokenizer";
 
-type JsonValue = string | number | null | boolean | object;
+type JsonValue = string | number | null | boolean | { [s: string]: JsonValue } | JsonValue[];
 
 function parseArray(tokenizer: JsonTokenizer) {
     const result: JsonValue[] = [];

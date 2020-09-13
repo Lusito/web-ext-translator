@@ -1,13 +1,8 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
     "outDir": "./dist/",
-    "strict": true,
-    "declaration": true,
-    "module": "es2015",
-    "lib": ["es2015", "es2016", "es2017", "dom", "dom.iterable"],
-    "esModuleInterop": true,
-    "target": "es6"
+    "declaration": true
   },
+  "extends": "../tsconfig.json",
   "include": ["src"]
 }

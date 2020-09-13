@@ -195,6 +195,7 @@ const AppButtons = ({ appBridge }: { appBridge: WetAppBridge }) => {
             window.addEventListener("keydown", listener);
             return () => window.removeEventListener("keydown", listener);
         }
+        return undefined;
     }, [onSave]);
 
     return (

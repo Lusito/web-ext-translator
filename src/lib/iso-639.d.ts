@@ -1,5 +1,4 @@
 declare module "iso-639" {
-    // eslint-disable-next-line @typescript-eslint/class-name-casing
     interface Iso639_1 {
         "639-1": string;
         "639-2": string;
@@ -9,7 +8,6 @@ declare module "iso-639" {
         nativeName: string;
         wikiUrl: string;
     }
-    // eslint-disable-next-line @typescript-eslint/class-name-casing
     interface Iso639_2 {
         "639-1": string | undefined;
         "639-2": string;

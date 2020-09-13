@@ -6,8 +6,11 @@
     "module": "es2015",
     "lib": ["es2015", "es2016", "es2017", "dom", "dom.iterable"],
     "esModuleInterop": true,
-    "target": "es6",
-    "jsx": "react"
+    "target": "ES2015",
+    "jsx": "react",
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["./src/**/*"]
+  "include": ["src"]
 }

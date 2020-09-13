@@ -16,6 +16,7 @@ async function importFromZipAsync(
         const zip = await JSZip.loadAsync(zipFile);
         const paths = Object.keys(zip.files);
         const localesFolder = zip.folder("_locales");
+        if (!localesFolder) throw new Error("_locales folder not found.");
         const manifestFile = zip.file("manifest.json");
         if (!manifestFile) throw new Error("Extension manifest not found.");
 
@@ -47,10 +48,14 @@ async function importFromZipAsync(
         });
 
         const editorConfigs: WetLoaderFile[] = await Promise.all(
-            [...editorConfigsToLoad.values()].map(async (path) => ({
-                path,
-                data: await zip.file(path).async("text"),
-            }))
+            [...editorConfigsToLoad.values()].map(async (path) => {
+                const file = zip.file(path);
+                if (!file) throw new Error(`file not found in zip: ${path}.`);
+                return {
+                    path,
+                    data: await file.async("text"),
+                };
+            })
         );
 
         onSuccess(

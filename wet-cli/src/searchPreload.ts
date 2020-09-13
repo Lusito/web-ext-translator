@@ -3,10 +3,10 @@ import { contextBridge, ipcRenderer } from "electron";
 contextBridge.exposeInMainWorld("electronBridge", {
     init() {
         const search = document.getElementById("search") as HTMLInputElement;
-        const label = document.getElementById("label")!;
-        const prev = document.getElementById("prev")!;
-        const next = document.getElementById("next")!;
-        const close = document.getElementById("close")!;
+        const label = document.getElementById("label") as HTMLDivElement;
+        const prev = document.getElementById("prev") as HTMLButtonElement;
+        const next = document.getElementById("next") as HTMLButtonElement;
+        const close = document.getElementById("close") as HTMLButtonElement;
 
         search.focus();
         if (document.location.hash.length > 1) search.value = document.location.hash.substr(1);

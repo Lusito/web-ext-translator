@@ -91,6 +91,7 @@ export default ({ messageKey, locale, modified, value, placeholders }: Translati
             parent.addEventListener("click", doFocus);
             return () => parent.removeEventListener("click", doFocus);
         }
+        return undefined;
     }, []);
 
     return (

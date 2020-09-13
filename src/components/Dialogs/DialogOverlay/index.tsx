@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from "react";
 import Portal from "../../Portal";
 import "./style.css";
 
-export default ({ children }: PropsWithChildren<{}>) => (
+export default ({ children }: PropsWithChildren<unknown>) => (
     <Portal goal="overlays">
         <div className="dialog-overlay">
             <div className="dialog-wrapper">{children}</div>

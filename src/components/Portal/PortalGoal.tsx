@@ -7,7 +7,7 @@ interface PortalGoalProps {
     className?: string;
 }
 
-export default function ({ id, className, children }: React.PropsWithChildren<PortalGoalProps>) {
+export default function PortalGoal({ id, className, children }: React.PropsWithChildren<PortalGoalProps>) {
     usePortalGoal(id);
 
     return (

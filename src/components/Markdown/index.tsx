@@ -35,6 +35,7 @@ export default ({ className, markdown }: MarkdownProps) => {
                 return () => links.forEach((link) => link.removeEventListener("click", onClick));
             }
         }
+        return undefined;
     }, [appBridge, content]);
 
     return <div ref={ref} className={className} dangerouslySetInnerHTML={content} />;

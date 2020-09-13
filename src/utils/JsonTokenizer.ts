@@ -78,9 +78,7 @@ export class JsonTokenizer {
     public expectCharToken(value: string) {
         if (!this.testCharToken(value))
             throw new Error(
-                `Expected token '${value}', but got '${
-                    this.lastToken && this.lastToken.content
-                }' at ${this.getTokenPosition()}`
+                `Expected token '${value}', but got '${this.lastToken?.content}' at ${this.getTokenPosition()}`
             );
     }
 

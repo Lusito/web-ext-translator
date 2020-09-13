@@ -7,7 +7,7 @@ interface PortalProps {
     goal: string;
 }
 
-export default function ({ children, goal }: React.PropsWithChildren<PortalProps>) {
+export default function Portal({ children, goal }: React.PropsWithChildren<PortalProps>) {
     const active = usePortal(goal);
     const portal = document.querySelector(`[data-portal-id="${goal}"]`);
     if (!portal) throw new Error(`Portal with id "${goal}" does not exist in dom tree!`);

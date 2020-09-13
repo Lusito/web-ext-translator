@@ -100,9 +100,9 @@ export function serializeMessages(language: WetLanguage, mainLanguage: WetLangua
 
 export function exportToZip(languages: WetLanguage[], mainLanguage: WetLanguage, setDirty: (dirty: boolean) => void) {
     const zip = new JSZip();
-    const localesFolder = zip.folder("_locales");
+    const localesFolder = zip.folder("_locales") as JSZip;
     languages.forEach((l) => {
-        const folder = localesFolder.folder(l.locale.replace("-", "_"));
+        const folder = localesFolder.folder(l.locale.replace("-", "_")) as JSZip;
         folder.file("messages.json", serializeMessages(l, mainLanguage));
     });
     zip.generateAsync({ type: "blob" }).then((content) => {

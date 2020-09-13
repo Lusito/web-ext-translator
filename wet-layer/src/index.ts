@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { browser } from "webextension-polyfill-ts";
 import { WetMessage, WetLanguage, WetPlaceholder } from "web-ext-translator-shared";
 

@@ -1,6 +1,6 @@
 {
   "name": "web-ext-translator-shared",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "Shared interfaces for the web-ext-translator project",
   "keywords": [
     "Web-Extensions",
@@ -18,34 +18,14 @@
   "license": "Zlib",
   "author": "Santo Pfingsten",
   "main": "dist/index.js",
-  "scripts": {
-    "build": "rimraf dist && tsc",
-    "lint": "npm run lint:es && npm run lint:package && npm run lint:style",
-    "lint:es": "eslint src/**/*.{ts,tsx} --ext .ts,.tsx --ignore-path ../.prettierignore",
-    "lint:es:fix": "npm run lint:es -- --fix",
-    "lint:fix": "npm run lint:es:fix && npm run lint:package:fix && npm run lint:style:fix",
-    "lint:package": "sort-package-json --check",
-    "lint:package:fix": "sort-package-json",
-    "lint:style": "npm run lint:style:base -- --check",
-    "lint:style:base": "prettier src/**/*.{ts,tsx,js,json} ./*.{ts,tsx,js,json} --ignore-path ../.prettierignore",
-    "lint:style:fix": "npm run lint:style:base -- --write"
-  },
   "files": [
     "dist"
   ],
+  "scripts": {
+    "build": "rimraf dist && tsc"
+  },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.26.0",
-    "@typescript-eslint/parser": "^2.26.0",
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb": "^18.1.0",
-    "eslint-config-prettier": "^6.10.1",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.19.0",
-    "eslint-plugin-react-hooks": "^3.0.0",
-    "prettier": "2.0.2",
     "rimraf": "^3.0.2",
-    "sort-package-json": "^1.40.0",
-    "typescript": "^3.8.3"
+    "typescript": "^4.0.2"
   }
 }

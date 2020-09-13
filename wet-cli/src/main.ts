@@ -18,11 +18,11 @@ class SearchView {
     private static list: SearchView[] = [];
 
     public static fromBrowserWindow(window: BrowserWindow) {
-        return SearchView.list.find((e) => e.window === window) || null;
+        return SearchView.list.find((e) => e.window === window) ?? null;
     }
 
     public static fromBrowserView(view: BrowserView) {
-        return SearchView.list.find((e) => e.view === view) || null;
+        return SearchView.list.find((e) => e.view === view) ?? null;
     }
 
     private window: BrowserWindow | null;
