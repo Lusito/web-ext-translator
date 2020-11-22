@@ -14,7 +14,7 @@
   "author": "Santo Pfingsten",
   "scripts": {
     "build": "rimraf '../../docs' .cache && tsc --noEmit && parcel build -d '../../docs' --public-url . 'src/index.html' --no-source-maps",
-    "prepare": "yarn run build",
+    "prepublish": "yarn run build",
     "start": "parcel src/index.html"
   },
   "browserslist": [
