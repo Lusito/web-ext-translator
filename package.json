@@ -20,6 +20,8 @@
     "lint:style:base": "prettier 'packages/*/src/**/*.{ts,tsx,js,json,css}' 'packages/*/*.{ts,tsx,js,json,css}'",
     "lint:style:fix": "yarn run lint:style:base --write",
     "release": "lerna publish",
+    "prepublishOnly": "echo test",
+    "prepack": "echo test2",
     "start": "yarn workspace web-ext-translator-online start",
     "start:cli": "yarn workspace web-ext-translator start"
   },
