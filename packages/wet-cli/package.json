@@ -26,18 +26,18 @@
   ],
   "scripts": {
     "build": "rimraf dist && tsc && npm run copy",
-    "copy": "cpx ../docs/**/*.* ./dist/docs && cpx ../README.md . && cpx src/*.html ./dist",
+    "copy": "cpx '../../docs/**/*.*' './dist/docs' && cpx '../../README.md' . && cpx 'src/*.html' './dist'",
     "start": "electron ."
   },
   "dependencies": {
-    "electron": "^10.1.1",
+    "electron": "^11.0.2",
     "file-url": "^3.0.0",
     "web-ext-translator-shared": "^3.1.0"
   },
   "devDependencies": {
     "cpx": "^1.5.0",
     "rimraf": "^3.0.2",
-    "typescript": "^4.0.2"
+    "typescript": "^4.1.2"
   },
   "preferGlobal": true
 }

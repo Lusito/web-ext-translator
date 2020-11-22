@@ -8,6 +8,7 @@ import {
     BrowserView,
     FindInPageOptions,
     globalShortcut,
+    WebContents,
 } from "electron";
 import path from "path";
 import fs from "fs";
@@ -21,8 +22,8 @@ class SearchView {
         return SearchView.list.find((e) => e.window === window) ?? null;
     }
 
-    public static fromBrowserView(view: BrowserView) {
-        return SearchView.list.find((e) => e.view === view) ?? null;
+    public static fromWebContents(webContents: WebContents) {
+        return SearchView.list.find((e) => e.view?.webContents === webContents) ?? null;
     }
 
     private window: BrowserWindow | null;
@@ -154,11 +155,8 @@ function on(channel: string, listener: (event: IpcMainEvent, ...args: any[]) => 
 
 function onSearch(channel: string, listener: (search: SearchView, event: IpcMainEvent, ...args: any[]) => void) {
     on(channel, (event, ...args) => {
-        const view = BrowserView.fromWebContents(event.sender);
-        if (view) {
-            const search = SearchView.fromBrowserView(view);
-            search && listener(search, event, ...args);
-        }
+        const search = SearchView.fromWebContents(event.sender);
+        search && listener(search, event, ...args);
     });
 }
 

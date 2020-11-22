@@ -31,9 +31,9 @@
   },
   "devDependencies": {
     "typescript": "^4.0.2",
-    "webextension-polyfill-ts": "^0.20.0"
+    "webextension-polyfill-ts": "^0.22.0"
   },
   "peerDependencies": {
-    "webextension-polyfill-ts": "^0.20.0"
+    "webextension-polyfill-ts": "^0.22.0"
   }
 }

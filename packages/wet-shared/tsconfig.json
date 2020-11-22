@@ -3,6 +3,6 @@
     "outDir": "./dist/",
     "declaration": true
   },
-  "extends": "../tsconfig.json",
+  "extends": "../../tsconfig.json",
   "include": ["src"]
 }
