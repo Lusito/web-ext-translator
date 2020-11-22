@@ -1,6 +1,6 @@
 {
   "name": "web-ext-translator-online",
-  "version": "3.2.9",
+  "version": "3.2.10",
   "private": true,
   "homepage": ".",
   "bugs": {
@@ -37,7 +37,7 @@
     "redux-devtools-extension": "^2.13.8",
     "throttle-debounce": "^3.0.1",
     "tsrux": "^1.2.0",
-    "web-ext-translator-shared": "^3.2.9"
+    "web-ext-translator-shared": "^3.2.10"
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.1",

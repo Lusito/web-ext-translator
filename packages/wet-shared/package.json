@@ -1,6 +1,6 @@
 {
   "name": "web-ext-translator-shared",
-  "version": "3.2.9",
+  "version": "3.2.10",
   "description": "Shared interfaces for the web-ext-translator project",
   "keywords": [
     "Web-Extensions",
