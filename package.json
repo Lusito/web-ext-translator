@@ -21,7 +21,8 @@
     "lint:style:fix": "yarn run lint:style:base --write",
     "release": "lerna publish",
     "start": "yarn workspace web-ext-translator-online start",
-    "start:cli": "yarn workspace web-ext-translator start"
+    "start:cli": "yarn workspace web-ext-translator start",
+    "version": "npm run build"
   },
   "devDependencies": {
     "@lusito/eslint-config-react": "^1.3.1",
