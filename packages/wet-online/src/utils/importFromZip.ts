@@ -69,7 +69,7 @@ async function importFromZipAsync(
             })
         );
         setLoading("");
-        window.history.replaceState({}, "", "/");
+        window.history.replaceState({}, "", window.location.pathname);
     } catch (e) {
         console.error(`Error reading ${zipFile.name}: ${e.message}`);
         onError(`Error reading ${zipFile.name}: ${e.message}`);

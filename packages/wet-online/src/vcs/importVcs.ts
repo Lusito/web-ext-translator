@@ -20,7 +20,7 @@ async function importVcsAsync(
         const submitUrl = provider.getSubmitUrl(info);
         onSuccess({ ...loadFiles(result), submitUrl, vcsInfo: info });
         setLoading("");
-        window.history.replaceState({}, "", `/?gh=${url}`);
+        window.history.replaceState({}, "", `${window.location.pathname}?gh=${url}`);
     } catch (e) {
         onError(`Failed to import ${provider.getName()} Project. Reason: ${e}`);
 
