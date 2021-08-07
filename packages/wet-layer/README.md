@@ -9,7 +9,7 @@ A layer between web-extensions and i18n to allow for the live apply feature of t
 
 ```npm install wet-layer --save```
 
-Configure webpack like this, so that webextension-polyfill-ts will not be bundled twice:
+Configure webpack like this, so that webextension-polyfill will not be bundled twice:
 
 ```javascript
 var path = require("path");
@@ -19,7 +19,7 @@ module.exports = {
     resolve: {
         //...
         alias: {
-            "webextension-polyfill-ts": path.resolve(path.join(__dirname, "node_modules", "webextension-polyfill-ts"))
+            "webextension-polyfill": path.resolve(path.join(__dirname, "node_modules", "webextension-polyfill"))
         },
     },
 ```

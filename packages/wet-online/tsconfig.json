@@ -10,6 +10,7 @@
     "jsx": "react",
     "noUnusedLocals": true,
     "noImplicitReturns": true,
+    "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"]

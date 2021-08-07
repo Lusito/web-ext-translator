@@ -1,4 +1,4 @@
-import { browser } from "webextension-polyfill-ts";
+import browser from "webextension-polyfill";
 import { WetMessage, WetLanguage, WetPlaceholder } from "web-ext-translator-shared";
 
 const CONTENT_INDEX = /^\$[0-9]*$/;

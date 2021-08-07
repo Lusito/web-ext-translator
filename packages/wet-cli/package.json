@@ -30,14 +30,14 @@
     "start": "electron ."
   },
   "dependencies": {
-    "electron": "^11.0.2",
+    "electron": "^13.1.8",
     "file-url": "^3.0.0",
     "web-ext-translator-shared": "^3.2.10"
   },
   "devDependencies": {
     "cpx": "^1.5.0",
     "rimraf": "^3.0.2",
-    "typescript": "^4.1.2"
+    "typescript": "^4.3.5"
   },
   "preferGlobal": true,
   "gitHead": "54b13a25ee2181d31142181a8b3f651af35f892e"

@@ -8,6 +8,7 @@
     "target": "ES2015",
     "noUnusedLocals": true,
     "noImplicitReturns": true,
+    "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true
   }
 }
