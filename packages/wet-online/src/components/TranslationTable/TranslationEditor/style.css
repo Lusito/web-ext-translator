@@ -1,7 +1,8 @@
 .translation-editor {
+    width: 100%;
     min-height: 10px;
     box-sizing: border-box;
-    display: inline;
+    display: block;
     border: none;
     background: #333333;
     color: #ec7a30;
@@ -9,6 +10,8 @@
     white-space: pre-wrap;
     word-break: break-all;
     z-index: 10;
+    resize: none;
+    overflow: hidden;
 }
 .translation-editor--is-empty {
     display: block;

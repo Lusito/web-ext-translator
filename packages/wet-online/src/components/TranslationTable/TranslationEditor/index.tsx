@@ -30,7 +30,7 @@ function getPlaceholderValue(key: string, placeholders?: WetPlaceholder[]) {
 }
 
 export default ({ messageKey, locale, modified, value, placeholders }: TranslationEditorProps) => {
-    const inputRef = useRef<HTMLDivElement | null>(null);
+    const inputRef = useRef<HTMLTextAreaElement | null>(null);
     const dispatch = useDispatch();
     const setDirty = useSetDirty();
     const disabled = !messageKey || !locale;
@@ -39,22 +39,44 @@ export default ({ messageKey, locale, modified, value, placeholders }: Translati
     const rtl = !!locale && isLocaleRTL(locale);
     if (rtl) className += " translation-editor--is-rtl";
     if (!value) className += " translation-editor--is-empty";
+    const resize = useMemo(
+        () =>
+            throttle(10, () => {
+                const input = inputRef.current;
+                if (input) {
+                    input.style.height = "5px";
+                    input.style.height = `${input.scrollHeight}px`;
+                }
+            }),
+        [inputRef]
+    );
 
     useEffect(() => {
-        if (inputRef.current && (inputRef.current.textContent !== value || inputRef.current.querySelector("*")))
-            inputRef.current.textContent = value;
+        if (inputRef.current) {
+            if (inputRef.current.value !== value) inputRef.current.value = value;
+            resize();
+        }
     }, [value]);
 
-    const removeFormatting = () => {
-        // eslint-disable-next-line no-self-assign
-        if (inputRef.current?.querySelector("*")) inputRef.current.textContent = inputRef.current.textContent;
-    };
+    useEffect(() => {
+        const input = inputRef.current;
+        const observer = new ResizeObserver(resize);
+        if (input?.parentElement) {
+            observer.observe(input.parentElement);
+        }
+        window.addEventListener("resize", resize);
+        return () => {
+            observer.disconnect();
+            window.removeEventListener("resize", resize);
+        };
+    }, [resize]);
+
     const updateMarkdown = useMemo(
         () =>
             throttle(200, () => {
-                if (inputRef.current) {
-                    const newValue =
-                        inputRef.current?.textContent?.replace(UNICODE_REGEX, (a, b) => JSON.parse(`"${b}"`)) ?? "";
+                const input = inputRef.current;
+                if (input) {
+                    const newValue = input.value.replace(UNICODE_REGEX, (a, b) => JSON.parse(`"${b}"`)) ?? "";
                     const markdown = newValue.replace(
                         /\$\w+\$/g,
                         (s) => getPlaceholderValue(s.substr(1, s.length - 2), placeholders) ?? s
@@ -64,25 +86,6 @@ export default ({ messageKey, locale, modified, value, placeholders }: Translati
             }),
         [placeholders, rtl]
     );
-    const onChange = useMemo(
-        () =>
-            throttle(200, () => {
-                if (inputRef.current) {
-                    if (locale && messageKey) {
-                        const newValue = inputRef.current.textContent ?? "";
-                        removeFormatting();
-                        dispatch(setMessage(locale, messageKey, newValue));
-                        setDirty(true);
-                    }
-                    updateMarkdown();
-                }
-            }),
-        [updateMarkdown, locale, messageKey]
-    );
-    const onFocus = () => {
-        removeFormatting();
-        updateMarkdown();
-    };
     useEffect(() => {
         const input = inputRef.current;
         if (input?.parentElement) {
@@ -96,12 +99,19 @@ export default ({ messageKey, locale, modified, value, placeholders }: Translati
 
     return (
         <>
-            <div
+            <textarea
                 className={className}
                 ref={inputRef}
-                contentEditable={!disabled}
-                onFocus={onFocus}
-                onInput={onChange}
+                disabled={disabled}
+                onFocus={updateMarkdown}
+                onChange={(e) => {
+                    resize();
+                    if (locale && messageKey) {
+                        dispatch(setMessage(locale, messageKey, e.currentTarget.value));
+                        setDirty(true);
+                    }
+                    updateMarkdown();
+                }}
                 data-searchable={value}
             />
             <div className="translation-editor-outline" />
