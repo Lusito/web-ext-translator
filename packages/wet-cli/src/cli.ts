@@ -9,7 +9,7 @@ const child = proc.spawn(electron as any, [path.join(__dirname, "..")], {
     windowsHide: false,
 });
 child.on("close", (code) => {
-    process.exit(code);
+    process.exit(code ?? 0);
 });
 
 for (const signal of ["SIGINT", "SIGTERM"] as const) {
