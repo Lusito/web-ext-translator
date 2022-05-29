@@ -1,6 +1,6 @@
 {
   "name": "web-ext-translator",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "An easy to use translation tool for web-extensions",
   "keywords": [
     "Web-Extensions",
@@ -32,7 +32,7 @@
   "dependencies": {
     "electron": "^13.1.8",
     "file-url": "^3.0.0",
-    "web-ext-translator-shared": "^4.0.0"
+    "web-ext-translator-shared": "^4.1.0"
   },
   "devDependencies": {
     "cpx": "^1.5.0",
