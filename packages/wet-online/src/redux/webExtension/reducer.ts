@@ -1,4 +1,4 @@
-import { mapReducers } from "tsrux";
+import { mapReducers } from "@react-nano/tsrux";
 
 import { setWebExtensionActive } from "./actions";
 

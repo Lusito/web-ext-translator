@@ -34,14 +34,12 @@ async function importFromZipAsync(
                     editorConfigPaths.forEach((path) => editorConfigsToLoad.add(path));
 
                     languages.push(
-                        (async (): Promise<WetLocaleFile> => {
-                            return {
-                                path: messagesPath,
-                                data: await messagesFile.async("text"),
-                                locale,
-                                editorConfigs: editorConfigPaths,
-                            };
-                        })()
+                        (async (): Promise<WetLocaleFile> => ({
+                            path: messagesPath,
+                            data: await messagesFile.async("text"),
+                            locale,
+                            editorConfigs: editorConfigPaths,
+                        }))()
                     );
                 }
             }
@@ -71,8 +69,8 @@ async function importFromZipAsync(
         setLoading("");
         window.history.replaceState({}, "", window.location.pathname);
     } catch (e) {
-        console.error(`Error reading ${zipFile.name}: ${e.message}`);
-        onError(`Error reading ${zipFile.name}: ${e.message}`);
+        console.error(`Error reading ${zipFile.name}: ${String(e)}`);
+        onError(`Error reading ${zipFile.name}: ${String(e)}`);
         setLoading("");
     }
 }

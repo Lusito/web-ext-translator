@@ -13,6 +13,8 @@
 .translation-table-row__cell:first-child {
     word-break: break-all;
     margin-left: 0;
+    border-bottom: 1px solid #313131;
+    font-family: monospace;
 }
 
 .translation-table-row__cell:nth-child(2),
@@ -25,9 +27,4 @@
 
 .translation-table-row__cell:nth-child(4) {
     width: auto;
-}
-
-.translation-table-row__cell:first-child {
-    border-bottom: 1px solid #313131;
-    font-family: monospace;
 }

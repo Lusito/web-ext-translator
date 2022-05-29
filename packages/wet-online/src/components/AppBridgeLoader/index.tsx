@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux-nano";
+import { useDispatch } from "@react-nano/redux";
 import React, { useEffect, useState } from "react";
 
 import { useAppBridge } from "../../AppBridge";
@@ -24,7 +24,7 @@ export default () => {
                     setDirty(false);
                 } catch (e) {
                     console.error("error loading files: ", e);
-                    setAlertMessage(`Failed to load folder. Reason: ${e.message}`);
+                    setAlertMessage(`Failed to load folder. Reason: ${String(e)}`);
                 }
             }
         }

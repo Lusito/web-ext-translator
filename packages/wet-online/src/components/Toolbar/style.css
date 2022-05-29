@@ -23,11 +23,11 @@
     margin-left: auto;
 }
 
-.icon-button.icon-button--toolbar:first-child:before {
+.icon-button.icon-button--toolbar:first-child::before {
     margin-left: -20px;
 }
 
-.icon-button.icon-button--toolbar:last-child:before {
+.icon-button.icon-button--toolbar:last-child::before {
     margin-left: -90px;
 }
 
@@ -38,5 +38,5 @@
 .toolbar__separator {
     height: 28px;
     margin-right: 10px;
-    border-right: 2px solid rgba(255, 255, 255, 0.6);
+    border-right: 2px solid rgb(255 255 255 / 60%);
 }

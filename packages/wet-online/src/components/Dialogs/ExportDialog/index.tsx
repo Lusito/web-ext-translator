@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { useSelector } from "react-redux-nano";
+import { useSelector } from "@react-nano/redux";
 import { WetLanguage } from "web-ext-translator-shared";
 
 import Dialog from "../Dialog";

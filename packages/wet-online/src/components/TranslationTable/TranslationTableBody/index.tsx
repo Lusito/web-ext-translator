@@ -1,6 +1,6 @@
 import React from "react";
 import { WetMessageType } from "web-ext-translator-shared";
-import { useSelector } from "react-redux-nano";
+import { useSelector } from "@react-nano/redux";
 
 import TranslationTableRow from "../TranslationTableRow";
 import { selectExtension } from "../../../redux/extension";

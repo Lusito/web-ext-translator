@@ -1,7 +1,7 @@
 import "font-awesome/css/font-awesome.min.css";
 import React from "react";
 import ReactDOM from "react-dom";
-import { Provider } from "react-redux-nano";
+import { Provider } from "@react-nano/redux";
 
 import WetApp from "./components/WetApp";
 import WebExtensionLoader from "./components/WebExtensionLoader";

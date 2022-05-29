@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux-nano";
+import { useDispatch } from "@react-nano/redux";
 
 import { getParameter } from "../../utils/getParameter";
 import { importVcs } from "../../vcs/importVcs";

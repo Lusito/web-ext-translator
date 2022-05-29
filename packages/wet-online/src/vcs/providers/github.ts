@@ -44,21 +44,19 @@ export const github: VcsProvider = {
         const locales = localesResult.filter((v) => v.type === "dir").map((v) => v.name);
 
         const editorConfigsToLoad = new Set<string>();
-        const fetches = locales.map(
-            async (locale): Promise<WetLocaleFile> => {
-                const localePath = `${localesPath}/${locale}`;
-                const messagesPath = `${localePath}/messages.json`;
-                const editorConfigPaths = getEditorConfigPaths(paths, localePath);
-                editorConfigPaths.forEach((path) => editorConfigsToLoad.add(path));
+        const fetches = locales.map(async (locale): Promise<WetLocaleFile> => {
+            const localePath = `${localesPath}/${locale}`;
+            const messagesPath = `${localePath}/messages.json`;
+            const editorConfigPaths = getEditorConfigPaths(paths, localePath);
+            editorConfigPaths.forEach((path) => editorConfigsToLoad.add(path));
 
-                return {
-                    path: messagesPath,
-                    data: await fetch(`${repoPrefixRaw}/${messagesPath}`).then(responseToText),
-                    locale,
-                    editorConfigs: editorConfigPaths,
-                };
-            }
-        );
+            return {
+                path: messagesPath,
+                data: await fetch(`${repoPrefixRaw}/${messagesPath}`).then(responseToText),
+                locale,
+                editorConfigs: editorConfigPaths,
+            };
+        });
 
         const editorConfigs: WetLoaderFile[] = await Promise.all(
             [...editorConfigsToLoad.values()].map(async (path) => ({

@@ -1,4 +1,4 @@
-import { mapReducers } from "tsrux";
+import { mapReducers } from "@react-nano/tsrux";
 import { WetMessageType, WetMessage, WetLanguage } from "web-ext-translator-shared";
 
 import {

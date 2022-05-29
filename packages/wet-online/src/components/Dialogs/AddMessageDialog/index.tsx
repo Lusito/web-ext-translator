@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux-nano";
+import { useSelector, useDispatch } from "@react-nano/redux";
 
 import Dialog from "../Dialog";
 import { selectExtension, addMessage } from "../../../redux/extension";

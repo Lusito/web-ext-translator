@@ -1,7 +1,8 @@
-const TEXTAREA_STYLES = "width: 10px; height: 10px; overflow: hidden; opacity: 0; position: absolute; pointer-events: none;".replace(
-    /;/g,
-    " !important;"
-);
+const TEXTAREA_STYLES =
+    "width: 10px; height: 10px; overflow: hidden; opacity: 0; position: absolute; pointer-events: none;".replace(
+        /;/g,
+        " !important;"
+    );
 
 export function copyToClipboard(text: string) {
     const textarea = document.createElement("textarea");

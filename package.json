@@ -20,16 +20,17 @@
     "lint:style": "yarn run lint:style:base --check",
     "lint:style:base": "prettier 'packages/*/src/**/*.{ts,tsx,js,json,css}' 'packages/*/*.{ts,tsx,js,json,css}'",
     "lint:style:fix": "yarn run lint:style:base --write",
-    "release": "lerna publish",
     "prepack": "yarn run build",
+    "release": "lerna publish",
     "start": "yarn workspace web-ext-translator-online start",
     "start:cli": "yarn workspace web-ext-translator start"
   },
   "devDependencies": {
-    "@lusito/eslint-config-react": "^1.6.1",
-    "@lusito/prettier-config": "^1.6.0",
-    "@lusito/stylelint-config": "^1.6.0",
-    "lerna": "^4.0.0",
-    "sort-package-json": "^1.50.0"
+    "@lusito/eslint-config-react": "^2.0.3",
+    "@lusito/prettier-config": "^2.0.0",
+    "@lusito/stylelint-config": "^2.0.2",
+    "lerna": "^5.0.0",
+    "postcss": "^8.4.14",
+    "sort-package-json": "^1.57.0"
   }
 }

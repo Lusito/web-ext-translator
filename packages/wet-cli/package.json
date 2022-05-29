@@ -37,8 +37,7 @@
   "devDependencies": {
     "cpx": "^1.5.0",
     "rimraf": "^3.0.2",
-    "typescript": "^4.3.5"
+    "typescript": "^4.7.2"
   },
-  "preferGlobal": true,
-  "gitHead": "54b13a25ee2181d31142181a8b3f651af35f892e"
+  "preferGlobal": true
 }

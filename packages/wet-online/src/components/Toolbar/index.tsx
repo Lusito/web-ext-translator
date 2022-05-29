@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useSelector, useDispatch } from "react-redux-nano";
+import { useSelector, useDispatch } from "@react-nano/redux";
 import { WetSaveFilesEntry, WetAppBridge } from "web-ext-translator-shared";
 
 import IconButton from "../IconButton";

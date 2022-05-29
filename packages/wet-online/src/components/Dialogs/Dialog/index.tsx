@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
 import DialogOverlay from "../DialogOverlay";
 import "./style.css";
@@ -15,7 +15,7 @@ interface DialogProps {
     buttons: DialogButton[];
 }
 
-export default ({ title, className, buttons, children }: DialogProps & JSX.ElementChildrenAttribute) => (
+export default ({ title, className, buttons, children }: PropsWithChildren<DialogProps>) => (
     <DialogOverlay>
         <div className={`dialog ${className}`}>
             <h2 className={`dialog__title ${className}__title`}>{title}</h2>

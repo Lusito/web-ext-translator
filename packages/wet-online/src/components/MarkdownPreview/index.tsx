@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux-nano";
+import { useSelector } from "@react-nano/redux";
 
 import Markdown from "../Markdown";
 import "./style.css";

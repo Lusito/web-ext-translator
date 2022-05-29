@@ -1,4 +1,4 @@
-import { actionCreator } from "tsrux";
+import { actionCreator } from "@react-nano/tsrux";
 import { WetLanguage } from "web-ext-translator-shared";
 
 import { VcsInfo } from "../../vcs/VcsProvider";

@@ -164,8 +164,9 @@ onSearch("find-in-page", (search, _event, text, options) => search.findInPage(te
 onSearch("stop-find-in-page", (search, _event, action) => search.stopFindInPage(action));
 onSearch("hide-search", (search) => search.hide());
 
-on("close", () => {
-    return (
+on(
+    "close",
+    () =>
         dialog.showMessageBoxSync({
             type: "question",
             title: "Files have not been saved",
@@ -174,8 +175,7 @@ on("close", () => {
             defaultId: 1,
             cancelId: 1,
         }) === 0
-    );
-});
+);
 
 on("open-directory", (event) => {
     const window = BrowserWindow.fromWebContents(event.sender);
@@ -195,55 +195,52 @@ const isDirectory = (file: string) => fs.existsSync(file) && fs.lstatSync(file).
 const isFile = (file: string) => fs.existsSync(file) && !fs.lstatSync(file).isDirectory();
 const readFile = (file: string) => fs.readFileSync(file, "utf-8");
 
-on(
-    "load-files",
-    (event, extDir): WetLoadFilesResult => {
-        const localesDir = path.join(extDir, "_locales");
-        const manifestFile = path.join(extDir, "manifest.json");
-        if (isFile(manifestFile) && isDirectory(localesDir)) {
-            try {
-                const editorConfigsToLoad = new Set<string>();
-                const locales = [];
-                for (const localeDir of fs.readdirSync(localesDir)) {
-                    const localePath = path.join(localesDir, localeDir);
-                    if (!isDirectory(localePath)) continue;
-                    const messagesPath = path.join(localePath, "messages.json");
-                    if (isFile(messagesPath)) {
-                        const editorConfigPaths = [
-                            [".editorconfig"],
-                            ["..", ".editorconfig"],
-                            ["..", "..", ".editorconfig"],
-                        ]
-                            .map((paths) => path.join(localePath, ...paths))
-                            .filter(isFile);
-                        editorConfigPaths.forEach((p) => editorConfigsToLoad.add(p));
-                        locales.push({
-                            path: messagesPath,
-                            data: readFile(messagesPath),
-                            locale: localeDir.replace("_", "-"),
-                            editorConfigs: editorConfigPaths,
-                        });
-                    }
+on("load-files", (event, extDir): WetLoadFilesResult => {
+    const localesDir = path.join(extDir, "_locales");
+    const manifestFile = path.join(extDir, "manifest.json");
+    if (isFile(manifestFile) && isDirectory(localesDir)) {
+        try {
+            const editorConfigsToLoad = new Set<string>();
+            const locales = [];
+            for (const localeDir of fs.readdirSync(localesDir)) {
+                const localePath = path.join(localesDir, localeDir);
+                if (!isDirectory(localePath)) continue;
+                const messagesPath = path.join(localePath, "messages.json");
+                if (isFile(messagesPath)) {
+                    const editorConfigPaths = [
+                        [".editorconfig"],
+                        ["..", ".editorconfig"],
+                        ["..", "..", ".editorconfig"],
+                    ]
+                        .map((paths) => path.join(localePath, ...paths))
+                        .filter(isFile);
+                    editorConfigPaths.forEach((p) => editorConfigsToLoad.add(p));
+                    locales.push({
+                        path: messagesPath,
+                        data: readFile(messagesPath),
+                        locale: localeDir.replace("_", "-"),
+                        editorConfigs: editorConfigPaths,
+                    });
                 }
-                const editorConfigs = [...editorConfigsToLoad.values()].map((editorConfigPath) => ({
-                    path: editorConfigPath,
-                    data: readFile(editorConfigPath),
-                }));
-                return {
-                    locales,
-                    manifest: {
-                        path: manifestFile,
-                        data: readFile(manifestFile),
-                    },
-                    editorConfigs,
-                };
-            } catch (e) {
-                return e.message;
             }
+            const editorConfigs = [...editorConfigsToLoad.values()].map((editorConfigPath) => ({
+                path: editorConfigPath,
+                data: readFile(editorConfigPath),
+            }));
+            return {
+                locales,
+                manifest: {
+                    path: manifestFile,
+                    data: readFile(manifestFile),
+                },
+                editorConfigs,
+            };
+        } catch (e) {
+            return String(e);
         }
-        return false;
     }
-);
+    return false;
+});
 
 on("save-files", (event, extDir: string, files: WetSaveFilesEntry[]) => {
     const localesDir = path.join(extDir, "_locales");
@@ -257,7 +254,7 @@ on("save-files", (event, extDir: string, files: WetSaveFilesEntry[]) => {
             }
             return null;
         } catch (e) {
-            return e.message;
+            return String(e);
         }
     }
     return "Directory does not exist";

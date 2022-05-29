@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { useSelector, useDispatch } from "react-redux-nano";
+import { useSelector, useDispatch } from "@react-nano/redux";
 import { WetLanguage } from "web-ext-translator-shared";
 
 import { localeCodeToEnglish } from "../../lib/localeCodeToEnglish";
@@ -107,6 +107,7 @@ export default ({ first, tabIndex }: LanguageSelectProps) => {
                 <PromptDialog
                     title="Enter a locale"
                     initialValue="en"
+                    // eslint-disable-next-line react/jsx-no-bind
                     onAccept={onAccept}
                     validate={localeValidator || undefined}
                     onCancel={setPromptClosed}

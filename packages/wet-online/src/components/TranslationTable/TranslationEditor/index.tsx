@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useMemo } from "react";
-import { useDispatch } from "react-redux-nano";
+import { useDispatch } from "@react-nano/redux";
 import { WetPlaceholder } from "web-ext-translator-shared";
 import { throttle } from "throttle-debounce";
 
