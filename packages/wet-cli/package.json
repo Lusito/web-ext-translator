@@ -30,7 +30,7 @@
     "start": "electron ."
   },
   "dependencies": {
-    "electron": "^13.1.8",
+    "electron": "^19.0.1",
     "file-url": "^3.0.0",
     "web-ext-translator-shared": "^4.1.0"
   },

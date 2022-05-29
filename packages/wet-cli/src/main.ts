@@ -62,7 +62,6 @@ class SearchView {
             this.view = new BrowserView({
                 webPreferences: {
                     contextIsolation: true,
-                    enableRemoteModule: false,
                     preload: path.join(__dirname, "searchPreload.js"),
                 },
             });
@@ -115,7 +114,6 @@ function createWindow(workingDirectory: string) {
         minHeight: 600,
         webPreferences: {
             contextIsolation: true,
-            enableRemoteModule: false,
             preload: path.join(__dirname, "preload.js"),
         },
     });
