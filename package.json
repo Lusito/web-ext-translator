@@ -8,7 +8,7 @@
     "packages/wet-cli"
   ],
   "scripts": {
-    "build": "yarn workspaces run build",
+    "build": "yarn workspaces foreach -A run build",
     "lint": "yarn run lint:es && yarn run lint:css && yarn run lint:package && yarn run lint:style",
     "lint:css": "stylelint --ignore-path .prettierignore 'packages/*/src/**/*.css'",
     "lint:css:fix": "yarn run lint:css --fix",
@@ -30,6 +30,7 @@
     "@lusito/prettier-config": "^2.0.0",
     "@lusito/stylelint-config": "^2.0.2",
     "lerna": "^5.0.0",
+    "node-gyp": "^10.1.0",
     "postcss": "^8.4.14",
     "sort-package-json": "^1.57.0"
   }

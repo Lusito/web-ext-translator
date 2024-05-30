@@ -3,3 +3,9 @@ dist/
 target/
 node_modules/
 *.tgz
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions

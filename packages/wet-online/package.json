@@ -50,6 +50,7 @@
     "@types/react-dom": "^18.0.5",
     "@types/throttle-debounce": "^5.0.0",
     "parcel-bundler": "^1.12.5",
+    "rimraf": "^3.0.2",
     "typescript": "^4.7.2"
   }
 }
