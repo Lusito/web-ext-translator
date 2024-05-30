@@ -4,6 +4,12 @@ import { VcsInfo, VcsProvider } from "../VcsProvider";
 import { getEditorConfigPaths } from "../../utils/editorConfig";
 import { getShortestPathForName, responseToJSON, responseToText } from "../vcsUtils";
 
+async function fetchDefaultBranch(url: string) {
+    const jsonData: any = await fetch(url).then(responseToJSON);
+
+    return jsonData.default_branch;
+}
+
 export const github: VcsProvider = {
     getName() {
         return "Github";
@@ -19,17 +25,18 @@ export const github: VcsProvider = {
             parts.splice(0, 3);
             const user = parts.shift() as string;
             const repository = parts.shift() as string;
-            const branch = (parts.shift() === "tree" && parts.join("/")) || "master";
+            const branch = (parts.shift() === "tree" && parts.join("/")) || undefined;
             return { host: "github", user, repository, branch };
         }
         return null;
     },
 
     async fetch(info: VcsInfo): Promise<WetLoaderData> {
-        const repoPrefixRaw = `https://raw.githubusercontent.com/${info.user}/${info.repository}/${info.branch}`;
         const repoPrefixApi = `https://api.github.com/repos/${info.user}/${info.repository}`;
+        const branch = info.branch ?? (await fetchDefaultBranch(repoPrefixApi));
+        const repoPrefixRaw = `https://raw.githubusercontent.com/${info.user}/${info.repository}/${branch}`;
 
-        const jsonData: any = await fetch(`${repoPrefixApi}/git/trees/${info.branch}?recursive=1`).then(responseToJSON);
+        const jsonData: any = await fetch(`${repoPrefixApi}/git/trees/${branch}?recursive=1`).then(responseToJSON);
 
         // Just in case, there are multiple _locales directories, choose the shortest path, as it's probably the right one.
         const paths: string[] = jsonData.tree.map((e: any) => e.path);
@@ -37,7 +44,7 @@ export const github: VcsProvider = {
         const manifestPath = getShortestPathForName(paths, "manifest.json");
 
         const manifestResult = await fetch(`${repoPrefixRaw}/${manifestPath}`).then(responseToText);
-        const localesResult = (await fetch(`${repoPrefixApi}/contents/${localesPath}?ref=${info.branch}`).then(
+        const localesResult = (await fetch(`${repoPrefixApi}/contents/${localesPath}?ref=${branch}`).then(
             responseToJSON
         )) as Array<{ type: string; name: string }>;
 

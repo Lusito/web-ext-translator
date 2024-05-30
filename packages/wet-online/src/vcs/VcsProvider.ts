@@ -4,7 +4,7 @@ export interface VcsInfo {
     host: string;
     user: string;
     repository: string;
-    branch: string;
+    branch: string | undefined;
 }
 
 export interface VcsProvider {
